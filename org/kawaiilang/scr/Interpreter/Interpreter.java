@@ -1,22 +1,23 @@
 package org.kawaiilang;
 import java.util.Arrays;
 import java.util.HashMap;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+//import javax.script.ScriptEngineManager;
+//import javax.script.ScriptException;
+import net.objecthunter.exp4j.*;
 
 import org.kawaiilang.RunTimeError;
 
 import javax.script.ScriptEngine;
 
 public class Interpreter {
-  //Use exp4j insted of ScriptEngine
+  //Version wip1.01.6 - Interpreter now uses the much faster exp4j insted of ScriptEngine
 
   private Token[] tokens;
   private Position pos;
   private Token currentToken;
   private String fn;
-  private static final ScriptEngineManager SENGMAN = new ScriptEngineManager();
-  private static final ScriptEngine SENG = SENGMAN.getEngineByName("js");
+  //private static final ScriptEngineManager SENGMAN = new ScriptEngineManager();
+  //private static final ScriptEngine SENG = SENGMAN.getEngineByName("js");
   private HashMap<Token, Variable> heap = new HashMap<>();
 
   public Interpreter(String fileName, Token[] tokens) {
@@ -149,9 +150,11 @@ public class Interpreter {
     }
     if (expr.length() > 0) {
       try {
-        Object result = SENG.eval(expr.toString());
+        Expression e = new ExpressionBuilder(expr.toString()).build();
+        Object result = e.evaluate();
+        //Object result = SENG.eval(expr.toString());
         return result;
-      } catch (ScriptException ex) {
+      } catch (Exception ex) {
         Position start = pos.clone();
         return new RunTimeError(start, pos, ex.getMessage());
       }
