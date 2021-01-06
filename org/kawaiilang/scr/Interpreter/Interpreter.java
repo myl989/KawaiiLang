@@ -64,16 +64,7 @@ public class Interpreter {
         expr.append(currentToken.value);
         lastToken = currentToken;
         advance();
-      } else if (lastToken == null) {
-        if (currentToken.type == Token.TT_ADD || currentToken.type == Token.TT_MINUS || currentToken.type == Token.TT_MUL || currentToken.type == Token.TT_DIV || currentToken.type == Token.TT_MOD) {
-          expr.append("0").append(currentToken.type);
-          lastToken = currentToken;
-          advance();
-        } else if (currentToken.type == Token.TT_LPAREN) {
-          expr.append("(");
-          lastToken = currentToken;
-          advance();
-        } else if (currentToken.type == Token.TT_VARNAME) {
+      } else if (currentToken.type == Token.TT_VARNAME) {
             int idx = pos.getIdx();
             Variable varData = heap.get(currentToken);
             if (varData != null) {
@@ -100,6 +91,15 @@ public class Interpreter {
             Position start = pos.clone();
             return new UnassignedVariableError(start, pos, new StringBuilder("Variable ").append(varName).append(" never assigned").toString());
           }
+        } else if (lastToken == null) {
+        if (currentToken.type == Token.TT_ADD || currentToken.type == Token.TT_MINUS || currentToken.type == Token.TT_MUL || currentToken.type == Token.TT_DIV || currentToken.type == Token.TT_MOD) {
+          expr.append("0").append(currentToken.type);
+          lastToken = currentToken;
+          advance();
+        } else if (currentToken.type == Token.TT_LPAREN) {
+          expr.append("(");
+          lastToken = currentToken;
+          advance();
         } else if (currentToken.type == Token.TT_VARTYPE) {
           Token type = currentToken;
           advance();
