@@ -7,7 +7,8 @@ import java.util.HashMap;
 import net.objecthunter.exp4j.*;
 
 public class Interpreter {
-  //Version wip1.01.6 - Interpreter now uses the much faster exp4j insted of ScriptEngine
+  //Version 1.1.7-alpha - Bug fixes
+  //Version 1.1.6-alpha - Interpreter now uses the much faster exp4j insted of ScriptEngine
 
   private Token[] tokens;
   private Position pos;
