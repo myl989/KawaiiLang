@@ -1,5 +1,3 @@
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.Scanner;
 import org.kawaiilang.*;
 
@@ -13,8 +11,17 @@ class Main {
         s.close();
         break;
       } else {
-        Token[] result = Lexer.run("<stdin>", input);
-        System.out.println(Arrays.toString(result));
+        Object result = Runner.run("<stdin>", input);
+        if (result == null) {
+          System.out.println("nwthin");
+        } else {
+          if (result instanceof Integer) {
+            Integer i = (Integer) result;
+            System.out.println(Integer.toString(i));
+          } else {
+            System.out.println(result);
+          }
+        }
       }
     }
   }

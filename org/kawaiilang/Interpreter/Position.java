@@ -26,6 +26,12 @@ public class Position implements Cloneable {
     return this;
   }
 
+  public Position advance() {
+    idx++;
+    col++;
+    return this;
+  }
+
   public Position clone() {
     return new Position(idx, ln, col, fn, ftxt);
   }
