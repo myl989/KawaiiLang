@@ -53,6 +53,7 @@ public class Runner {
   public static Object run(String text) {
     Lexer lexer = new Lexer(fileName, unUwUfy(text));
     Token[] tokens = lexer.makeTokens();
+    //System.out.println(java.util.Arrays.toString(tokens));
     return interpret(tokens);
   }
 

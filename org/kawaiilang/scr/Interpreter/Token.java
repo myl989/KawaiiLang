@@ -60,7 +60,7 @@ public class Token {
       return false;
     }
     Token t = (Token) o;
-    return (type == t.type && value == t.value);
+    return (type.equals(t.type) && value.equals(t.value));
   }
 
 }
