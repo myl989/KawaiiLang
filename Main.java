@@ -19,9 +19,9 @@ class Main {
       } else {
         //long startTime = System.nanoTime();
         Object result = Runner.run(input);
-        //long endTime = System.nanoTime();
-        //System.out.print("Time taken: ");
-        //System.out.println(endTime - startTime);
+        /*long endTime = System.nanoTime();
+        System.out.print("Time taken: ");
+        System.out.println(endTime - startTime);*/
         if (result == null) {
           System.out.println("nwthin");
         } else {

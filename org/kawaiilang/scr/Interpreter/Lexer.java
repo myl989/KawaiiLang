@@ -69,7 +69,7 @@ public class Lexer {
           Position start = pos.clone();
           Token[] errorArray = new Token[1];
           if (badC == Character.MIN_VALUE) {
-            errorArray[0] = new InvalidSyntaxError(start, pos, "Line must end with \"!\"");
+            errorArray[0] = new InvalidSyntaxError(start, pos, "Line must end with \"!\" ._.");
           } else {
             errorArray[0] = new IllegalCharacterError(start, pos, "\"" + badC + "\"");
           }

@@ -3,11 +3,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 //import javax.script.ScriptEngineManager;
 //import javax.script.ScriptException;
+//import javax.script.ScriptEngine;
 import net.objecthunter.exp4j.*;
-
-import org.kawaiilang.RunTimeError;
-
-import javax.script.ScriptEngine;
 
 public class Interpreter {
   //Version wip1.01.6 - Interpreter now uses the much faster exp4j insted of ScriptEngine
@@ -57,10 +54,10 @@ public class Interpreter {
     while (true) {
       if (currentToken == null) {
         break;
-      } else if (false) { //new line?
+      } /*else if (false) { //new line?
         lastToken = null;
         advance();
-      } else if (currentToken instanceof org.kawaiilang.Error) {
+      }*/ else if (currentToken instanceof org.kawaiilang.Error) {
         return currentToken;
       } else if (currentToken.type == Token.TT_INT || currentToken.type == Token.TT_FLOAT) {
         expr.append(currentToken.value);
@@ -80,7 +77,7 @@ public class Interpreter {
                   varReplaced = new Token(Token.TT_FLOAT, stored);
                 } else {
                   Position start = pos.clone();
-                  return new IllegalTypeError(start, pos, new StringBuilder("Type of variable, ").append(type.type).append(", is not as declared").toString());
+                  return new IllegalTypeError(start, pos, new StringBuilder("Twype of variable, ").append(type.type).append(", is nawt as decwared ._.").toString());
                 }
               } //More variable types in the future
               tokens[pos.getIdx()] = varReplaced;
@@ -91,7 +88,7 @@ public class Interpreter {
             } else {
             String varName = (String) currentToken.value;
             Position start = pos.clone();
-            return new UnassignedVariableError(start, pos, new StringBuilder("Variable ").append(varName).append(" never assigned").toString());
+            return new UnassignedVariableError(start, pos, new StringBuilder("Wariable ").append(varName).append(" newer asswigned ._.").toString());
           }
         } else if (currentToken.type == Token.TT_LPAREN) {
           expr.append("(");
@@ -113,10 +110,10 @@ public class Interpreter {
         } else if (currentToken.type == Token.TT_VARTYPE) {
           Token type = currentToken;
           advance();
-          if (currentToken.type == Token.TT_VARNAME) {
+          if (currentToken != null && currentToken.type == Token.TT_VARNAME) {
             lastToken = currentToken;
             advance();
-            if (currentToken.type == Token.TT_ASSIGN) {
+            if (currentToken != null && currentToken.type == Token.TT_ASSIGN) {
               advance();
               int idx = pos.getIdx();
               Object value = Runner.interpret(Arrays.copyOfRange(tokens, idx, tokens.length));
@@ -130,15 +127,16 @@ public class Interpreter {
             } else {
               Position start = pos.clone();
               String varName = (String) lastToken.value;
-              return new UnassignedVariableError(start, pos, new StringBuilder("Variable").append(varName).append(" declared but no value was assigned").toString());
+              return new UnassignedVariableError(start, pos, new StringBuilder("Wariable").append(varName).append(" decwared but nao walue was asswigned ._.").toString());
             }
-          } else {
+          } //todo else if only vartype is given return the type class
+           else {
             Position start = pos.clone();
-            return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is illegal here").toString());
+            return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is iwegal here ._.").toString());
           }
         } else {
           Position start = pos.clone();
-          return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is illegal here").toString());
+          return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is iwegal here ._.").toString());
         }
       } else if (lastToken.type == Token.TT_INT) {
         if (currentToken.type == Token.TT_ADD || currentToken.type == Token.TT_MINUS || currentToken.type == Token.TT_MUL || currentToken.type == Token.TT_DIV || currentToken.type == Token.TT_MOD) {
@@ -150,7 +148,12 @@ public class Interpreter {
     }
     if (expr.length() > 0) {
       try {
-        Expression e = new ExpressionBuilder(expr.toString()).build();
+        String s = expr.toString();
+        if (s.contains("/0")) {
+          Position start = pos.clone();
+          return new DivisionByZeroError(start, pos);
+        }
+        Expression e = new ExpressionBuilder(s).build();
         Object result = e.evaluate();
         //Object result = SENG.eval(expr.toString());
         return result;
