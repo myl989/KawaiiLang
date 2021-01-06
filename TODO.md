@@ -7,5 +7,3 @@ Todo:
 
 Bugs:
 * Starting a line with an operator doesn't work
-* Putting a variable not at the first position doesn't work
-* Brackets don't work
