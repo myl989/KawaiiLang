@@ -7,11 +7,11 @@ class Main {
     while (true) {
       System.out.print("KawaiiLang> ");
       String input = s.nextLine();
-      if (input.equals("Senpai.stawpp UwU UwU!")) {
+      if (input.equals("Senpai.stawpp UwU UwU!\n")) {
         s.close();
         break;
       } else {
-        Object result = Runner.run("<stdin>", input);
+        Object result = Runner.run(input);
         if (result == null) {
           System.out.println("nwthin");
         } else {

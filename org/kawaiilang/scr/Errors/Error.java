@@ -12,7 +12,7 @@ public class Error extends Token {
   }
 
   public Error(Position positionStart, Position positionEnd, String message) {
-    this(positionStart, positionEnd, "Error", message);
+    this(positionStart, positionEnd, "Ewwor", message);
   }
 
   public String toString() {

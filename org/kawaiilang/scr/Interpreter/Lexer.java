@@ -1,4 +1,5 @@
 package org.kawaiilang;
+import java.util.Arrays;
 import java.util.ArrayList;
 
 public class Lexer {
@@ -29,10 +30,13 @@ public class Lexer {
 
   public Token[] makeTokens() {
     ArrayList<Token> tokens = new ArrayList<>();
-    while (true) {
+    while (true) { //handel nullType maybe?
+    //System.out.println(currentChar);
       if (Character.isWhitespace(currentChar)) {
         advance();
-      } else if (Token.DIGITS.indexOf(currentChar) > -1) {
+      } else if (Character.isLetter(currentChar)) {
+        tokens.add(makeIdentifier());
+      } else if (Character.isDigit(currentChar)) {
         tokens.add(makeNum());
       } else if (currentChar == '+') {
         tokens.add(new Token(Token.TT_ADD));
@@ -51,6 +55,9 @@ public class Lexer {
         advance();
       } else if (currentChar == ')') {
         tokens.add(new Token(Token.TT_RPAREN));
+        advance();
+      } else if (currentChar == '%') {
+        tokens.add(new Token(Token.TT_MOD));
         advance();
       } else if (currentChar == '!') {
         break;
@@ -76,7 +83,7 @@ public class Lexer {
   public Token makeNum() {
     StringBuilder numStr = new StringBuilder();
     byte dotCount = 0;
-    while (currentChar != Character.MIN_VALUE && (Token.DIGITS.indexOf(currentChar) > -1 || currentChar == '.')) {
+    while (currentChar != Character.MIN_VALUE && (Character.isDigit(currentChar) || currentChar == '.')) {
       if (currentChar == '.') {
         if (dotCount == 1) {
           break;
@@ -93,6 +100,25 @@ public class Lexer {
       return new Token(Token.TT_INT, Integer.parseInt(numStr.toString()));
     } else {
       return new Token(Token.TT_FLOAT, Double.parseDouble(numStr.toString()));
+    }
+  }
+
+  public Token makeIdentifier() {
+    StringBuilder idSB = new StringBuilder();
+    Position start = pos.clone();
+    while (currentChar != Character.MIN_VALUE && (Character.isLetter(currentChar) || Character.isDigit(currentChar) || Token.CHARS_ALLOWED_IN_IDENTIFIERS.indexOf(currentChar) > -1)) {
+      idSB.append(currentChar);
+      advance();
+    }
+    String idStr = idSB.toString();
+    if (Arrays.asList(Token.CHARS_ALLOWED_IN_IDENTIFIERS).contains(idStr)) {
+      return new Token(Token.TT_KEYWORD, idStr);
+    } else if (idStr.equals("iws")) {
+      return new Token(Token.TT_ASSIGN, idStr);
+    } else if (Arrays.asList(Token.DATA_TYPES).contains(idStr)) {
+      return new Token(Token.TT_VARTYPE, idStr);
+    } else {
+      return new Token(Token.TT_VARNAME, idStr);
     }
   }
 
