@@ -4,6 +4,6 @@ DISCLAIMER: This whole thing is meant as a joke. But... you can use it for regul
 
 Currently status: Interpreter works for calculations with the following operations
 
-Current features: Integers, floating-points, add, subtract, multiply, and divide operations.
+Current features: Integers, floating-points, add, subtract, multiply, divide, parenthesis, and modular arithmatic operations. Variable assignment and use.
 
 Will make documentation in the future.
