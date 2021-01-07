@@ -137,7 +137,7 @@ public class Interpreter {
               return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" cwannot cwome awfter awnowther owpewation ._.").toString());
             }
           } else if (currentToken.type == Token.TT_ADD || currentToken.type == Token.TT_MINUS || currentToken.type == Token.TT_MUL || currentToken.type == Token.TT_DIV || currentToken.type == Token.TT_MOD) {
-            if (lastToken.type != Token.TT_INT && lastToken.type != Token.TT_FLOAT) {
+            if (lastToken != null && (lastToken.type != Token.TT_INT && lastToken.type != Token.TT_FLOAT)) {
               expr.append("0").append(currentToken.type);
             } else {
               expr.append(currentToken.type);
@@ -166,6 +166,17 @@ public class Interpreter {
             Position start = pos.clone();
             return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is iwegal here ._.").toString());
           }
+        } else if (currentToken.type == Token.TT_KEYWORD) {
+          if (currentToken.value.equals("dewete")) {
+            advance();
+            if (currentToken.type == Token.TT_VARNAME) {
+              heap.remove(currentToken);
+              return null;
+            } else {
+              Position start = pos.clone();
+              return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is nawt wariable and i cwannot dewete ._.").toString());
+            }
+          } //other keywords that appear at the beginning of statement goes here
         } else {
           Position start = pos.clone();
           return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is iwegal here ._.").toString());
@@ -176,7 +187,7 @@ public class Interpreter {
           lastToken = currentToken;
           advance();
         } //future operations go below here
-      } else { 
+      } else {
         Position start = pos.clone();
         return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is iwegal here ._.").toString());
       }
