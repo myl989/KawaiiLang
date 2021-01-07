@@ -16,7 +16,7 @@ public class Lexer {
     pos = new Position(-1, 0, -1, fn, text);
   }
 
-  public void advance() {
+  private void advance() {
     if (firstChar) {
       firstChar = false;
     }
@@ -80,7 +80,7 @@ public class Lexer {
     return tokens.toArray(new Token[0]);
   }
 
-  public Token makeNum() {
+  private Token makeNum() {
     StringBuilder numStr = new StringBuilder();
     byte dotCount = 0;
     while (currentChar != Character.MIN_VALUE && (Character.isDigit(currentChar) || currentChar == '.')) {
@@ -103,7 +103,7 @@ public class Lexer {
     }
   }
 
-  public Token makeIdentifier() {
+  private Token makeIdentifier() {
     StringBuilder idSB = new StringBuilder();
     Position start = pos.clone();
     while (currentChar != Character.MIN_VALUE && (Character.isLetter(currentChar) || Character.isDigit(currentChar) || Token.CHARS_ALLOWED_IN_IDENTIFIERS.indexOf(currentChar) > -1)) {

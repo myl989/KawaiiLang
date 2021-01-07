@@ -1,14 +1,13 @@
 package org.kawaiilang;
 import java.util.Arrays;
 import java.util.HashMap;
+
 //import javax.script.ScriptEngineManager;
 //import javax.script.ScriptException;
 //import javax.script.ScriptEngine;
 import net.objecthunter.exp4j.*;
 
 public class Interpreter {
-  //Version 1.1.7-alpha - Bug fixes
-  //Version 1.1.6-alpha - Interpreter now uses the much faster exp4j insted of ScriptEngine
 
   private Token[] tokens;
   private Position pos;
@@ -37,7 +36,7 @@ public class Interpreter {
     advance();
   }
 
-  public void advance() {
+  private void advance() {
     pos.advance();
     if (pos.getIdx() < tokens.length) {
       currentToken = tokens[pos.getIdx()];
@@ -51,6 +50,7 @@ public class Interpreter {
     Token lastToken = null;
 
     //System.out.println(heap);
+    //System.out.println(heap.size());
     
     while (true) {
       if (currentToken == null) {
@@ -65,28 +65,42 @@ public class Interpreter {
         lastToken = currentToken;
         advance();
       } else if (currentToken.type == Token.TT_VARNAME) {
+          if (pos.getIdx() + 1 < tokens.length && tokens[pos.getIdx() + 1].type == Token.TT_ASSIGN && heap.containsKey(currentToken)) {
+            lastToken = currentToken;
+            advance();
             int idx = pos.getIdx();
-            Variable varData = heap.get(currentToken);
-            if (varData != null) {
-              Token type = varData.getType();
-              Object stored = varData.getValue();
-              Token varReplaced = null;
-              if (type.value.equals("Numwer")) {
-                if (stored instanceof Integer) {
-                  varReplaced = new Token(Token.TT_INT, stored);
-                } else if (stored instanceof Double) {
-                  varReplaced = new Token(Token.TT_FLOAT, stored);
-                } else {
-                  Position start = pos.clone();
-                  return new IllegalTypeError(start, pos, new StringBuilder("Twype of variable, ").append(type.type).append(", is nawt as decwared ._.").toString());
-                }
-              } //More variable types in the future
-              tokens[pos.getIdx()] = varReplaced;
-              pos = new Position(-1, 0, -1, fn, Arrays.toString(tokens));
-              advance();
-              Object value = interpret();
+            Object value = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, idx + 1, tokens.length));
+            if (value instanceof org.kawaiilang.Error) {
               return value;
             } else {
+              currentToken = lastToken;
+              Variable var = new Variable(heap.get(currentToken).getType(), value);
+              heap.put(currentToken, var);
+              return value;
+            }
+          }
+          int idx = pos.getIdx();
+          Variable varData = heap.get(currentToken);
+          if (varData != null) {
+          Token type = varData.getType();
+          Object stored = varData.getValue();
+          Token varReplaced = null;
+          if (type.value.equals("Numwer")) {
+            if (stored instanceof Integer) {
+              varReplaced = new Token(Token.TT_INT, stored);
+            } else if (stored instanceof Double) {
+              varReplaced = new Token(Token.TT_FLOAT, stored);
+            } else {
+              Position start = pos.clone();
+              return new IllegalTypeError(start, pos, new StringBuilder("Twype of variable, ").append(type.type).append(", is nawt as decwared ._.").toString());
+            }
+          } //More variable types in the future
+            tokens[pos.getIdx()] = varReplaced;
+            pos = new Position(-1, 0, -1, fn, Arrays.toString(tokens));
+            advance();
+            Object value = interpret();
+            return value;
+          } else {
             String varName = (String) currentToken.value;
             Position start = pos.clone();
             return new UnassignedVariableError(start, pos, new StringBuilder("Wariable ").append(varName).append(" newer asswigned ._.").toString());
@@ -141,16 +155,7 @@ public class Interpreter {
             lastToken = currentToken;
             advance();
             if (currentToken != null && currentToken.type == Token.TT_ASSIGN) {
-              advance();
-              int idx = pos.getIdx();
-              Object value = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, idx, tokens.length));
-              if (value instanceof org.kawaiilang.Error) {
-                return value;
-              } else {
-                Variable var = new Variable(type, value);
-                heap.put(lastToken, var);
-                return value;
-              }
+              return makeVar(type, lastToken);
             } else {
               Position start = pos.clone();
               String varName = (String) lastToken.value;
@@ -194,6 +199,19 @@ public class Interpreter {
       }
     } else {
       return null;
+    }
+  }
+
+  private Object makeVar(Token type, Token name) {
+    advance();
+    int idx = pos.getIdx();
+    Object value = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, idx, tokens.length));
+    if (value instanceof org.kawaiilang.Error) {
+      return value;
+    } else {
+      Variable var = new Variable(type, value);
+      heap.put(name, var);
+      return value;
     }
   }
 

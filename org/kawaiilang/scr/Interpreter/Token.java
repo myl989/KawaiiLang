@@ -19,7 +19,7 @@ public class Token {
   public static final String TT_VARTYPE = "VARTYPE";
   public static final String TT_KEYWORD = "KEYWORD";
 
-  public static final String[] KEYWORDS = {"cwass", "waifu", "husbando", "cwassType", "waifuType", "husbandoType", "hasSensi", "imaginawy", "OwO", "notices", "^_^ewndNotice", "^_^ewndCwass", "^_^ewndWaifu", "^_^endHusbando", "canDo", "gibU", "canGibU", "ewlse", "bweak", "^_^letsStawt", "pwbwic", "pwotected", "pwiwate", "awnd", "orw", "nawt", "xwr", "eqwals", "uwse", "dewete"};
+  public static final String[] KEYWORDS = {"cwass", "waifu", "husbando", "cwassType", "waifuType", "husbandoType", "hasSensi", "imaginawy", "OwO", "notices", "^_^ewndNotice", "^_^ewndCwass", "^_^ewndWaifu", "^_^endHusbando", "canDo", "gibU", "canGibU", "ewlse", "bweak", "^_^letsStawt", "pwbwic", "pwotected", "pwiwate", "awnd", "orw", "nawt", "xwr", "eqwals", "uwse", "dewete", "nwthin"};
 
   public static final String[] DATA_TYPES = {"Numwer"};
 
