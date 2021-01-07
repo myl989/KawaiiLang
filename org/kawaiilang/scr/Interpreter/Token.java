@@ -1,6 +1,6 @@
 package org.kawaiilang;
 
-public class Token {
+class Token {
   
   public static final String CHARS_ALLOWED_IN_IDENTIFIERS = "`@#$&^_?:><";
 

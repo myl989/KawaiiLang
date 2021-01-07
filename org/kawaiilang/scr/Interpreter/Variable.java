@@ -1,6 +1,6 @@
 package org.kawaiilang;
 
-public class Variable {
+class Variable {
 
   private Token type;
   private Object value;

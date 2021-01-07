@@ -7,7 +7,7 @@ import java.util.HashMap;
 //import javax.script.ScriptEngine;
 import net.objecthunter.exp4j.*;
 
-public class Interpreter {
+class Interpreter {
 
   private Token[] tokens;
   private Position pos;

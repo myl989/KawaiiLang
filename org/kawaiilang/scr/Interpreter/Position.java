@@ -1,6 +1,6 @@
 package org.kawaiilang;
 
-public class Position implements Cloneable {
+class Position implements Cloneable {
 
   private int idx;
   private int ln;

@@ -2,7 +2,7 @@ package org.kawaiilang;
 import java.util.Arrays;
 import java.util.ArrayList;
 
-public class Lexer {
+class Lexer {
 
   private String text;
   private String fn;

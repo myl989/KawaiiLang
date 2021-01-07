@@ -1,6 +1,6 @@
 package org.kawaiilang;
 
-public class Error extends Token {
+class Error extends Token {
 
   private Position positionStart;
   private Position positionEnd;
