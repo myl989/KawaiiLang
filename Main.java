@@ -18,7 +18,7 @@ class Main {
         break;
       } else {
         //long startTime = System.nanoTime();
-        Object result = Runner.run(input);
+        Object result = Runner.eval(input);
         /*long endTime = System.nanoTime();
         System.out.print("Time taken: ");
         System.out.println(endTime - startTime);*/

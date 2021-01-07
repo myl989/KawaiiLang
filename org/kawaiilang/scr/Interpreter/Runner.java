@@ -51,7 +51,7 @@ public class Runner {
     interpreter.setFileName(fileName);
   }
 
-  public static Object run(String text) {
+  public static Object eval(String text) {
     Lexer lexer = new Lexer(fileName, unUwUfy(text));
     Token[] tokens = lexer.makeTokens();
     //System.out.println(java.util.Arrays.toString(tokens));

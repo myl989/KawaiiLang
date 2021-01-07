@@ -55,7 +55,7 @@ public class Interpreter {
     while (true) {
       if (currentToken == null) {
         break;
-      } /*else if (false) { //new line?
+      } /*else if (???) { //new line?
         lastToken = null;
         advance();
       }*/ else if (currentToken instanceof org.kawaiilang.Error) {
