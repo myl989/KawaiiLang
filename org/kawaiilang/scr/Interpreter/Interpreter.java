@@ -27,8 +27,8 @@ public class Interpreter {
     this.fn = fileName;
   }
 
-  public void setFileName(String fileName) {
-    this.fn = fileName;
+  public void setFileLocation(String fileLocation) {
+    this.fn = fileLocation;
   }
 
   public void setTokens(Token[] tokens) {
@@ -143,7 +143,7 @@ public class Interpreter {
             if (currentToken != null && currentToken.type == Token.TT_ASSIGN) {
               advance();
               int idx = pos.getIdx();
-              Object value = Runner.interpret(Arrays.copyOfRange(tokens, idx, tokens.length));
+              Object value = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, idx, tokens.length));
               if (value instanceof org.kawaiilang.Error) {
                 return value;
               } else {
@@ -179,7 +179,7 @@ public class Interpreter {
     if (expr.length() > 0) {
       try {
         String s = expr.toString();
-        System.out.println(s);
+        //System.out.println(s);
         if (s.contains("/0")) {
           Position start = pos.clone();
           return new DivisionByZeroError(start, pos);

@@ -4,6 +4,7 @@ import org.kawaiilang.*;
 class Main {
   public static void main(String[] args) {
     Scanner s = new Scanner(System.in);
+    Runner r = new Runner();
     while (true) {
       System.out.print("KawaiiLang> ");
       String input = s.nextLine();
@@ -18,7 +19,7 @@ class Main {
         break;
       } else {
         //long startTime = System.nanoTime();
-        Object result = Runner.eval(input);
+        Object result = r.eval(input);
         /*long endTime = System.nanoTime();
         System.out.print("Time taken: ");
         System.out.println(endTime - startTime);*/

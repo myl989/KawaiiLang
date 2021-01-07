@@ -1,11 +1,11 @@
 package org.kawaiilang;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.FileReader;
 import java.util.HashMap;
 
 public class Runner {
-
-  private Runner() {
-
-  }
 
   public static final HashMap<String, String> UWU_KEY;
 
@@ -21,8 +21,23 @@ public class Runner {
 
   }
 
-  private static String fileName = "<stdin>";
-  private static Interpreter interpreter = new Interpreter(fileName);
+  private String fileLocation = "<stdin>";
+  private Interpreter interpreter;
+
+  public Runner() {
+    interpreter = new Interpreter(fileLocation);
+  }
+
+  public Runner(String fileLocation) {
+    this.fileLocation = fileLocation;
+    interpreter = new Interpreter(fileLocation);
+  }
+
+  //internal use only
+  Runner(String fileLocation, Interpreter interpreter) {
+    this.fileLocation = fileLocation;
+    this.interpreter = interpreter;
+  }
 
   public static String unUwUfy(String uwufiedText) {
     String[] lines = uwufiedText.split("\n");
@@ -46,19 +61,29 @@ public class Runner {
     return strBuilder.toString();
   }
 
-  public static void setFileName(String fileName) {
-    Runner.fileName = fileName;
-    interpreter.setFileName(fileName);
+  public void setFileLocation(String fileLocation) {
+    this.fileLocation = fileLocation;
+    interpreter.setFileLocation(fileLocation);
   }
 
-  public static Object eval(String text) {
-    Lexer lexer = new Lexer(fileName, unUwUfy(text));
+  public void run() throws IOException {
+    File file = new File(fileLocation);
+    BufferedReader br = new BufferedReader(new FileReader(file));
+    String line;
+    while ((line = br.readLine()) != null) {
+      eval(line); 
+    }
+    //make it not line dependant in the future?
+  }
+
+  public Object eval(String text) {
+    Lexer lexer = new Lexer(fileLocation, unUwUfy(text));
     Token[] tokens = lexer.makeTokens();
     //System.out.println(java.util.Arrays.toString(tokens));
     return interpret(tokens);
   }
 
-  public static Object interpret(Token[] tokens) {
+  public Object interpret(Token[] tokens) {
     interpreter.setTokens(tokens);
     Object result = interpreter.interpret();
     return result;
