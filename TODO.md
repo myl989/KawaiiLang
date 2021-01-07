@@ -4,6 +4,3 @@ Todo:
 * Add delete variable feature
 * Allow to run from files
 * Create bash function
-
-Bugs:
-* Starting a line with an operator doesn't work

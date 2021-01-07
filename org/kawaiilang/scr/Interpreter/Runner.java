@@ -30,11 +30,11 @@ public class Runner {
       for (String s : UWU_KEY.keySet()) {
         String beginning = new StringBuilder(s).append(" ").toString();
         if (lines[i].startsWith(beginning)) {
-          String subLine = lines[i].substring(s.length() - 1);
+          String subLine = lines[i].substring(s.length());
           lines[i] = new StringBuilder(UWU_KEY.get(s)).append(subLine).toString();
         }
-        String toReplace = new StringBuilder(" ").append(s).append(" ").toString();
-        String replaceWith = new StringBuilder(" ").append(UWU_KEY.get(s)).append(" ").toString();
+        String toReplace = new StringBuilder(" ").append(s).toString();
+        String replaceWith = new StringBuilder(" ").append(UWU_KEY.get(s)).toString();
         lines[i] = lines[i].replaceAll(toReplace, replaceWith);
       }
     }
@@ -42,6 +42,7 @@ public class Runner {
     for (String line : lines) {
       strBuilder.append(line).append("\n");
     }
+    //System.out.println(strBuilder.toString());
     return strBuilder.toString();
   }
 

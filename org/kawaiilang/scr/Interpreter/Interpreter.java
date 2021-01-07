@@ -99,9 +99,35 @@ public class Interpreter {
           expr.append(")");
           lastToken = currentToken;
           advance();
-        } else if (lastToken == null) {
-        if (currentToken.type == Token.TT_ADD || currentToken.type == Token.TT_MINUS || currentToken.type == Token.TT_MUL || currentToken.type == Token.TT_DIV || currentToken.type == Token.TT_MOD) {
-          expr.append("0").append(currentToken.type);
+        } else if (lastToken == null || currentToken.type == Token.TT_ADD || currentToken.type == Token.TT_MINUS || currentToken.type == Token.TT_MUL || currentToken.type == Token.TT_DIV || currentToken.type == Token.TT_MOD) {
+          if (lastToken != null && (lastToken.type == Token.TT_ADD || lastToken.type == Token.TT_MINUS)) {
+            if (currentToken.type == Token.TT_ADD) {
+              //adding a plus before numbers doesn't change anything
+              lastToken = currentToken;
+              advance();
+            } else if (currentToken.type == Token.TT_MINUS) {
+              //adding a minus before numbers makes negative positive and positive negative
+              if (lastToken.type == Token.TT_ADD) {
+                expr.deleteCharAt(expr.length() - 1);
+                expr.append("-");
+                lastToken = new Token(Token.TT_MINUS);
+                advance();
+              } else {
+                expr.deleteCharAt(expr.length() - 1);
+                expr.append("+");
+                lastToken = new Token(Token.TT_ADD);
+                advance();
+              }
+            } else {
+              Position start = pos.clone();
+              return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" cwannot cwome awfter awnowther owpewation ._.").toString());
+            }
+          } else if (currentToken.type == Token.TT_ADD || currentToken.type == Token.TT_MINUS || currentToken.type == Token.TT_MUL || currentToken.type == Token.TT_DIV || currentToken.type == Token.TT_MOD) {
+            if (lastToken.type != Token.TT_INT && lastToken.type != Token.TT_FLOAT) {
+              expr.append("0").append(currentToken.type);
+            } else {
+              expr.append(currentToken.type);
+            }
           lastToken = currentToken;
           advance();
         } else if (currentToken.type == Token.TT_LPAREN) {
@@ -144,12 +170,16 @@ public class Interpreter {
           expr.append(currentToken.type);
           lastToken = currentToken;
           advance();
-        }
-      } //else something happens...?
+        } //future operations go below here
+      } else { 
+        Position start = pos.clone();
+        return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is iwegal here ._.").toString());
+      }
     }
     if (expr.length() > 0) {
       try {
         String s = expr.toString();
+        System.out.println(s);
         if (s.contains("/0")) {
           Position start = pos.clone();
           return new DivisionByZeroError(start, pos);
