@@ -111,7 +111,7 @@ public class Lexer {
       advance();
     }
     String idStr = idSB.toString();
-    if (Arrays.asList(Token.CHARS_ALLOWED_IN_IDENTIFIERS).contains(idStr)) {
+    if (Arrays.asList(Token.KEYWORDS).contains(idStr)) {
       return new Token(Token.TT_KEYWORD, idStr);
     } else if (idStr.equals("iws")) {
       return new Token(Token.TT_ASSIGN, idStr);
