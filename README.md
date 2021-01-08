@@ -1,4 +1,4 @@
-![KawaiiLang](https://i.imgur.com/4G8WuHB.png)
+<kbd><img src="https://i.imgur.com/4G8WuHB.png" /></kbd>
 
 <h1>Have you gotten sick and tired of normal programming language syntax? Have you ever wanted to code like your favourite anime girl or guy?</h1> 
 
