@@ -28,4 +28,17 @@
     return self;
 }
 
+- (NSString*) description {
+    if (value != NULL) {
+        return [NSString stringWithFormat:@"%@/%s/%@", type, ":", value.description];
+    } else {
+        return type;
+    }
+}
+
+- (BOOL)isEqualToToken:(Token*)otherToken {
+    return [type isEqualToString:otherToken->type] &&
+           [value isEqual:otherToken->value];
+}
+
 @end
