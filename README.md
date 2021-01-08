@@ -13,4 +13,6 @@ Currently status: Interpreter works for calculations with the following operatio
 
 Current features: Integers, floating-points, add, subtract, multiply, divide, parenthesis, and modular arithmatic operations. Variable assignment and use, as well as variable deletion.
 
+Java (for PC, Linux, and Android) and Swift/Objective-C (for iOS) implementations of KawaiiLang are both developed.
+
 Will make documentation in the future.
