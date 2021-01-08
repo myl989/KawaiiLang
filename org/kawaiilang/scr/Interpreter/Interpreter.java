@@ -51,9 +51,23 @@ class Interpreter {
     //If and loop stuff goes here
 
     //NOT operation
-    /*if (tokens[0].equals(new Token(Token.TT_KEYWORD, "nawt"))) {
-      //todo
-    }*/
+    if (tokens[0].equals(new Token(Token.TT_KEYWORD, "nawt"))) {
+      if (tokens.length > 1) {
+        Object result = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, 1, tokens.length));
+        if (result instanceof Double) {
+          Double d = (Double) result;
+          if (d > 0) {
+            return 0.0;
+          } else {
+            return 1.0;
+          }
+        } else {
+          //error
+        }
+      } else {
+        //error
+      }
+    }
 
     //AND, OR, XOR operations
     if (Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "awnd")) || Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "orw")) || Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "xwr"))) {

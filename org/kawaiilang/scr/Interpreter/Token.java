@@ -2,7 +2,7 @@ package org.kawaiilang;
 
 class Token {
   
-  public static final String CHARS_ALLOWED_IN_IDENTIFIERS = "`@#$&^_?:>=<";
+  public static final String CHARS_ALLOWED_IN_IDENTIFIERS = "&^_?:>=<";
 
   public static final String TT_INT = "INT";
   public static final String TT_FLOAT = "FLOAT";
