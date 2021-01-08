@@ -53,14 +53,32 @@ class Interpreter {
     //NOT operation
     /*if (tokens[0].equals(new Token(Token.TT_KEYWORD, "nawt"))) {
       //todo
-    }
-
-    //AND, OR, XOR operation
-    if (Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "awnd")) || Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "orw")) || Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "xwr"))) {
-
     }*/
 
-    //==, >, <, >=, <=
+    //AND, OR, XOR operations
+    if (Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "awnd")) || Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "orw")) || Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "xwr"))) {
+      ArrayList<Token> exA = new ArrayList<>();
+      ArrayList<Token> exB = new ArrayList<>();
+      boolean secondPart = false;
+      Token oper = null;
+      for (int i = 0; i < tokens.length; i++) {
+        if (tokens[i].value != null && (tokens[i].value.equals("awnd") || tokens[i].value.equals("orw") || tokens[i].value.equals("xwr"))) {
+          if (!secondPart) {
+            oper = tokens[i];
+            secondPart = true;
+          } else {
+            exB.add(tokens[i]);
+          }
+        } else if (secondPart) {
+          exB.add(tokens[i]);
+        } else {
+          exA.add(tokens[i]);
+        }
+      }
+      return evalLogic(exA.toArray(new Token[0]), oper, exB.toArray(new Token[0]));
+    }
+
+    //==, >, <, >=, <= operations
     if (Arrays.asList(tokens).contains(new Token(Token.TT_EQUALS)) || Arrays.asList(tokens).contains(new Token(Token.TT_LT)) || Arrays.asList(tokens).contains(new Token(Token.TT_GT)) || Arrays.asList(tokens).contains(new Token(Token.TT_LTE)) || Arrays.asList(tokens).contains(new Token(Token.TT_GTE))) {
       ArrayList<Token> exA = new ArrayList<>();
       ArrayList<Token> exB = new ArrayList<>();
@@ -68,8 +86,12 @@ class Interpreter {
       Token oper = null;
       for (int i = 0; i < tokens.length; i++) {
         if (tokens[i].type == Token.TT_EQUALS || tokens[i].type == Token.TT_LT || tokens[i].type == Token.TT_GT || tokens[i].type == Token.TT_LTE || tokens[i].type == Token.TT_GTE) {
-          oper = tokens[i];
-          secondPart = true;
+          if (!secondPart) {
+            oper = tokens[i];
+            secondPart = true;
+          } else {
+            exB.add(tokens[i]);
+          }
         } else if (secondPart) {
           exB.add(tokens[i]);
         } else {
@@ -312,6 +334,51 @@ class Interpreter {
       }
     }
     return null;
+  }
+
+  private Object evalLogic(Token[] exprA, Token oper, Token[] exprB) {
+    Object resultA = new Runner(fn, this).interpret(exprA);
+    Object resultB = new Runner(fn, this).interpret(exprB);
+    if (resultA instanceof Double && resultB instanceof Double ) {
+      Double doubleA = (Double) resultA;
+      Double doubleB = (Double) resultB;
+      boolean a;
+      boolean b;
+      if (doubleA <= 0.0) {
+        a = false;
+      } else {
+        a = true;
+      }
+
+      if (doubleB <= 0.0) {
+        b = false;
+      } else {
+        b = true;
+      }
+
+      if (oper.value.equals("awnd")) {
+        if (a && b) {
+          return 1.0;
+        } else {
+          return 0.0;
+        }
+      } else if (oper.value.equals("orw")) {
+        if (a || b) {
+          return 1.0;
+        } else {
+          return 0.0;
+        }
+      } else if (oper.value.equals("xwr")) {
+        if (a ^ b) {
+          return 1.0;
+        } else {
+          return 0.0;
+        }
+      }
+    }
+    
+    Position start = pos.clone();
+    return new BadOprandTypeError(start, pos, new StringBuilder("Bwad owpwand twypes fwr bwinwawy owpewawor \"").append(oper).append("\": first owpwand: ").append(resultA.toString()).append(", second owpwand: ").append(resultB.toString()).toString());
   }
 
 }

@@ -55,6 +55,9 @@ public class Runner {
     }
     StringBuilder strBuilder = new StringBuilder();
     for (String line : lines) {
+      //Boolean types
+      line = line.replaceAll(":<", " 0 ");
+      line = line.replaceAll(":>", " 1 ");
       strBuilder.append(line).append("\n");
     }
     //System.out.println(strBuilder.toString());
