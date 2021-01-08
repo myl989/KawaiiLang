@@ -34,7 +34,7 @@ class Lexer {
     //System.out.println(currentChar);
       if (Character.isWhitespace(currentChar)) {
         advance();
-      } else if (Character.isLetter(currentChar)) {
+      } else if (Character.isLetter(currentChar) || Token.CHARS_ALLOWED_IN_IDENTIFIERS.indexOf(currentChar) > -1) {
         tokens.add(makeIdentifier());
       } else if (Character.isDigit(currentChar)) {
         tokens.add(makeNum());
@@ -115,6 +115,16 @@ class Lexer {
       return new Token(Token.TT_KEYWORD, idStr);
     } else if (idStr.equals("iws")) {
       return new Token(Token.TT_ASSIGN, idStr);
+    } else if (idStr.equals("eqwals")) {
+      return new Token(Token.TT_EQUALS, idStr);
+    } else if (idStr.equals(">_<")) {
+      return new Token(Token.TT_GT, idStr);
+    } else if (idStr.equals("<_<")) {
+      return new Token(Token.TT_LT, idStr);
+    } else if (idStr.equals(">=<")) {
+      return new Token(Token.TT_GTE, idStr);
+    } else if (idStr.equals("<=<")) {
+      return new Token(Token.TT_LTE, idStr);
     } else if (Arrays.asList(Token.DATA_TYPES).contains(idStr)) {
       return new Token(Token.TT_VARTYPE, idStr);
     } else {

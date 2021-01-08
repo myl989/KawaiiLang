@@ -1,10 +1,8 @@
 package org.kawaiilang;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 
-//import javax.script.ScriptEngineManager;
-//import javax.script.ScriptException;
-//import javax.script.ScriptEngine;
 import net.objecthunter.exp4j.*;
 
 class Interpreter {
@@ -13,8 +11,6 @@ class Interpreter {
   private Position pos;
   private Token currentToken;
   private String fn;
-  //private static final ScriptEngineManager SENGMAN = new ScriptEngineManager();
-  //private static final ScriptEngine SENG = SENGMAN.getEngineByName("js");
   private HashMap<Token, Variable> heap = new HashMap<>();
 
   public Interpreter(String fileName, Token[] tokens) {
@@ -51,6 +47,37 @@ class Interpreter {
 
     //System.out.println(heap);
     //System.out.println(heap.size());
+
+    //If and loop stuff goes here
+
+    //NOT operation
+    /*if (tokens[0].equals(new Token(Token.TT_KEYWORD, "nawt"))) {
+      //todo
+    }
+
+    //AND, OR, XOR operation
+    if (Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "awnd")) || Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "orw")) || Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "xwr"))) {
+
+    }*/
+
+    //==, >, <, >=, <=
+    if (Arrays.asList(tokens).contains(new Token(Token.TT_EQUALS)) || Arrays.asList(tokens).contains(new Token(Token.TT_LT)) || Arrays.asList(tokens).contains(new Token(Token.TT_GT)) || Arrays.asList(tokens).contains(new Token(Token.TT_LTE)) || Arrays.asList(tokens).contains(new Token(Token.TT_GTE))) {
+      ArrayList<Token> exA = new ArrayList<>();
+      ArrayList<Token> exB = new ArrayList<>();
+      boolean secondPart = false;
+      Token oper = null;
+      for (int i = 0; i < tokens.length; i++) {
+        if (tokens[i].type == Token.TT_EQUALS || tokens[i].type == Token.TT_LT || tokens[i].type == Token.TT_GT || tokens[i].type == Token.TT_LTE || tokens[i].type == Token.TT_GTE) {
+          oper = tokens[i];
+          secondPart = true;
+        } else if (secondPart) {
+          exB.add(tokens[i]);
+        } else {
+          exA.add(tokens[i]);
+        }
+      }
+      return evalComparison(exA.toArray(new Token[0]), oper, exB.toArray(new Token[0]));
+    }
     
     while (true) {
       if (currentToken == null) {
@@ -58,13 +85,16 @@ class Interpreter {
       } /*else if (???) { //new line?
         lastToken = null;
         advance();
-      }*/ else if (currentToken instanceof org.kawaiilang.Error) {
+      }*/ 
+      //In future may add if statements here
+      else if (currentToken instanceof org.kawaiilang.Error) {
         return currentToken;
       } else if (currentToken.type == Token.TT_INT || currentToken.type == Token.TT_FLOAT) {
         expr.append(currentToken.value);
         lastToken = currentToken;
         advance();
-      } else if (currentToken.type == Token.TT_VARNAME) {
+      } //Logical operations here
+      else if (currentToken.type == Token.TT_VARNAME) {
           if (pos.getIdx() + 1 < tokens.length && tokens[pos.getIdx() + 1].type == Token.TT_ASSIGN && heap.containsKey(currentToken)) {
             lastToken = currentToken;
             advance();
@@ -224,6 +254,64 @@ class Interpreter {
       heap.put(name, var);
       return value;
     }
+  }
+
+  private Object evalComparison(Token[] exprA, Token oper, Token[] exprB) {
+    Object resultA = new Runner(fn, this).interpret(exprA);
+    Object resultB = new Runner(fn, this).interpret(exprB);
+    if (oper.type == Token.TT_EQUALS) {
+      //Custom equals implementations?
+      if (resultA.equals(resultB)) {
+        return 1.0;
+      } else {
+        return 0.0;
+      }
+    } else if (oper.type == Token.TT_LT) {
+      //Custom comparison implementations?
+      if (resultA instanceof Double && resultB instanceof Double) {
+        Double a = (Double) resultA;
+        Double b = (Double) resultB;
+        if (a < b) {
+          return 1.0;
+        } else {
+          return 0.0;
+        }
+      }
+    } else if (oper.type == Token.TT_GT) {
+      //Custom comparison implementations?
+      if (resultA instanceof Double && resultB instanceof Double) {
+        Double a = (Double) resultA;
+        Double b = (Double) resultB;
+        if (a > b) {
+          return 1.0;
+        } else {
+          return 0.0;
+        }
+      }
+    } else if (oper.type == Token.TT_LTE) {
+      //Custom comparison implementations?
+      if (resultA instanceof Double && resultB instanceof Double) {
+        Double a = (Double) resultA;
+        Double b = (Double) resultB;
+        if (a <= b) {
+          return 1.0;
+        } else {
+          return 0.0;
+        }
+      }
+    } else if (oper.type == Token.TT_GTE) {
+      //Custom comparison implementations?
+      if (resultA instanceof Double && resultB instanceof Double) {
+        Double a = (Double) resultA;
+        Double b = (Double) resultB;
+        if (a >= b) {
+          return 1.0;
+        } else {
+          return 0.0;
+        }
+      }
+    }
+    return null;
   }
 
 }
