@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		FA00EC4325A8EE29000A5DB9 /* Token.m in Sources */ = {isa = PBXBuildFile; fileRef = FA00EC4225A8EE29000A5DB9 /* Token.m */; };
 		FA00EC4725A8EF1C000A5DB9 /* KawaiiSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA00EC4625A8EF1C000A5DB9 /* KawaiiSwift.swift */; };
+		FADFABBB25A92DC5007C41D5 /* Position.m in Sources */ = {isa = PBXBuildFile; fileRef = FADFABBA25A92DC5007C41D5 /* Position.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -29,6 +30,8 @@
 		FA00EC4225A8EE29000A5DB9 /* Token.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Token.m; sourceTree = "<group>"; };
 		FA00EC4625A8EF1C000A5DB9 /* KawaiiSwift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KawaiiSwift.swift; sourceTree = "<group>"; };
 		FA00EC4C25A8FDDD000A5DB9 /* Token.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Token.h; sourceTree = "<group>"; };
+		FADFABB825A92246007C41D5 /* Position.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Position.h; sourceTree = "<group>"; };
+		FADFABBA25A92DC5007C41D5 /* Position.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Position.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,8 +65,10 @@
 			isa = PBXGroup;
 			children = (
 				FA00EC4625A8EF1C000A5DB9 /* KawaiiSwift.swift */,
-				FA00EC4225A8EE29000A5DB9 /* Token.m */,
 				FA00EC4C25A8FDDD000A5DB9 /* Token.h */,
+				FA00EC4225A8EE29000A5DB9 /* Token.m */,
+				FADFABB825A92246007C41D5 /* Position.h */,
+				FADFABBA25A92DC5007C41D5 /* Position.m */,
 				FA00EC4125A8EE29000A5DB9 /* KawaiiSwift-Bridging-Header.h */,
 			);
 			path = KawaiiSwift;
@@ -127,6 +132,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FADFABBB25A92DC5007C41D5 /* Position.m in Sources */,
 				FA00EC4725A8EF1C000A5DB9 /* KawaiiSwift.swift in Sources */,
 				FA00EC4325A8EE29000A5DB9 /* Token.m in Sources */,
 			);

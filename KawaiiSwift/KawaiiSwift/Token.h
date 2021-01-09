@@ -12,4 +12,10 @@
     NSObject* value;
 }
 
+- (Token*) init:(NSString*) t value:(NSObject*) v;
+- (Token*) init:(NSString*) t;
+
+- (NSString*) description;
+- (BOOL)isEqualToToken: (Token*) otherToken;
+
 @end

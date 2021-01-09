@@ -10,9 +10,9 @@
 #import "Token.h"
 @implementation Token
 
-- (Token*) init:(NSString*) t andb:(NSObject*) v {
+- (Token*) init:(NSString*) t value:(NSObject*) v {
     self = [super init];
-    if (self){
+    if (self) {
         self->type = t;
         self->value = v;
     }
@@ -21,7 +21,7 @@
 
 - (Token*) init:(NSString*) t {
     self = [super init];
-    if (self){
+    if (self) {
         self->type = t;
         self->value = NULL;
     }
