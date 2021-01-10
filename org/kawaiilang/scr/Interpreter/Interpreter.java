@@ -67,6 +67,8 @@ class Interpreter {
       }
     }
 
+    //todo check for boolean doInterpret
+
     //NOT operation
     if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "nawt"))) {
       if (tokens.length > 1) {
