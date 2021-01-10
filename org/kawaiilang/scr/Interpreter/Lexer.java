@@ -45,8 +45,14 @@ class Lexer {
         tokens.add(new Token(Token.TT_MINUS));
         advance();
       } else if (currentChar == '*') {
-        tokens.add(new Token(Token.TT_MUL));
-        advance();
+        //If there is a start if then another * must be end if
+        if (tokens.contains(new Token(Token.TT_STARTIF))) {
+          tokens.add(new Token(Token.TT_ENDIF));
+          advance();
+        } else {
+          tokens.add(new Token(Token.TT_MUL));
+          advance();
+        }
       } else if (currentChar == '/') {
         tokens.add(new Token(Token.TT_DIV));
         advance();
@@ -112,6 +118,25 @@ class Lexer {
     }
     String idStr = idSB.toString();
     if (Arrays.asList(Token.KEYWORDS).contains(idStr)) {
+      if (idStr.equals("OwO")) {
+        //OwO has a different meaning in classes!
+        //The following code detects OwO *notices
+        Position before = pos.clone();
+        advance();
+        StringBuilder noticesSB = new StringBuilder();
+        while (currentChar != Character.MIN_VALUE && (Character.isLetter(currentChar) || currentChar == '*')) {
+          noticesSB.append(currentChar);
+          advance();
+        }
+        String noticesResults = noticesSB.toString();
+        if (noticesResults.equals("*notices")) {
+          return new Token(Token.TT_STARTIF);
+        } else {
+          //just assume it's a normal OwO
+          pos = before;
+          return new Token(Token.TT_KEYWORD, "OwO");
+        }
+      }
       return new Token(Token.TT_KEYWORD, idStr);
     } else if (idStr.equals("iws")) {
       return new Token(Token.TT_ASSIGN, idStr);

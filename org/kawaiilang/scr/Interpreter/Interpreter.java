@@ -7,6 +7,7 @@ import net.objecthunter.exp4j.*;
 
 class Interpreter {
 
+  //private boolean doInterpret;
   private Token[] tokens;
   private Position pos;
   private Token currentToken;
@@ -51,7 +52,7 @@ class Interpreter {
     //If and loop stuff goes here
 
     //NOT operation
-    if (tokens[0].equals(new Token(Token.TT_KEYWORD, "nawt"))) {
+    if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "nawt"))) {
       if (tokens.length > 1) {
         Object result = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, 1, tokens.length));
         if (result instanceof Double) {
@@ -62,10 +63,12 @@ class Interpreter {
             return 1.0;
           }
         } else {
-          //error
+          Position start = pos.clone();
+          return new BadOprandTypeError(start, pos, new StringBuilder("Bwad owpwand twypes fwr \"nawt\" owpewawor: owpwand: ").append(result.toString()).toString());
         }
       } else {
-        //error
+        Position start = pos.clone();
+        return new InvalidSyntaxError(start, pos, "Opwand not found for \"nawt\"opewawor");
       }
     }
 
