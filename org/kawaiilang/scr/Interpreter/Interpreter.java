@@ -7,7 +7,7 @@ import net.objecthunter.exp4j.*;
 
 class Interpreter {
 
-  //private boolean doInterpret;
+  private Boolean doInterpret = null;
   private Token[] tokens;
   private Position pos;
   private Token currentToken;
@@ -46,13 +46,26 @@ class Interpreter {
     StringBuilder expr = new StringBuilder();
     Token lastToken = null;
 
+    System.out.println(doInterpret);
+
     //System.out.println(heap);
     //System.out.println(heap.size());
 
     //If and loop stuff goes here
-    /*if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_STARTIF))) {
-      //todo
-    }*/
+    if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_STARTIF))) {
+      Object result = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, 1, tokens.length - 1));
+      if (result instanceof Double) {
+        Double d = (Double) result;
+        if (d > 0) {
+          doInterpret = true;
+        } else {
+          doInterpret = false;
+        }
+      } else {
+        Position start = pos.clone();
+          return new BadOprandTypeError(start, pos, new StringBuilder("Bwad reswlt twypes fwr \"if\" statement: reswlt: ").append(result.toString()).append(" ._.").toString());
+      }
+    }
 
     //NOT operation
     if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "nawt"))) {
