@@ -46,7 +46,7 @@ class Interpreter {
     StringBuilder expr = new StringBuilder();
     Token lastToken = null;
 
-    //System.out.println(doInterpret);
+    System.out.println(doInterpret);
     //System.out.println(heap);
     //System.out.println(heap.size());
 
@@ -70,12 +70,12 @@ class Interpreter {
       //This goes down alllllll the way
 
     //Checks for end of if. Expressions directly after end of if will not be evaluated.
-    /*if (doInterpret == true && tokens[0].equals()) {
-      //Todo
-    }*/
-
+    if (doInterpret != null && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
+      doInterpret = null;
+      return null;
+    }
     //NOT operation
-    if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "nawt"))) {
+    else if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "nawt"))) {
       if (tokens.length > 1) {
         Object result = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, 1, tokens.length));
         if (result instanceof Double) {
@@ -147,7 +147,11 @@ class Interpreter {
       } /*else if (???) { //new line?
         lastToken = null;
         advance();
+<<<<<<< HEAD
+      }*/ 
+=======
       }*/
+>>>>>>> origin/master
       else if (currentToken instanceof org.kawaiilang.Error) {
         return currentToken;
       } else if (currentToken.type == Token.TT_INT || currentToken.type == Token.TT_FLOAT) {
@@ -309,6 +313,9 @@ class Interpreter {
 
   else { //doInterpret is FALSE
     //Todo: only care about the endif and evaluate nothing
+    if (tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
+      doInterpret = null;
+    }
     return null;
   }
 
