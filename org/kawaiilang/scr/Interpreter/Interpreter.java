@@ -147,8 +147,7 @@ class Interpreter {
       } /*else if (???) { //new line?
         lastToken = null;
         advance();
-      }*/ 
-      //In future may add if statements here
+      }*/
       else if (currentToken instanceof org.kawaiilang.Error) {
         return currentToken;
       } else if (currentToken.type == Token.TT_INT || currentToken.type == Token.TT_FLOAT) {
