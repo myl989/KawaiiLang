@@ -46,8 +46,7 @@ class Interpreter {
     StringBuilder expr = new StringBuilder();
     Token lastToken = null;
 
-    System.out.println(doInterpret);
-
+    //System.out.println(doInterpret);
     //System.out.println(heap);
     //System.out.println(heap.size());
 
@@ -67,7 +66,13 @@ class Interpreter {
       }
     }
 
-    //todo check for boolean doInterpret
+    if (doInterpret == null || doInterpret == true) {
+      //This goes down alllllll the way
+
+    //Checks for end of if. Expressions directly after end of if will not be evaluated.
+    /*if (doInterpret == true && tokens[0].equals()) {
+      //Todo
+    }*/
 
     //NOT operation
     if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "nawt"))) {
@@ -303,6 +308,13 @@ class Interpreter {
       return null;
     }
   }
+
+  else { //doInterpret is FALSE
+    //Todo: only care about the endif and evaluate nothing
+    return null;
+  }
+
+  } //endFunction
 
   private Object makeVar(Token type, Token name) {
     advance();

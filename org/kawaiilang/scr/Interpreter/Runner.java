@@ -82,7 +82,7 @@ public class Runner {
   public Object eval(String text) {
     Lexer lexer = new Lexer(fileLocation, unUwUfy(text));
     Token[] tokens = lexer.makeTokens();
-    System.out.println(java.util.Arrays.toString(tokens));
+    //System.out.println(java.util.Arrays.toString(tokens));
     return interpret(tokens);
   }
 
