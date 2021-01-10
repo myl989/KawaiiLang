@@ -297,7 +297,6 @@ class Interpreter {
         }
         Expression e = new ExpressionBuilder(s).build();
         Object result = e.evaluate();
-        //Object result = SENG.eval(expr.toString());
         return result;
       } catch (Exception ex) {
         Position start = pos.clone();
