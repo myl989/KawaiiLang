@@ -50,6 +50,9 @@ class Interpreter {
     //System.out.println(heap.size());
 
     //If and loop stuff goes here
+    /*if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_STARTIF))) {
+      //todo
+    }*/
 
     //NOT operation
     if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "nawt"))) {
