@@ -10,6 +10,7 @@
 		FA00EC4325A8EE29000A5DB9 /* Token.m in Sources */ = {isa = PBXBuildFile; fileRef = FA00EC4225A8EE29000A5DB9 /* Token.m */; };
 		FA00EC4725A8EF1C000A5DB9 /* KawaiiSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA00EC4625A8EF1C000A5DB9 /* KawaiiSwift.swift */; };
 		FADFABBB25A92DC5007C41D5 /* Position.m in Sources */ = {isa = PBXBuildFile; fileRef = FADFABBA25A92DC5007C41D5 /* Position.m */; };
+		FAF2972125AA908E002DDCEC /* Variable.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF2972025AA908E002DDCEC /* Variable.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -32,6 +33,8 @@
 		FA00EC4C25A8FDDD000A5DB9 /* Token.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Token.h; sourceTree = "<group>"; };
 		FADFABB825A92246007C41D5 /* Position.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Position.h; sourceTree = "<group>"; };
 		FADFABBA25A92DC5007C41D5 /* Position.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Position.m; sourceTree = "<group>"; };
+		FAF2971E25AA8ED4002DDCEC /* Variable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Variable.h; sourceTree = "<group>"; };
+		FAF2972025AA908E002DDCEC /* Variable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Variable.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +72,8 @@
 				FA00EC4225A8EE29000A5DB9 /* Token.m */,
 				FADFABB825A92246007C41D5 /* Position.h */,
 				FADFABBA25A92DC5007C41D5 /* Position.m */,
+				FAF2971E25AA8ED4002DDCEC /* Variable.h */,
+				FAF2972025AA908E002DDCEC /* Variable.m */,
 				FA00EC4125A8EE29000A5DB9 /* KawaiiSwift-Bridging-Header.h */,
 			);
 			path = KawaiiSwift;
@@ -135,6 +140,7 @@
 				FADFABBB25A92DC5007C41D5 /* Position.m in Sources */,
 				FA00EC4725A8EF1C000A5DB9 /* KawaiiSwift.swift in Sources */,
 				FA00EC4325A8EE29000A5DB9 /* Token.m in Sources */,
+				FAF2972125AA908E002DDCEC /* Variable.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,4 +7,6 @@
 
 import Foundation
 
-//todo
+class KawaiiSwift {
+    //todo
+}
