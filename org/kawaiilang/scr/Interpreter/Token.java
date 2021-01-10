@@ -8,7 +8,7 @@ class Token {
   public static final String TT_FLOAT = "FLOAT";
   public static final String TT_ADD = "+";
   public static final String TT_MINUS = "-";
-  public static final String TT_MUL = "*";
+  public static final String TT_MUL = "ᴹ";
   public static final String TT_DIV = "/";
   public static final String TT_MOD = "%";
   public static final String TT_LPAREN = "(";

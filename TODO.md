@@ -6,4 +6,4 @@ Todo:
 
 Bugs:
 * Single lines of code with multiple !s do not work
-* The line number in interpreter errors is often not correct as the line incrementer of Position class is weird
+* The line number in errors is often not correct as the line incrementer of Position class is weird

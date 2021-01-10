@@ -67,11 +67,11 @@ class Interpreter {
           }
         } else {
           Position start = pos.clone();
-          return new BadOprandTypeError(start, pos, new StringBuilder("Bwad owpwand twypes fwr \"nawt\" owpewawor: owpwand: ").append(result.toString()).toString());
+          return new BadOprandTypeError(start, pos, new StringBuilder("Bwad owpwand twypes fwr \"nawt\" owpewawor: owpwand: ").append(result.toString()).append(" ._.").toString());
         }
       } else {
         Position start = pos.clone();
-        return new InvalidSyntaxError(start, pos, "Opwand not found for \"nawt\"opewawor");
+        return new InvalidSyntaxError(start, pos, "Opwand not found for \"nawt\"opewawor ._.");
       }
     }
 
@@ -212,7 +212,11 @@ class Interpreter {
             if (lastToken != null && (lastToken.type != Token.TT_INT && lastToken.type != Token.TT_FLOAT)) {
               expr.append("0").append(currentToken.type);
             } else {
-              expr.append(currentToken.type);
+              if (currentToken.type == Token.TT_MUL) {
+                expr.append('*');
+              } else {
+                expr.append(currentToken.type);
+              }
             }
           lastToken = currentToken;
           advance();
@@ -398,7 +402,7 @@ class Interpreter {
     }
     
     Position start = pos.clone();
-    return new BadOprandTypeError(start, pos, new StringBuilder("Bwad owpwand twypes fwr bwinwawy owpewawor \"").append(oper).append("\": first owpwand: ").append(resultA.toString()).append(", second owpwand: ").append(resultB.toString()).toString());
+    return new BadOprandTypeError(start, pos, new StringBuilder("Bwad owpwand twypes fwr bwinwawy owpewawor \"").append(oper).append("\": first owpwand: ").append(resultA.toString()).append(", second owpwand: ").append(resultB.toString()).append(" ._.").toString());
   }
 
 }

@@ -49,6 +49,14 @@ class Lexer {
         if (tokens.contains(new Token(Token.TT_STARTIF))) {
           tokens.add(new Token(Token.TT_ENDIF));
           advance();
+          if (currentChar == '?') {
+            break;
+          } else {
+            Position start = pos.clone();
+            Token[] errorArray = new Token[1];
+            errorArray[0] = new InvalidSyntaxError(start, pos, "If statement must end with \"?\" ._.");
+            return errorArray;
+          }
         } else {
           tokens.add(new Token(Token.TT_MUL));
           advance();
