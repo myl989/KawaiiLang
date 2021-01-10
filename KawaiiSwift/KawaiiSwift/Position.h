@@ -8,10 +8,15 @@
 #import <Foundation/Foundation.h>
 
 @interface Position : NSObject {
+    @private
     int idx;
+    @private
     int ln;
+    @private
     int col;
+    @private
     NSString* fn;
+    @private
     NSString* ftxt;
 }
 
