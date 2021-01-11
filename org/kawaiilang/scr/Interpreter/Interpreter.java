@@ -6,9 +6,11 @@ import java.util.HashMap;
 import net.objecthunter.exp4j.*;
 
 class Interpreter {
-
+  //Variables for handeling if statements
   private Boolean doInterpret = null;
-  private boolean canHaveElse = false;
+  private boolean justEndedIf = false;
+  private int activeElseStatements = 0;
+
   private Token[] tokens;
   private Position pos;
   private Token currentToken;
@@ -47,19 +49,21 @@ class Interpreter {
     StringBuilder expr = new StringBuilder();
     Token lastToken = null;
 
+    System.out.println(activeElseStatements);
+    System.out.println(doInterpret);
+
     //System.out.println(heap);
     //System.out.println(heap.size());
 
     //Loops and stuff go here
 
     //Else if statements: do not run if last if is true
-    if (canHaveElse) {
+    if (activeElseStatements > 0) {
       if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "ewlse"))) {
         doInterpret = (!doInterpret);
-      } else {
-        doInterpret = null;
-        canHaveElse = false;
-      }
+      } /*else if (justEndedIf) {
+        
+      }*/
     }
 
     //If statements
@@ -69,11 +73,16 @@ class Interpreter {
         if (doInterpret == null || doInterpret) {
           Double d = (Double) result;
           if (d > 0) {
+            activeElseStatements++;
             doInterpret = true;
           } else {
+            activeElseStatements++;
             doInterpret = false;
           }
         }
+      } else if (result == null) {
+        //Signifies the if statement is inside a false if statement or it is an else after a statement that is true
+        activeElseStatements++; //So that any ewndNotice statements don't mess anything up
       } else {
         Position start = pos.clone();
           return new BadOprandTypeError(start, pos, new StringBuilder("Bwad reswlt twypes fwr \"if\" statement: reswlt: ").append(result.toString()).append(" ._.").toString());
@@ -85,7 +94,8 @@ class Interpreter {
 
     //Checks for end of if. Expressions directly after end of if will not be evaluated.
     if (doInterpret != null && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
-      canHaveElse = true;
+      activeElseStatements--;
+      justEndedIf = true;
       return null;
     }
     //NOT operation
@@ -326,7 +336,8 @@ class Interpreter {
   else { //doInterpret is FALSE
     //Todo: only care about the endif and evaluate nothing
     if (tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
-      canHaveElse = true;
+      activeElseStatements--;
+      justEndedIf = true;
     }
     return null;
   }
