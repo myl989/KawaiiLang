@@ -9,6 +9,7 @@ class Interpreter {
   //Variables for handeling if statements
   private Boolean doInterpret = null;
   private ArrayList<Boolean> prevDoInterpret = new ArrayList<>();
+  private boolean justHadElse = false;
   private int activeElseStatements = 0;
 
   private Token[] tokens;
@@ -51,7 +52,9 @@ class Interpreter {
 
     //System.out.println(activeElseStatements);
     //System.out.println(prevDoInterpret);
-    //System.out.println(doInterpret);
+    //System.out.println("doInterpret: "
+    + doInterpret);
+    //System.out.println("justHadElse: " + justHadElse);
 
     //System.out.println(heap);
     //System.out.println(heap.size());
@@ -61,12 +64,15 @@ class Interpreter {
     //Else if statements: do not run if last if is true
     if (activeElseStatements >= 0) {
       if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "ewlse"))) {
+        justHadElse = true;
         doInterpret = (!doInterpret);
       } else if (activeElseStatements > 0) {
         doInterpret = prevDoInterpret.get(activeElseStatements - 1);
       } else {
         //No else
-        doInterpret = null;
+        if (!justHadElse) {
+          doInterpret = null;
+        }
       }
     }
 
@@ -102,6 +108,7 @@ class Interpreter {
 
     //Checks for end of if. Expressions directly after end of if will not be evaluated.
     if (doInterpret != null && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
+      justHadElse = false;
       activeElseStatements--;
       prevDoInterpret.remove(activeElseStatements);
       return null;
@@ -342,8 +349,9 @@ class Interpreter {
   }
 
   else { //doInterpret is FALSE
-    //Todo: only care about the endif and evaluate nothing
+    //Only care about the endif and evaluate nothing
     if (tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
+      justHadElse = false;
       activeElseStatements--;
       prevDoInterpret.remove(activeElseStatements);
     }
