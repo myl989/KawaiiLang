@@ -9,12 +9,6 @@ class Main {
       System.out.print("KawaiiLang> ");
       String input = s.nextLine();
       if (input.equals("Senpai.stawpp UwU UwU!")) {
-        /*long startTime = System.nanoTime();
-        int i = 1 + 1;
-        long endTime = System.nanoTime();
-        System.out.print("Time taken: ");
-        System.out.print(i);
-        System.out.println(endTime - startTime);*/
         s.close();
         break;
       } else {
@@ -23,17 +17,14 @@ class Main {
         /*long endTime = System.nanoTime();
         System.out.print("Time taken: ");
         System.out.println(endTime - startTime);*/
+
+        //The following code prints out the final results only! (unlike the testing print code in Runner class which prints every evaluation)
         if (result == null) {
           System.out.println("nwthin");
         } else {
-          if (result instanceof Integer) {
-            Integer i = (Integer) result;
-            System.out.println(Integer.toString(i));
-          } else {
-            System.out.println(result);
-          }
-        }
-      }
-    }
+          System.out.println(result);
+        } //endPrintEvalResults
+      } //endCheckIfToEndShell
+    } //endInfiniteLoop
   }
 }

@@ -89,6 +89,14 @@ public class Runner {
   public Object interpret(Token[] tokens) {
     interpreter.setTokens(tokens);
     Object result = interpreter.interpret();
+
+    //Prints the result so I can actually see what is going on.
+    /*if (result == null) {
+      System.out.println("nwthin");
+    } else {
+      System.out.println(result);
+    }*/
+
     return result;
   }
 

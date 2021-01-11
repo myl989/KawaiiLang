@@ -2,7 +2,7 @@ Todo:
 * Loops
 
 Bugs (high priority):
-N/A
+* Expressions inside loops evaluate one extra time
 
 Bugs (low priority):
 * Single lines of code with multiple `!`s do not work
