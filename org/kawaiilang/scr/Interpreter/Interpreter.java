@@ -52,8 +52,7 @@ class Interpreter {
 
     //System.out.println(activeElseStatements);
     //System.out.println(prevDoInterpret);
-    //System.out.println("doInterpret: "
-    + doInterpret);
+    //System.out.println("doInterpret: " + doInterpret);
     //System.out.println("justHadElse: " + justHadElse);
 
     //System.out.println(heap);
