@@ -1,5 +1,4 @@
 Todo:
-* Allow updating variables (e.g. +=, ++. etc)
 * Loops
 
 Bugs (high priority):
