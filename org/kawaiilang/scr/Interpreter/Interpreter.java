@@ -8,6 +8,7 @@ import net.objecthunter.exp4j.*;
 class Interpreter {
 
   private Boolean doInterpret = null;
+  private boolean canHaveElse = false;
   private Token[] tokens;
   private Position pos;
   private Token currentToken;
@@ -46,19 +47,32 @@ class Interpreter {
     StringBuilder expr = new StringBuilder();
     Token lastToken = null;
 
-    System.out.println(doInterpret);
     //System.out.println(heap);
     //System.out.println(heap.size());
 
-    //If and loop stuff goes here
+    //Loops and stuff go here
+
+    //Else if statements: do not run if last if is true
+    if (canHaveElse) {
+      if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "ewlse"))) {
+        doInterpret = (!doInterpret);
+      } else {
+        doInterpret = null;
+        canHaveElse = false;
+      }
+    }
+
+    //If statements
     if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_STARTIF))) {
       Object result = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, 1, tokens.length - 1));
       if (result instanceof Double) {
-        Double d = (Double) result;
-        if (d > 0) {
-          doInterpret = true;
-        } else {
-          doInterpret = false;
+        if (doInterpret == null || doInterpret) {
+          Double d = (Double) result;
+          if (d > 0) {
+            doInterpret = true;
+          } else {
+            doInterpret = false;
+          }
         }
       } else {
         Position start = pos.clone();
@@ -71,7 +85,7 @@ class Interpreter {
 
     //Checks for end of if. Expressions directly after end of if will not be evaluated.
     if (doInterpret != null && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
-      doInterpret = null;
+      canHaveElse = true;
       return null;
     }
     //NOT operation
@@ -147,8 +161,7 @@ class Interpreter {
       } /*else if (???) { //new line?
         lastToken = null;
         advance();
-      }*/ 
-
+      }*/
       else if (currentToken instanceof org.kawaiilang.Error) {
         return currentToken;
       } else if (currentToken.type == Token.TT_INT || currentToken.type == Token.TT_FLOAT) {
@@ -272,6 +285,8 @@ class Interpreter {
               Position start = pos.clone();
               return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is nawt wariable and i cwannot dewete ._.").toString());
             }
+          } else if (currentToken.value.equals("ewlse")) {
+            return null; //Else does nothing on its own
           } //other keywords that appear at the beginning of statement goes here
         } else {
           Position start = pos.clone();
@@ -311,7 +326,7 @@ class Interpreter {
   else { //doInterpret is FALSE
     //Todo: only care about the endif and evaluate nothing
     if (tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
-      doInterpret = null;
+      canHaveElse = true;
     }
     return null;
   }
