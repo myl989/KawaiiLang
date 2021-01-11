@@ -32,6 +32,10 @@ class Interpreter {
     this.fn = fileLocation;
   }
 
+  public String getFileLocation() {
+    return fn;
+  }
+
   public void setTokens(Token[] tokens) {
     this.tokens = tokens;
     pos = new Position(-1, 0, -1, fn, Arrays.toString(tokens));
@@ -129,6 +133,8 @@ class Interpreter {
           } else {
             return 1.0;
           }
+        } else if (result instanceof org.kawaiilang.Error) {
+          return result;
         } else {
           Position start = pos.clone();
           return new BadOprandTypeError(start, pos, new StringBuilder("Bwad owpwand twypes fwr \"nawt\" owpewawor: owpwand: ").append(result.toString()).append(" ._.").toString());
