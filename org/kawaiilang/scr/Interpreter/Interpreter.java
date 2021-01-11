@@ -10,6 +10,7 @@ class Interpreter {
   private Boolean doInterpret = null;
   private ArrayList<Boolean> prevDoInterpret = new ArrayList<>();
   private boolean justHadElse = false;
+  private boolean hasBeenTrue = false;
   private int activeElseStatements = 0;
 
   private Token[] tokens;
@@ -64,7 +65,11 @@ class Interpreter {
     if (activeElseStatements >= 0) {
       if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "ewlse"))) {
         justHadElse = true;
-        doInterpret = (!doInterpret);
+        if (!hasBeenTrue) {
+          doInterpret = (!doInterpret);
+        } else {
+          doInterpret = false;
+        }
       } else if (activeElseStatements > 0) {
         doInterpret = prevDoInterpret.get(activeElseStatements - 1);
       } else {
@@ -85,6 +90,7 @@ class Interpreter {
             activeElseStatements++;
             doInterpret = true;
             prevDoInterpret.add(true);
+            hasBeenTrue = true;
           } else {
             activeElseStatements++;
             doInterpret = false;

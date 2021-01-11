@@ -3,7 +3,7 @@ Todo:
 * Loops
 
 Bugs (high priority):
-* Else if statements will always be the opposite of the last statement even if a statement in the if cluster has already been run
+N/A
 
 Bugs (low priority):
 * Single lines of code with multiple `!`s do not work
