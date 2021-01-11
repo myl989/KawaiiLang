@@ -8,7 +8,7 @@ import net.objecthunter.exp4j.*;
 class Interpreter {
   //Variables for handeling if statements
   private Boolean doInterpret = null;
-  private boolean justEndedIf = false;
+  private ArrayList<Boolean> prevDoInterpret = new ArrayList<>();
   private int activeElseStatements = 0;
 
   private Token[] tokens;
@@ -49,8 +49,9 @@ class Interpreter {
     StringBuilder expr = new StringBuilder();
     Token lastToken = null;
 
-    System.out.println(activeElseStatements);
-    System.out.println(doInterpret);
+    //System.out.println(activeElseStatements);
+    //System.out.println(prevDoInterpret);
+    //System.out.println(doInterpret);
 
     //System.out.println(heap);
     //System.out.println(heap.size());
@@ -58,12 +59,15 @@ class Interpreter {
     //Loops and stuff go here
 
     //Else if statements: do not run if last if is true
-    if (activeElseStatements > 0) {
+    if (activeElseStatements >= 0) {
       if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "ewlse"))) {
         doInterpret = (!doInterpret);
-      } /*else if (justEndedIf) {
-        
-      }*/
+      } else if (activeElseStatements > 0) {
+        doInterpret = prevDoInterpret.get(activeElseStatements - 1);
+      } else {
+        //No else
+        doInterpret = null;
+      }
     }
 
     //If statements
@@ -75,14 +79,18 @@ class Interpreter {
           if (d > 0) {
             activeElseStatements++;
             doInterpret = true;
+            prevDoInterpret.add(true);
           } else {
             activeElseStatements++;
             doInterpret = false;
+            prevDoInterpret.add(false);
           }
         }
       } else if (result == null) {
         //Signifies the if statement is inside a false if statement or it is an else after a statement that is true
-        activeElseStatements++; //So that any ewndNotice statements don't mess anything up
+        activeElseStatements++;
+        prevDoInterpret.add(false);
+        //So that any ewndNotice statements don't mess anything up
       } else {
         Position start = pos.clone();
           return new BadOprandTypeError(start, pos, new StringBuilder("Bwad reswlt twypes fwr \"if\" statement: reswlt: ").append(result.toString()).append(" ._.").toString());
@@ -95,7 +103,7 @@ class Interpreter {
     //Checks for end of if. Expressions directly after end of if will not be evaluated.
     if (doInterpret != null && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
       activeElseStatements--;
-      justEndedIf = true;
+      prevDoInterpret.remove(activeElseStatements);
       return null;
     }
     //NOT operation
@@ -337,7 +345,7 @@ class Interpreter {
     //Todo: only care about the endif and evaluate nothing
     if (tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
       activeElseStatements--;
-      justEndedIf = true;
+      prevDoInterpret.remove(activeElseStatements);
     }
     return null;
   }
