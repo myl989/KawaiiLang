@@ -30,6 +30,9 @@ class Loop {
     System.out.println(this);
     for (int i = idx; i < max; i++) {
       for (Token[] action : actions) {
+        if (action.length == 1 && action[0].equals(new Token(Token.TT_KEYWORD, "stawp"))) {
+          break;
+        }
         new Runner(interpreter.getFileLocation(), interpreter).interpret(action);
       }
       idx++;
