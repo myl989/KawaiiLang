@@ -3,7 +3,7 @@ Todo:
 * Call or change loop index within loop
 
 Bugs (high priority):
-* Expressions inside loops evaluate one extra time
+N/A
 
 Bugs (low priority):
 * Single lines of code with multiple `!`s do not work
