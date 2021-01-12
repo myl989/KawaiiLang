@@ -10,7 +10,8 @@ class Interpreter {
     private boolean declaringLoop = false;
     private ArrayList < Loop > loops = new ArrayList < > ();
     private int loopIdx = -1;
-    private int adjustLoopIdx = 0;  //so that when adding nested loops it won't be out of bounds
+    //private int adjustLoopIdx = 0;  //so that when adding nested loops it won't be out of bounds
+    private int metaLoop = 0;
 
     //Variables for handeling if statements
     private Boolean doInterpret = null;
@@ -62,8 +63,8 @@ class Interpreter {
         StringBuilder expr = new StringBuilder();
         Token lastToken = null;
 
-        //System.out.println(declaringLoop);
-        //System.out.println(loopIdx);
+        //System.out.println("declaringLoop: " + declaringLoop);
+        System.out.println("loopIdx: " + loopIdx);
 
         //System.out.println(activeElseStatements);
         //System.out.println(prevDoInterpret);
@@ -76,18 +77,19 @@ class Interpreter {
         if (declaringLoop) {
             if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^wepeatDat"))) {
                 loopIdx--;
-                if (loopIdx == -1) {
+                if (loopIdx == metaLoop - 1) {
+                    System.out.println("here!");
                     declaringLoop = false;
-                    loops.get(0).loop();
+                    loopIdx += 2;
+                    metaLoop++;
+                    loops.get(loopIdx - 1).loop();
                 }
                 //Finalize code here to prepare for other code
             } else {
                 if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "do")) && tokens[tokens.length - 1].equals(new Token(Token.TT_KEYWORD, "twimes"))) {
                   loopIdx++; //So that ending a nested loop doesn't end the whole thing
-                  adjustLoopIdx++;
                 }
-                //Issue: in nested loops these parameters are incorrect
-                loops.get(loopIdx - adjustLoopIdx).addAction(tokens);
+                loops.get(metaLoop).addAction(tokens);
             }
         } else {
             //Else if statements: do not run if last if is true
