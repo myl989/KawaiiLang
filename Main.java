@@ -23,7 +23,7 @@ class Main {
           System.out.println("nwthin");
         } else {
           System.out.println(result);
-        } //endPrintEvalResults
+        }
       } //endCheckIfToEndShell
     } //endInfiniteLoop
   }

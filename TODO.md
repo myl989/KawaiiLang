@@ -1,9 +1,9 @@
 Todo:
-* Finish loops
 * Call or change loop index within loop
+* Break statement for loop
 
 Bugs (high priority):
-N/A
+* Nested loops just don't work at all
 
 Bugs (low priority):
 * Single lines of code with multiple `!`s do not work
