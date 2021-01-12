@@ -3,7 +3,7 @@ Todo:
 * Break statement for loop
 
 Bugs (high priority):
-* Nested loops just don't work at all
+N/A
 
 Bugs (low priority):
 * Single lines of code with multiple `!`s do not work

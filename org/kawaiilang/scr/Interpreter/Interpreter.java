@@ -8,10 +8,8 @@ import net.objecthunter.exp4j.*;
 class Interpreter {
     //Variables for handeling for loops
     private boolean declaringLoop = false;
-    private ArrayList < Loop > loops = new ArrayList < > ();
+    private Loop loop;
     private int loopIdx = -1;
-    //private int adjustLoopIdx = 0;  //so that when adding nested loops it won't be out of bounds
-    private int metaLoop = 0;
 
     //Variables for handeling if statements
     private Boolean doInterpret = null;
@@ -63,8 +61,8 @@ class Interpreter {
         StringBuilder expr = new StringBuilder();
         Token lastToken = null;
 
-        //System.out.println("declaringLoop: " + declaringLoop);
-        System.out.println("loopIdx: " + loopIdx);
+        //System.out.println("loopIdx: " + loopIdx);
+        //System.out.println(loop);
 
         //System.out.println(activeElseStatements);
         //System.out.println(prevDoInterpret);
@@ -77,19 +75,18 @@ class Interpreter {
         if (declaringLoop) {
             if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^wepeatDat"))) {
                 loopIdx--;
-                if (loopIdx == metaLoop - 1) {
-                    System.out.println("here!");
+                if (loopIdx == -1) {
                     declaringLoop = false;
-                    loopIdx += 2;
-                    metaLoop++;
-                    loops.get(loopIdx - 1).loop();
+                    loop.loop();
+                    loop = null;
+                } else {
+                  loop.addAction(tokens);
                 }
-                //Finalize code here to prepare for other code
             } else {
                 if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "do")) && tokens[tokens.length - 1].equals(new Token(Token.TT_KEYWORD, "twimes"))) {
                   loopIdx++; //So that ending a nested loop doesn't end the whole thing
                 }
-                loops.get(metaLoop).addAction(tokens);
+                loop.addAction(tokens);
             }
         } else {
             //Else if statements: do not run if last if is true
@@ -137,7 +134,7 @@ class Interpreter {
                         int a = (int) dA.doubleValue();
                         Double dB = (Double) resultB;
                         int b = (int) dB.doubleValue();
-                        loops.add(new Loop(this, a, b));
+                        loop = new Loop(this, a, b);
                         declaringLoop = true;
                         loopIdx++;
                     } else {
@@ -149,7 +146,7 @@ class Interpreter {
                         if (result instanceof Double) {
                             Double d = (Double) result;
                             int i = (int) d.doubleValue();
-                            loops.add(new Loop(this, i));
+                            loop = new Loop(this, i);
                             declaringLoop = true;
                             loopIdx++;
                         } else if (result instanceof org.kawaiilang.Error) {

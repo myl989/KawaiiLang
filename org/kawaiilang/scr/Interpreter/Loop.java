@@ -1,5 +1,6 @@
 package org.kawaiilang;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 class Loop {
 
@@ -26,6 +27,7 @@ class Loop {
   }
 
   public void loop() {
+    System.out.println(this);
     for (int i = idx; i < max; i++) {
       for (Token[] action : actions) {
         new Runner(interpreter.getFileLocation(), interpreter).interpret(action);
@@ -40,6 +42,15 @@ class Loop {
 
   public void setIndex(int newIdx) {
     idx = newIdx;
+  }
+
+  //I don't think toString() works
+  public String toString() {
+    StringBuilder sb = new StringBuilder("[");
+    for (Token[] action : actions) {
+      sb.append(Arrays.toString(action));
+    }
+    return sb.append("]").toString();
   }
 
 }
