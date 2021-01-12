@@ -10,6 +10,7 @@ class Interpreter {
     private boolean declaringLoop = false;
     private ArrayList < Loop > loops = new ArrayList < > ();
     private int loopIdx = -1;
+    private int adjustLoopIdx = 0;  //so that when adding nested loops it won't be out of bounds
 
     //Variables for handeling if statements
     private Boolean doInterpret = null;
@@ -61,6 +62,9 @@ class Interpreter {
         StringBuilder expr = new StringBuilder();
         Token lastToken = null;
 
+        //System.out.println(declaringLoop);
+        //System.out.println(loopIdx);
+
         //System.out.println(activeElseStatements);
         //System.out.println(prevDoInterpret);
         //System.out.println("doInterpret: " + doInterpret);
@@ -70,13 +74,21 @@ class Interpreter {
         //System.out.println(heap.size());
 
         if (declaringLoop) {
-          if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^wepeatDat"))) {
-            declaringLoop = false;
-            loops.get(loopIdx).loop();
-            loopIdx--;
-          } else {
-            loops.get(loopIdx).addAction(tokens);
-          }
+            if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^wepeatDat"))) {
+                loopIdx--;
+                if (loopIdx == -1) {
+                    declaringLoop = false;
+                    loops.get(0).loop();
+                }
+                //Finalize code here to prepare for other code
+            } else {
+                if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "do")) && tokens[tokens.length - 1].equals(new Token(Token.TT_KEYWORD, "twimes"))) {
+                  loopIdx++; //So that ending a nested loop doesn't end the whole thing
+                  adjustLoopIdx++;
+                }
+                //Issue: in nested loops these parameters are incorrect
+                loops.get(loopIdx - adjustLoopIdx).addAction(tokens);
+            }
         } else {
             //Else if statements: do not run if last if is true
             if (activeElseStatements >= 0) {
@@ -100,54 +112,54 @@ class Interpreter {
             //For loops
             if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "do")) && tokens[tokens.length - 1].equals(new Token(Token.TT_KEYWORD, "twimes"))) {
                 if (Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "tw"))) {
-                  Token[] exprs = Arrays.copyOfRange(tokens, 1, tokens.length - 1);
-                  ArrayList < Token > exA = new ArrayList < > ();
-                  ArrayList < Token > exB = new ArrayList < > ();
-                  boolean secondPart = false;
-                  Token delim = new Token(Token.TT_KEYWORD, "tw");
-                  for (int i = 0; i < exprs.length; i++) {
-                    if (exprs[i].equals(delim)) {
-                        secondPart = true;
-                    } else if (secondPart) {
-                        exB.add(exprs[i]);
-                    } else {
-                        exA.add(exprs[i]);
+                    Token[] exprs = Arrays.copyOfRange(tokens, 1, tokens.length - 1);
+                    ArrayList < Token > exA = new ArrayList < > ();
+                    ArrayList < Token > exB = new ArrayList < > ();
+                    boolean secondPart = false;
+                    Token delim = new Token(Token.TT_KEYWORD, "tw");
+                    for (int i = 0; i < exprs.length; i++) {
+                        if (exprs[i].equals(delim)) {
+                            secondPart = true;
+                        } else if (secondPart) {
+                            exB.add(exprs[i]);
+                        } else {
+                            exA.add(exprs[i]);
+                        }
                     }
-                  }
-                  Token[] exAa = exA.toArray(new Token[0]);
-                  Object resultA = new Runner(fn, this).interpret(Arrays.copyOfRange(exAa, 0, exAa.length));
-                  Token[] exAb = exB.toArray(new Token[0]);
-                  Object resultB = new Runner(fn, this).interpret(Arrays.copyOfRange(exAb, 0, exAb.length));
-                  if (resultA instanceof Double && resultB instanceof Double) {
-                    Double dA = (Double) resultA;
-                    int a = (int) dA.doubleValue();
-                    Double dB = (Double) resultB;
-                    int b = (int) dB.doubleValue();
-                    loops.add(new Loop(this, a, b));
-                    declaringLoop = true;
-                    loopIdx++;
-                  } else {
-                    //error
-                  }
-                } else {
-                  if (tokens.length > 1) {
-                    Object result = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, 1, tokens.length - 1));
-                    if (result instanceof Double) {
-                        Double d = (Double) result;
-                        int i = (int) d.doubleValue();
-                        loops.add(new Loop(this, i));
+                    Token[] exAa = exA.toArray(new Token[0]);
+                    Object resultA = new Runner(fn, this).interpret(Arrays.copyOfRange(exAa, 0, exAa.length));
+                    Token[] exAb = exB.toArray(new Token[0]);
+                    Object resultB = new Runner(fn, this).interpret(Arrays.copyOfRange(exAb, 0, exAb.length));
+                    if (resultA instanceof Double && resultB instanceof Double) {
+                        Double dA = (Double) resultA;
+                        int a = (int) dA.doubleValue();
+                        Double dB = (Double) resultB;
+                        int b = (int) dB.doubleValue();
+                        loops.add(new Loop(this, a, b));
                         declaringLoop = true;
                         loopIdx++;
-                    } else if (result instanceof org.kawaiilang.Error) {
-                      return result;
                     } else {
-                      Position start = pos.clone();
-                        return new IllegalTypeError(start, pos, new StringBuilder("Lowp amwownt mwst bwe a numbwer,inpwtwed lowp amwownt: ").append(result).toString());
+                        //error
                     }
-                  } else {
-                    Position start = pos.clone();
-                    return new InvalidSyntaxError(start, pos, "Expwecwed lowp amwownt");
-                  }
+                } else {
+                    if (tokens.length > 1) {
+                        Object result = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, 1, tokens.length - 1));
+                        if (result instanceof Double) {
+                            Double d = (Double) result;
+                            int i = (int) d.doubleValue();
+                            loops.add(new Loop(this, i));
+                            declaringLoop = true;
+                            loopIdx++;
+                        } else if (result instanceof org.kawaiilang.Error) {
+                            return result;
+                        } else {
+                            Position start = pos.clone();
+                            return new IllegalTypeError(start, pos, new StringBuilder("Lowp amwownt mwst bwe a numbwer,inpwtwed lowp amwownt: ").append(result).toString());
+                        }
+                    } else {
+                        Position start = pos.clone();
+                        return new InvalidSyntaxError(start, pos, "Expwecwed lowp amwownt");
+                    }
                 }
             } else {
                 //If statements
@@ -173,7 +185,7 @@ class Interpreter {
                         prevDoInterpret.add(false);
                         //So that any ewndNotice statements don't mess anything up
                     } else if (result instanceof org.kawaiilang.Error) {
-                      return result;
+                        return result;
                     } else {
                         Position start = pos.clone();
                         return new BadOprandTypeError(start, pos, new StringBuilder("Bwad reswlt twypes fwr \"if\" statement: reswlt: ").append(result.toString()).append(" ._.").toString());
