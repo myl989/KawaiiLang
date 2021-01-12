@@ -138,7 +138,8 @@ class Interpreter {
                         declaringLoop = true;
                         loopIdx++;
                     } else {
-                        //error
+                        Position start = pos.clone();
+                        return new IllegalTypeError(start, pos, new StringBuilder("Start and ewnd lowp amwownt mwst bwe a numbwer, inpwtwed start lowp amwownt: ").append(resultA).append(", impwtwed ewnd lowp amwownt: ").append(" ._.").append(resultB).toString());
                     }
                 } else {
                     if (tokens.length > 1) {
@@ -153,11 +154,11 @@ class Interpreter {
                             return result;
                         } else {
                             Position start = pos.clone();
-                            return new IllegalTypeError(start, pos, new StringBuilder("Lowp amwownt mwst bwe a numbwer,inpwtwed lowp amwownt: ").append(result).toString());
+                            return new IllegalTypeError(start, pos, new StringBuilder("Lowp amwownt mwst bwe a numbwer, inpwtwed lowp amwownt: ").append(result).append(" ._.").toString());
                         }
                     } else {
                         Position start = pos.clone();
-                        return new InvalidSyntaxError(start, pos, "Expwecwed lowp amwownt");
+                        return new InvalidSyntaxError(start, pos, "Expwecwed lowp amwownt ._.");
                     }
                 }
             } else {
@@ -406,6 +407,10 @@ class Interpreter {
                                 } else if (currentToken.value.equals("ewlse")) {
                                     return null; //Else does nothing on its own
                                 } //other keywords that appear at the beginning of statement goes here
+                                else {
+                                  Position start = pos.clone();
+                                  return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is iwegal here ._.").toString());
+                                }
                             } else {
                                 Position start = pos.clone();
                                 return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is iwegal here ._.").toString());
