@@ -2,7 +2,20 @@ Todo:
 * Call or change loop index within loop
 
 Bugs (high priority):
-* Statements like `^_^wepeatDat` and `^_^ewndNotice` arn't run if placed after `stawp` statements
+* In this statement:
+```
+Numwer a iws 0!
+do 100 twimes!
+  OwO *notices a <_< 10*?
+    a iws a awdd 1!
+  ^_^ewndNotice!
+  ewlse!
+  OwO *notices :>*?
+    stawp!
+  ^_^ewndNotice!
+^_^wepeatDat!
+```
+  The else statemnt doesn't work
 
 Bugs (low priority):
 * Single lines of code with multiple `!`s do not work

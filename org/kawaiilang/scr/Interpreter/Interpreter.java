@@ -62,9 +62,10 @@ class Interpreter {
         Token lastToken = null;
 
         //System.out.println("loopIdx: " + loopIdx);
+        System.out.println("declaringLoop: " + declaringLoop);
         //System.out.println(loop);
 
-        //System.out.println(activeElseStatements);
+        //System.out.println("activeElseStatements: " + activeElseStatements);
         //System.out.println(prevDoInterpret);
         //System.out.println("doInterpret: " + doInterpret);
         //System.out.println("justHadElse: " + justHadElse);
@@ -73,7 +74,7 @@ class Interpreter {
         //System.out.println(heap.size());
 
         if (declaringLoop) {
-            if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^wepeatDat"))) {
+            if (tokens.length == 1 && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^wepeatDat"))) {
                 loopIdx--;
                 if (loopIdx == -1) {
                     declaringLoop = false;
@@ -196,7 +197,7 @@ class Interpreter {
                     //This goes down alllllll the way
 
                     //Checks for end of if. Expressions directly after end of if will not be evaluated.
-                    if (doInterpret != null && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
+                    if (doInterpret != null && tokens.length == 1 && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
                         justHadElse = false;
                         activeElseStatements--;
                         prevDoInterpret.remove(activeElseStatements);
@@ -446,7 +447,7 @@ class Interpreter {
                     }
                 } else { //doInterpret is FALSE
                     //Only care about the endif and evaluate nothing
-                    if (tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
+                    if (tokens.length == 1 && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
                         justHadElse = false;
                         activeElseStatements--;
                         prevDoInterpret.remove(activeElseStatements);
