@@ -1,5 +1,6 @@
 Todo:
-* Loops
+* Finish loops
+* Call or change loop index within loop
 
 Bugs (high priority):
 * Expressions inside loops evaluate one extra time

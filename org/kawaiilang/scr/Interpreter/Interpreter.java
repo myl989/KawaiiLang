@@ -8,7 +8,7 @@ import net.objecthunter.exp4j.*;
 class Interpreter {
     //Variables for handeling for loops
     private boolean declaringLoop = false;
-    private ArrayList<Loop> loops = new ArrayList<>();
+    private ArrayList < Loop > loops = new ArrayList < > ();
     private int loopIdx = -1;
 
     //Variables for handeling if statements
@@ -70,339 +70,339 @@ class Interpreter {
         //System.out.println(heap.size());
 
         if (declaringLoop) {
-          if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^wepeatDat"))) {
-            declaringLoop = false;
-            loops.get(loopIdx).loop();
-            loopIdx--;
-          } else {
-            loops.get(loopIdx).addAction(tokens);
-          }
-        }
-
-        //Else if statements: do not run if last if is true
-        if (activeElseStatements >= 0) {
-            if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "ewlse"))) {
-                justHadElse = true;
-                if (!hasBeenTrue) {
-                    doInterpret = (!doInterpret);
-                } else {
-                    doInterpret = false;
-                }
-            } else if (activeElseStatements > 0) {
-                doInterpret = prevDoInterpret.get(activeElseStatements - 1);
+            if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^wepeatDat"))) {
+                declaringLoop = false;
+                loops.get(loopIdx).loop();
+                loopIdx--;
             } else {
-                //No else
-                if (!justHadElse) {
-                    doInterpret = null;
-                }
+                loops.get(loopIdx).addAction(tokens);
             }
-        }
-
-        //For loops
-        if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "do"))) {
-          if (Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "tw"))) {
-            //todo for loops with "tw" syntax
-          } else {
-            if (tokens.length > 1) {
-              Object result = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, 1, tokens.length - 1));
-              if (result instanceof Double) {
-                Double d = (Double) result;
-                int i = (int) d.doubleValue();
-                loops.add(new Loop(this, i));
-                declaringLoop = true;
-                loopIdx++;
-              } else {
-                //error
-              }
-            }
-          }
         } else {
-            //If statements
-            if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_STARTIF))) {
-                Object result = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, 1, tokens.length - 1));
-                if (result instanceof Double) {
-                    if (doInterpret == null || doInterpret) {
-                        Double d = (Double) result;
-                        if (d > 0) {
-                            activeElseStatements++;
-                            doInterpret = true;
-                            prevDoInterpret.add(true);
-                            hasBeenTrue = true;
-                        } else {
-                            activeElseStatements++;
-                            doInterpret = false;
-                            prevDoInterpret.add(false);
-                        }
+            //Else if statements: do not run if last if is true
+            if (activeElseStatements >= 0) {
+                if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "ewlse"))) {
+                    justHadElse = true;
+                    if (!hasBeenTrue) {
+                        doInterpret = (!doInterpret);
+                    } else {
+                        doInterpret = false;
                     }
-                } else if (result == null) {
-                    //Signifies the if statement is inside a false if statement or it is an else after a statement that is true
-                    activeElseStatements++;
-                    prevDoInterpret.add(false);
-                    //So that any ewndNotice statements don't mess anything up
+                } else if (activeElseStatements > 0) {
+                    doInterpret = prevDoInterpret.get(activeElseStatements - 1);
                 } else {
-                    Position start = pos.clone();
-                    return new BadOprandTypeError(start, pos, new StringBuilder("Bwad reswlt twypes fwr \"if\" statement: reswlt: ").append(result.toString()).append(" ._.").toString());
+                    //No else
+                    if (!justHadElse) {
+                        doInterpret = null;
+                    }
                 }
             }
 
-            if (doInterpret == null || doInterpret == true) {
-                //This goes down alllllll the way
-
-                //Checks for end of if. Expressions directly after end of if will not be evaluated.
-                if (doInterpret != null && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
-                    justHadElse = false;
-                    activeElseStatements--;
-                    prevDoInterpret.remove(activeElseStatements);
-                    return null;
-                }
-                //NOT operation
-                else if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "nawt"))) {
+            //For loops
+            if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "do"))) {
+                if (Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "tw"))) {
+                    //todo for loops with "tw" syntax
+                } else {
                     if (tokens.length > 1) {
-                        Object result = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, 1, tokens.length));
+                        Object result = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, 1, tokens.length - 1));
                         if (result instanceof Double) {
                             Double d = (Double) result;
-                            if (d > 0) {
-                                return 0.0;
-                            } else {
-                                return 1.0;
-                            }
-                        } else if (result instanceof org.kawaiilang.Error) {
-                            return result;
+                            int i = (int) d.doubleValue();
+                            loops.add(new Loop(this, i));
+                            declaringLoop = true;
+                            loopIdx++;
                         } else {
-                            Position start = pos.clone();
-                            return new BadOprandTypeError(start, pos, new StringBuilder("Bwad owpwand twypes fwr \"nawt\" owpewawor: owpwand: ").append(result.toString()).append(" ._.").toString());
+                            //error
                         }
+                    }
+                }
+            } else {
+                //If statements
+                if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_STARTIF))) {
+                    Object result = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, 1, tokens.length - 1));
+                    if (result instanceof Double) {
+                        if (doInterpret == null || doInterpret) {
+                            Double d = (Double) result;
+                            if (d > 0) {
+                                activeElseStatements++;
+                                doInterpret = true;
+                                prevDoInterpret.add(true);
+                                hasBeenTrue = true;
+                            } else {
+                                activeElseStatements++;
+                                doInterpret = false;
+                                prevDoInterpret.add(false);
+                            }
+                        }
+                    } else if (result == null) {
+                        //Signifies the if statement is inside a false if statement or it is an else after a statement that is true
+                        activeElseStatements++;
+                        prevDoInterpret.add(false);
+                        //So that any ewndNotice statements don't mess anything up
                     } else {
                         Position start = pos.clone();
-                        return new InvalidSyntaxError(start, pos, "Opwand not found for \"nawt\"opewawor ._.");
+                        return new BadOprandTypeError(start, pos, new StringBuilder("Bwad reswlt twypes fwr \"if\" statement: reswlt: ").append(result.toString()).append(" ._.").toString());
                     }
                 }
 
-                //AND, OR, XOR operations
-                if (Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "awnd")) || Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "orw")) || Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "xwr"))) {
-                    ArrayList < Token > exA = new ArrayList < > ();
-                    ArrayList < Token > exB = new ArrayList < > ();
-                    boolean secondPart = false;
-                    Token oper = null;
-                    for (int i = 0; i < tokens.length; i++) {
-                        if (tokens[i].value != null && (tokens[i].value.equals("awnd") || tokens[i].value.equals("orw") || tokens[i].value.equals("xwr"))) {
-                            if (!secondPart) {
-                                oper = tokens[i];
-                                secondPart = true;
-                            } else {
-                                exB.add(tokens[i]);
-                            }
-                        } else if (secondPart) {
-                            exB.add(tokens[i]);
-                        } else {
-                            exA.add(tokens[i]);
-                        }
-                    }
-                    return evalLogic(exA.toArray(new Token[0]), oper, exB.toArray(new Token[0]));
-                }
+                if (doInterpret == null || doInterpret == true) {
+                    //This goes down alllllll the way
 
-                //==, >, <, >=, <= operations
-                if (Arrays.asList(tokens).contains(new Token(Token.TT_EQUALS)) || Arrays.asList(tokens).contains(new Token(Token.TT_LT)) || Arrays.asList(tokens).contains(new Token(Token.TT_GT)) || Arrays.asList(tokens).contains(new Token(Token.TT_LTE)) || Arrays.asList(tokens).contains(new Token(Token.TT_GTE))) {
-                    ArrayList < Token > exA = new ArrayList < > ();
-                    ArrayList < Token > exB = new ArrayList < > ();
-                    boolean secondPart = false;
-                    Token oper = null;
-                    for (int i = 0; i < tokens.length; i++) {
-                        if (tokens[i].type == Token.TT_EQUALS || tokens[i].type == Token.TT_LT || tokens[i].type == Token.TT_GT || tokens[i].type == Token.TT_LTE || tokens[i].type == Token.TT_GTE) {
-                            if (!secondPart) {
-                                oper = tokens[i];
-                                secondPart = true;
-                            } else {
-                                exB.add(tokens[i]);
-                            }
-                        } else if (secondPart) {
-                            exB.add(tokens[i]);
-                        } else {
-                            exA.add(tokens[i]);
-                        }
+                    //Checks for end of if. Expressions directly after end of if will not be evaluated.
+                    if (doInterpret != null && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
+                        justHadElse = false;
+                        activeElseStatements--;
+                        prevDoInterpret.remove(activeElseStatements);
+                        return null;
                     }
-                    return evalComparison(exA.toArray(new Token[0]), oper, exB.toArray(new Token[0]));
-                }
-
-                while (true) {
-                    if (currentToken == null) {
-                        break;
-                    }
-                    /*else if (???) { //new line?
-                           lastToken = null;
-                           advance();
-                         }*/
-                    else if (currentToken instanceof org.kawaiilang.Error) {
-                        return currentToken;
-                    } else if (currentToken.type == Token.TT_INT || currentToken.type == Token.TT_FLOAT) {
-                        expr.append(currentToken.value);
-                        lastToken = currentToken;
-                        advance();
-                    } //Logical operations here
-                    else if (currentToken.type == Token.TT_VARNAME) {
-                        if (pos.getIdx() + 1 < tokens.length && tokens[pos.getIdx() + 1].type == Token.TT_ASSIGN && heap.containsKey(currentToken)) {
-                            lastToken = currentToken;
-                            advance();
-                            int idx = pos.getIdx();
-                            Object value = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, idx + 1, tokens.length));
-                            if (value instanceof org.kawaiilang.Error) {
-                                return value;
-                            } else {
-                                currentToken = lastToken;
-                                Variable
-                                var = new Variable(heap.get(currentToken).getType(), value);
-                                heap.put(currentToken,
-                                    var);
-                                return value;
-                            }
-                        }
-                        int idx = pos.getIdx();
-                        Variable varData = heap.get(currentToken);
-                        if (varData != null) {
-                            Token type = varData.getType();
-                            Object stored = varData.getValue();
-                            Token varReplaced = null;
-                            if (type.value.equals("Numwer")) {
-                                if (stored instanceof Integer) {
-                                    varReplaced = new Token(Token.TT_INT, stored);
-                                } else if (stored instanceof Double) {
-                                    varReplaced = new Token(Token.TT_FLOAT, stored);
+                    //NOT operation
+                    else if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "nawt"))) {
+                        if (tokens.length > 1) {
+                            Object result = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, 1, tokens.length));
+                            if (result instanceof Double) {
+                                Double d = (Double) result;
+                                if (d > 0) {
+                                    return 0.0;
                                 } else {
-                                    Position start = pos.clone();
-                                    return new IllegalTypeError(start, pos, new StringBuilder("Twype of variable, ").append(type.type).append(", is nawt as decwared ._.").toString());
+                                    return 1.0;
                                 }
-                            } //More variable types in the future
-                            tokens[pos.getIdx()] = varReplaced;
-                            pos = new Position(-1, 0, -1, fn, Arrays.toString(tokens));
-                            advance();
-                            Object value = interpret();
-                            return value;
-                        } else {
-                            String varName = (String) currentToken.value;
-                            Position start = pos.clone();
-                            return new UnassignedVariableError(start, pos, new StringBuilder("Wariable ").append(varName).append(" newer asswigned ._.").toString());
-                        }
-                    } else if (currentToken.type == Token.TT_LPAREN) {
-                        expr.append("(");
-                        lastToken = currentToken;
-                        advance();
-                    } else if (currentToken.type == Token.TT_RPAREN) {
-                        expr.append(")");
-                        lastToken = currentToken;
-                        advance();
-                    } else if (lastToken == null || currentToken.type == Token.TT_ADD || currentToken.type == Token.TT_MINUS || currentToken.type == Token.TT_MUL || currentToken.type == Token.TT_DIV || currentToken.type == Token.TT_MOD) {
-                        if (lastToken != null && (lastToken.type == Token.TT_ADD || lastToken.type == Token.TT_MINUS)) {
-                            if (currentToken.type == Token.TT_ADD) {
-                                //adding a plus before numbers doesn't change anything
-                                lastToken = currentToken;
-                                advance();
-                            } else if (currentToken.type == Token.TT_MINUS) {
-                                //adding a minus before numbers makes negative positive and positive negative
-                                if (lastToken.type == Token.TT_ADD) {
-                                    expr.deleteCharAt(expr.length() - 1);
-                                    expr.append("-");
-                                    lastToken = new Token(Token.TT_MINUS);
-                                    advance();
-                                } else {
-                                    expr.deleteCharAt(expr.length() - 1);
-                                    expr.append("+");
-                                    lastToken = new Token(Token.TT_ADD);
-                                    advance();
-                                }
+                            } else if (result instanceof org.kawaiilang.Error) {
+                                return result;
                             } else {
                                 Position start = pos.clone();
-                                return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" cwannot cwome awfter awnowther owpewation ._.").toString());
+                                return new BadOprandTypeError(start, pos, new StringBuilder("Bwad owpwand twypes fwr \"nawt\" owpewawor: owpwand: ").append(result.toString()).append(" ._.").toString());
                             }
-                        } else if (currentToken.type == Token.TT_ADD || currentToken.type == Token.TT_MINUS || currentToken.type == Token.TT_MUL || currentToken.type == Token.TT_DIV || currentToken.type == Token.TT_MOD) {
-                            if (lastToken != null && (lastToken.type != Token.TT_INT && lastToken.type != Token.TT_FLOAT)) {
-                                expr.append("0").append(currentToken.type);
-                            } else {
-                                if (currentToken.type == Token.TT_MUL) {
-                                    expr.append('*');
+                        } else {
+                            Position start = pos.clone();
+                            return new InvalidSyntaxError(start, pos, "Opwand not found for \"nawt\"opewawor ._.");
+                        }
+                    }
+
+                    //AND, OR, XOR operations
+                    if (Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "awnd")) || Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "orw")) || Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "xwr"))) {
+                        ArrayList < Token > exA = new ArrayList < > ();
+                        ArrayList < Token > exB = new ArrayList < > ();
+                        boolean secondPart = false;
+                        Token oper = null;
+                        for (int i = 0; i < tokens.length; i++) {
+                            if (tokens[i].value != null && (tokens[i].value.equals("awnd") || tokens[i].value.equals("orw") || tokens[i].value.equals("xwr"))) {
+                                if (!secondPart) {
+                                    oper = tokens[i];
+                                    secondPart = true;
                                 } else {
-                                    expr.append(currentToken.type);
+                                    exB.add(tokens[i]);
                                 }
+                            } else if (secondPart) {
+                                exB.add(tokens[i]);
+                            } else {
+                                exA.add(tokens[i]);
                             }
+                        }
+                        return evalLogic(exA.toArray(new Token[0]), oper, exB.toArray(new Token[0]));
+                    }
+
+                    //==, >, <, >=, <= operations
+                    if (Arrays.asList(tokens).contains(new Token(Token.TT_EQUALS)) || Arrays.asList(tokens).contains(new Token(Token.TT_LT)) || Arrays.asList(tokens).contains(new Token(Token.TT_GT)) || Arrays.asList(tokens).contains(new Token(Token.TT_LTE)) || Arrays.asList(tokens).contains(new Token(Token.TT_GTE))) {
+                        ArrayList < Token > exA = new ArrayList < > ();
+                        ArrayList < Token > exB = new ArrayList < > ();
+                        boolean secondPart = false;
+                        Token oper = null;
+                        for (int i = 0; i < tokens.length; i++) {
+                            if (tokens[i].type == Token.TT_EQUALS || tokens[i].type == Token.TT_LT || tokens[i].type == Token.TT_GT || tokens[i].type == Token.TT_LTE || tokens[i].type == Token.TT_GTE) {
+                                if (!secondPart) {
+                                    oper = tokens[i];
+                                    secondPart = true;
+                                } else {
+                                    exB.add(tokens[i]);
+                                }
+                            } else if (secondPart) {
+                                exB.add(tokens[i]);
+                            } else {
+                                exA.add(tokens[i]);
+                            }
+                        }
+                        return evalComparison(exA.toArray(new Token[0]), oper, exB.toArray(new Token[0]));
+                    }
+
+                    while (true) {
+                        if (currentToken == null) {
+                            break;
+                        }
+                        /*else if (???) { //new line?
+                               lastToken = null;
+                               advance();
+                             }*/
+                        else if (currentToken instanceof org.kawaiilang.Error) {
+                            return currentToken;
+                        } else if (currentToken.type == Token.TT_INT || currentToken.type == Token.TT_FLOAT) {
+                            expr.append(currentToken.value);
                             lastToken = currentToken;
                             advance();
+                        } //Logical operations here
+                        else if (currentToken.type == Token.TT_VARNAME) {
+                            if (pos.getIdx() + 1 < tokens.length && tokens[pos.getIdx() + 1].type == Token.TT_ASSIGN && heap.containsKey(currentToken)) {
+                                lastToken = currentToken;
+                                advance();
+                                int idx = pos.getIdx();
+                                Object value = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, idx + 1, tokens.length));
+                                if (value instanceof org.kawaiilang.Error) {
+                                    return value;
+                                } else {
+                                    currentToken = lastToken;
+                                    Variable
+                                    var = new Variable(heap.get(currentToken).getType(), value);
+                                    heap.put(currentToken,
+                                        var);
+                                    return value;
+                                }
+                            }
+                            int idx = pos.getIdx();
+                            Variable varData = heap.get(currentToken);
+                            if (varData != null) {
+                                Token type = varData.getType();
+                                Object stored = varData.getValue();
+                                Token varReplaced = null;
+                                if (type.value.equals("Numwer")) {
+                                    if (stored instanceof Integer) {
+                                        varReplaced = new Token(Token.TT_INT, stored);
+                                    } else if (stored instanceof Double) {
+                                        varReplaced = new Token(Token.TT_FLOAT, stored);
+                                    } else {
+                                        Position start = pos.clone();
+                                        return new IllegalTypeError(start, pos, new StringBuilder("Twype of variable, ").append(type.type).append(", is nawt as decwared ._.").toString());
+                                    }
+                                } //More variable types in the future
+                                tokens[pos.getIdx()] = varReplaced;
+                                pos = new Position(-1, 0, -1, fn, Arrays.toString(tokens));
+                                advance();
+                                Object value = interpret();
+                                return value;
+                            } else {
+                                String varName = (String) currentToken.value;
+                                Position start = pos.clone();
+                                return new UnassignedVariableError(start, pos, new StringBuilder("Wariable ").append(varName).append(" newer asswigned ._.").toString());
+                            }
                         } else if (currentToken.type == Token.TT_LPAREN) {
                             expr.append("(");
                             lastToken = currentToken;
                             advance();
-                        } else if (currentToken.type == Token.TT_VARTYPE) {
-                            Token type = currentToken;
+                        } else if (currentToken.type == Token.TT_RPAREN) {
+                            expr.append(")");
+                            lastToken = currentToken;
                             advance();
-                            if (currentToken != null && currentToken.type == Token.TT_VARNAME) {
-                                lastToken = currentToken;
-                                advance();
-                                if (currentToken != null && currentToken.type == Token.TT_ASSIGN) {
-                                    return makeVar(type, lastToken);
+                        } else if (lastToken == null || currentToken.type == Token.TT_ADD || currentToken.type == Token.TT_MINUS || currentToken.type == Token.TT_MUL || currentToken.type == Token.TT_DIV || currentToken.type == Token.TT_MOD) {
+                            if (lastToken != null && (lastToken.type == Token.TT_ADD || lastToken.type == Token.TT_MINUS)) {
+                                if (currentToken.type == Token.TT_ADD) {
+                                    //adding a plus before numbers doesn't change anything
+                                    lastToken = currentToken;
+                                    advance();
+                                } else if (currentToken.type == Token.TT_MINUS) {
+                                    //adding a minus before numbers makes negative positive and positive negative
+                                    if (lastToken.type == Token.TT_ADD) {
+                                        expr.deleteCharAt(expr.length() - 1);
+                                        expr.append("-");
+                                        lastToken = new Token(Token.TT_MINUS);
+                                        advance();
+                                    } else {
+                                        expr.deleteCharAt(expr.length() - 1);
+                                        expr.append("+");
+                                        lastToken = new Token(Token.TT_ADD);
+                                        advance();
+                                    }
                                 } else {
                                     Position start = pos.clone();
-                                    String varName = (String) lastToken.value;
-                                    return new UnassignedVariableError(start, pos, new StringBuilder("Wariable").append(varName).append(" decwared but nao walue was asswigned ._.").toString());
+                                    return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" cwannot cwome awfter awnowther owpewation ._.").toString());
                                 }
-                            } //todo else if only vartype is given return the type class
-                            else {
+                            } else if (currentToken.type == Token.TT_ADD || currentToken.type == Token.TT_MINUS || currentToken.type == Token.TT_MUL || currentToken.type == Token.TT_DIV || currentToken.type == Token.TT_MOD) {
+                                if (lastToken != null && (lastToken.type != Token.TT_INT && lastToken.type != Token.TT_FLOAT)) {
+                                    expr.append("0").append(currentToken.type);
+                                } else {
+                                    if (currentToken.type == Token.TT_MUL) {
+                                        expr.append('*');
+                                    } else {
+                                        expr.append(currentToken.type);
+                                    }
+                                }
+                                lastToken = currentToken;
+                                advance();
+                            } else if (currentToken.type == Token.TT_LPAREN) {
+                                expr.append("(");
+                                lastToken = currentToken;
+                                advance();
+                            } else if (currentToken.type == Token.TT_VARTYPE) {
+                                Token type = currentToken;
+                                advance();
+                                if (currentToken != null && currentToken.type == Token.TT_VARNAME) {
+                                    lastToken = currentToken;
+                                    advance();
+                                    if (currentToken != null && currentToken.type == Token.TT_ASSIGN) {
+                                        return makeVar(type, lastToken);
+                                    } else {
+                                        Position start = pos.clone();
+                                        String varName = (String) lastToken.value;
+                                        return new UnassignedVariableError(start, pos, new StringBuilder("Wariable").append(varName).append(" decwared but nao walue was asswigned ._.").toString());
+                                    }
+                                } //todo else if only vartype is given return the type class
+                                else {
+                                    Position start = pos.clone();
+                                    return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is iwegal here ._.").toString());
+                                }
+                            } else if (currentToken.type == Token.TT_KEYWORD) {
+                                if (currentToken.value.equals("dewete")) {
+                                    advance();
+                                    if (currentToken.type == Token.TT_VARNAME) {
+                                        heap.remove(currentToken);
+                                        return null;
+                                    } else {
+                                        Position start = pos.clone();
+                                        return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is nawt wariable and i cwannot dewete ._.").toString());
+                                    }
+                                } else if (currentToken.value.equals("ewlse")) {
+                                    return null; //Else does nothing on its own
+                                } //other keywords that appear at the beginning of statement goes here
+                            } else {
                                 Position start = pos.clone();
                                 return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is iwegal here ._.").toString());
                             }
-                        } else if (currentToken.type == Token.TT_KEYWORD) {
-                            if (currentToken.value.equals("dewete")) {
+                        } else if (lastToken.type == Token.TT_INT) {
+                            if (currentToken.type == Token.TT_ADD || currentToken.type == Token.TT_MINUS || currentToken.type == Token.TT_MUL || currentToken.type == Token.TT_DIV || currentToken.type == Token.TT_MOD) {
+                                expr.append(currentToken.type);
+                                lastToken = currentToken;
                                 advance();
-                                if (currentToken.type == Token.TT_VARNAME) {
-                                    heap.remove(currentToken);
-                                    return null;
-                                } else {
-                                    Position start = pos.clone();
-                                    return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is nawt wariable and i cwannot dewete ._.").toString());
-                                }
-                            } else if (currentToken.value.equals("ewlse")) {
-                                return null; //Else does nothing on its own
-                            } //other keywords that appear at the beginning of statement goes here
+                            } //future operations go below here
                         } else {
                             Position start = pos.clone();
                             return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is iwegal here ._.").toString());
                         }
-                    } else if (lastToken.type == Token.TT_INT) {
-                        if (currentToken.type == Token.TT_ADD || currentToken.type == Token.TT_MINUS || currentToken.type == Token.TT_MUL || currentToken.type == Token.TT_DIV || currentToken.type == Token.TT_MOD) {
-                            expr.append(currentToken.type);
-                            lastToken = currentToken;
-                            advance();
-                        } //future operations go below here
-                    } else {
-                        Position start = pos.clone();
-                        return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is iwegal here ._.").toString());
                     }
-                }
-                if (expr.length() > 0) {
-                    try {
-                        String s = expr.toString();
-                        //System.out.println(s);
-                        if (s.contains("/0")) {
+                    if (expr.length() > 0) {
+                        try {
+                            String s = expr.toString();
+                            //System.out.println(s);
+                            if (s.contains("/0")) {
+                                Position start = pos.clone();
+                                return new DivisionByZeroError(start, pos);
+                            }
+                            Expression e = new ExpressionBuilder(s).build();
+                            Object result = e.evaluate();
+                            return result;
+                        } catch (Exception ex) {
                             Position start = pos.clone();
-                            return new DivisionByZeroError(start, pos);
+                            return new RunTimeError(start, pos, ex.getMessage());
                         }
-                        Expression e = new ExpressionBuilder(s).build();
-                        Object result = e.evaluate();
-                        return result;
-                    } catch (Exception ex) {
-                        Position start = pos.clone();
-                        return new RunTimeError(start, pos, ex.getMessage());
+                    } else {
+                        return null;
                     }
-                } else {
+                } else { //doInterpret is FALSE
+                    //Only care about the endif and evaluate nothing
+                    if (tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
+                        justHadElse = false;
+                        activeElseStatements--;
+                        prevDoInterpret.remove(activeElseStatements);
+                    }
                     return null;
                 }
-            } else { //doInterpret is FALSE
-                //Only care about the endif and evaluate nothing
-                if (tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
-                    justHadElse = false;
-                    activeElseStatements--;
-                    prevDoInterpret.remove(activeElseStatements);
-                }
-                return null;
-            }
-        } //end Loop if
+            } //end Loop if
+        } //end record loop
         return null;
     } //endFunction
 
