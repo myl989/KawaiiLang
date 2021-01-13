@@ -33,7 +33,7 @@ class Loop {
   public void loop() {
     //System.out.println(this);
     outer:
-    for (int i = idx; i < max; i++) {
+    for (; idx < max; idx++) {
       for (int j = 0; j < actions.size(); j++) {
         Token[] action = actions.get(j);
         if (action.length > 0 && action[0].equals(new Token(Token.TT_KEYWORD, "do")) && action[action.length - 1].equals(new Token(Token.TT_KEYWORD, "twimes"))) {
@@ -66,7 +66,6 @@ class Loop {
           }
         }
       }
-      idx++;
     }
   }
 

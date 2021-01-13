@@ -299,6 +299,11 @@ class Interpreter {
                                 Object value = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, pos.getIdx() + 1, tokens.length));
                                 if (value instanceof org.kawaiilang.Error) {
                                     return value;
+                                } else if (value instanceof Integer) {
+                                    Integer i = (Integer) value;
+                                    System.out.println("i: " + i);
+                                    loop.setIdx(i);
+                                    return value;
                                 } else if (value instanceof Double) {
                                     Double d = (Double) value;
                                     loop.setIdx(d.intValue());
@@ -309,7 +314,12 @@ class Interpreter {
                                 }
                               }
                               //Otherwise it is recall of loop index
-                              return loop.getIdx();
+                              Token varReplaced = new Token(Token.TT_INT, loop.getIdx());
+                              tokens[pos.getIdx()] = varReplaced;
+                              pos = new Position(-1, 0, -1, fn, Arrays.toString(tokens));
+                              advance();
+                              Object value = interpret();
+                              return value;
                             } else {
                               Position start = pos.clone();
                               return new InvalidSyntaxError(start, pos, "Naooo uwu u cwannot gwet orw updwate inwex witowt lowp ._.");
