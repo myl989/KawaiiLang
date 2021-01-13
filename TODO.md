@@ -1,5 +1,5 @@
 Todo:
-* While loops
+* Functions
 
 Bugs (high priority):
 N/A
