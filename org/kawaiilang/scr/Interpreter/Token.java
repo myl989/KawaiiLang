@@ -28,7 +28,7 @@ class Token {
   public static final String TT_STARTIF = "STARTIF";
   public static final String TT_ENDIF = "ENDIF";
 
-  public static final String[] KEYWORDS = {"OwO", "notices", "^_^ewndNotice", "^_^wepeatDat", "do", "tw", "twimes", "ewlse", "stawp", "awnd", "orw", "nawt", "xwr", "dewete", "nwthin"};
+  public static final String[] KEYWORDS = {"OwO", "notices", "^_^ewndNotice", "^_^wepeatDat", "do", "doWen", "tw", "twimes", "ewlse", "stawp", "awnd", "orw", "nawt", "xwr", "dewete", "nwthin"};
 
   public static final String[] DATA_TYPES = {"Numwer"};
 

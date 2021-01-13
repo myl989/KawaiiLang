@@ -8,7 +8,7 @@ import net.objecthunter.exp4j.*;
 class Interpreter {
     //Variables for handeling for loops
     private boolean declaringLoop = false;
-    private Loop loop;
+    private LoopInterface loop;
     private int loopIdx = -1;
 
     //Variables for handeling if statements
@@ -78,6 +78,7 @@ class Interpreter {
                 loopIdx--;
                 if (loopIdx == -1) {
                     declaringLoop = false;
+                    //System.out.println(loop);
                     loop.loop();
                     loop = null;
                 } else {
@@ -110,9 +111,13 @@ class Interpreter {
                     }
                 }
             }
-
-            //For loops
-            if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "do")) && tokens[tokens.length - 1].equals(new Token(Token.TT_KEYWORD, "twimes"))) {
+            //While loops
+            if (tokens.length > 2 && tokens[0].equals(new Token(Token.TT_KEYWORD, "doWen")) && tokens[1].equals(new Token(Token.TT_STARTIF)) && tokens[tokens.length - 1].equals(new Token(Token.TT_ENDIF))) {
+              Token[] condition = Arrays.copyOfRange(tokens, 2, tokens.length - 1);
+              loop = new DoWhen(this, condition);
+              declaringLoop = true;
+              loopIdx++;
+            } else if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "do")) && tokens[tokens.length - 1].equals(new Token(Token.TT_KEYWORD, "twimes"))) { //For loops
                 if (Arrays.asList(tokens).contains(new Token(Token.TT_KEYWORD, "tw"))) {
                     Token[] exprs = Arrays.copyOfRange(tokens, 1, tokens.length - 1);
                     ArrayList < Token > exA = new ArrayList < > ();
@@ -291,8 +296,9 @@ class Interpreter {
                         }
                         else if (currentToken.type == Token.TT_VARNAME) {
                           //Special variable for changing loop index
-                          if (currentToken.value.equals("inwex")) {
-                            if (loop != null) {
+                          if (currentToken.value.equals("inwex") && loop instanceof Loop) {
+                            Loop l = (Loop) loop;
+                            if (l != null) {
                               if (pos.getIdx() + 1 < tokens.length && tokens[pos.getIdx() + 1].type == Token.TT_ASSIGN) {
                                 lastToken = currentToken;
                                 advance();
@@ -301,11 +307,11 @@ class Interpreter {
                                     return value;
                                 } else if (value instanceof Integer) {
                                     Integer i = (Integer) value;
-                                    loop.setIdx(i);
+                                    l.setIdx(i);
                                     return value;
                                 } else if (value instanceof Double) {
                                     Double d = (Double) value;
-                                    loop.setIdx(d.intValue());
+                                    l.setIdx(d.intValue());
                                     return value;
                                 } else {
                                   Position start = pos.clone();
@@ -313,7 +319,7 @@ class Interpreter {
                                 }
                               }
                               //Otherwise it is recall of loop index
-                              Token varReplaced = new Token(Token.TT_INT, loop.getIdx());
+                              Token varReplaced = new Token(Token.TT_INT, l.getIdx());
                               tokens[pos.getIdx()] = varReplaced;
                               pos = new Position(-1, 0, -1, fn, Arrays.toString(tokens));
                               advance();
@@ -325,8 +331,9 @@ class Interpreter {
                             }
                           }
                           //Same as above, but for changing max index
-                          if (currentToken.value.equals("max")) {
-                            if (loop != null) {
+                          if (currentToken.value.equals("max") && loop instanceof Loop) {
+                            Loop l = (Loop) loop;
+                            if (l != null) {
                               if (pos.getIdx() + 1 < tokens.length && tokens[pos.getIdx() + 1].type == Token.TT_ASSIGN) {
                                 lastToken = currentToken;
                                 advance();
@@ -335,11 +342,11 @@ class Interpreter {
                                     return value;
                                 } else if (value instanceof Integer) {
                                     Integer i = (Integer) value;
-                                    loop.setMax(i);
+                                    l.setMax(i);
                                     return value;
                                 } else if (value instanceof Double) {
                                     Double d = (Double) value;
-                                    loop.setMax(d.intValue());
+                                    l.setMax(d.intValue());
                                     return value;
                                 } else {
                                   Position start = pos.clone();
@@ -347,7 +354,7 @@ class Interpreter {
                                 }
                               }
                               //Otherwise it is recall of loop max index
-                              Token varReplaced = new Token(Token.TT_INT, loop.getMax());
+                              Token varReplaced = new Token(Token.TT_INT, l.getMax());
                               tokens[pos.getIdx()] = varReplaced;
                               pos = new Position(-1, 0, -1, fn, Arrays.toString(tokens));
                               advance();
@@ -463,7 +470,7 @@ class Interpreter {
                                 } //todo else if only vartype is given return the type class
                                 else {
                                     Position start = pos.clone();
-                                    return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is iwegal here ._.").toString());
+                                    return new InvalidSyntaxError(start, pos, new StringBuilder("Naooo uwu ").append(currentToken.toString()).append(" iws iwegal here ._.").toString());
                                 }
                             } else if (currentToken.type == Token.TT_KEYWORD) {
                                 if (currentToken.value.equals("dewete")) {
@@ -480,7 +487,7 @@ class Interpreter {
                                 } //other keywords that appear at the beginning of statement goes here
                                 else {
                                   Position start = pos.clone();
-                                  return new InvalidSyntaxError(start, pos, new StringBuilder("Naooo uwu ").append(currentToken.toString()).append(" is iwegal here ._.").toString());
+                                  return new InvalidSyntaxError(start, pos, new StringBuilder("Naooo uwu ").append(currentToken.toString()).append(" iws iwegal here ._.").toString());
                                 }
                             } else {
                                 Position start = pos.clone();

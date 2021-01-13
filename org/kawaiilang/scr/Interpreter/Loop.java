@@ -2,7 +2,7 @@ package org.kawaiilang;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-class Loop {
+class Loop implements LoopInterface {
 
   private int idx = 0;
   private int max = 0;
@@ -11,7 +11,7 @@ class Loop {
   private ArrayList<Byte> needsToBeStopped = new ArrayList<>();    //These types of actions needs top be stopped with an ^_^ statement before breaking or errors may occur.
   //These actions are numbered as follows:
   //NOTICE (if): 0
-  //DO (for): 1
+  //DO or DOWHEN (for or while): 1
   
   public Loop(Interpreter interpreter, int max) {
     this.interpreter = interpreter;
@@ -36,7 +36,7 @@ class Loop {
     for (; idx < max; idx++) {
       for (int j = 0; j < actions.size(); j++) {
         Token[] action = actions.get(j);
-        if (action.length > 0 && action[0].equals(new Token(Token.TT_KEYWORD, "do")) && action[action.length - 1].equals(new Token(Token.TT_KEYWORD, "twimes"))) {
+        if ((action.length > 0 && action[0].equals(new Token(Token.TT_KEYWORD, "do")) && action[action.length - 1].equals(new Token(Token.TT_KEYWORD, "twimes"))) || (action.length > 2 && action[0].equals(new Token(Token.TT_KEYWORD, "doWen")) && action[1].equals(new Token(Token.TT_STARTIF)) && action[action.length - 1].equals(new Token(Token.TT_ENDIF)))) {
           needsToBeStopped.add((byte)1);
         } else if (action.length > 0 && action[0].equals(new Token(Token.TT_STARTIF))) {
           needsToBeStopped.add((byte)0);
@@ -65,8 +65,8 @@ class Loop {
             break outer;
           }
         }
-      }
-    }
+      } //End runActions
+    } //End loopActions
   }
 
   public int getIdx() {
@@ -85,7 +85,6 @@ class Loop {
     max = newMax;
   }
 
-  //I don't think toString() works
   public String toString() {
     StringBuilder sb = new StringBuilder("[");
     for (Token[] action : actions) {
