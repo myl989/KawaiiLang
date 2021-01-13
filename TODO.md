@@ -1,5 +1,5 @@
 Todo:
-* Call or change loop index within loop
+* Allow user to call or change loop index within loop
 
 Bugs (high priority):
 * In this statement:
