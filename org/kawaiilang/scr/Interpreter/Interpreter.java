@@ -62,7 +62,7 @@ class Interpreter {
         Token lastToken = null;
 
         //System.out.println("loopIdx: " + loopIdx);
-        System.out.println("declaringLoop: " + declaringLoop);
+        //System.out.println("declaringLoop: " + declaringLoop);
         //System.out.println(loop);
 
         //System.out.println("activeElseStatements: " + activeElseStatements);
@@ -86,6 +86,8 @@ class Interpreter {
             } else {
                 if (tokens.length > 0 && tokens[0].equals(new Token(Token.TT_KEYWORD, "do")) && tokens[tokens.length - 1].equals(new Token(Token.TT_KEYWORD, "twimes"))) {
                   loopIdx++; //So that ending a nested loop doesn't end the whole thing
+                } else if (tokens.length == 1 && tokens[0].equals(new Token(Token.TT_KEYWORD, "stawp"))) {
+                  return tokens[0];
                 }
                 loop.addAction(tokens);
             }

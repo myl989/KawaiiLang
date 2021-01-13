@@ -31,7 +31,7 @@ class Loop {
   }
 
   public void loop() {
-    System.out.println(this);
+    //System.out.println(this);
     outer:
     for (int i = idx; i < max; i++) {
       for (int j = 0; j < actions.size(); j++) {
@@ -44,25 +44,27 @@ class Loop {
           needsToBeStopped.remove(Byte.valueOf((byte)1));
         } else if (action.length == 1 && action[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
           needsToBeStopped.remove(Byte.valueOf((byte)0));
-        } else if (action.length == 1 && action[0].equals(new Token(Token.TT_KEYWORD, "stawp"))) {
-          //Todo: fix bug
-          //Breaks loop regardless of if statements, etc.
-          for (Byte b : needsToBeStopped) { //Checks for any actions that needs top be stopped
-            Token[] end = new Token[1];
-            switch(b) {
-              case (byte)0:
-                end[0] = new Token(Token.TT_KEYWORD, "^_^ewndNotice");
-                new Runner(interpreter.getFileLocation(), interpreter).interpret(end);
-                break outer;
-              case (byte)1:
-                end[0] = new Token(Token.TT_KEYWORD, "^_^wepeatDat");
-                new Runner(interpreter.getFileLocation(), interpreter).interpret(end);
-                break outer;
-            }
-          }
-          break outer;
         }
-        new Runner(interpreter.getFileLocation(), interpreter).interpret(action);
+        Object o = new Runner(interpreter.getFileLocation(), interpreter).interpret(action);
+        if (o instanceof Token) {
+          Token t = (Token) o;
+          if (t.equals(new Token(Token.TT_KEYWORD, "stawp"))) {
+            for (Byte b : needsToBeStopped) { //Checks for any actions that needs top be stopped
+              Token[] end = new Token[1];
+              switch(b) {
+                case (byte)0:
+                  end[0] = new Token(Token.TT_KEYWORD, "^_^ewndNotice");
+                  new Runner(interpreter.getFileLocation(), interpreter).interpret(end);
+                  break outer;
+                case (byte)1:
+                  end[0] = new Token(Token.TT_KEYWORD, "^_^wepeatDat");
+                  new Runner(interpreter.getFileLocation(), interpreter).interpret(end);
+                  break outer;
+              }
+            }
+            break outer;
+          }
+        }
       }
       idx++;
     }
