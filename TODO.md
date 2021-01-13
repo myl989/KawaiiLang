@@ -1,5 +1,5 @@
 Todo:
-* Allow user to call or change loop index within loop
+* While loops
 
 Bugs (high priority):
 N/A

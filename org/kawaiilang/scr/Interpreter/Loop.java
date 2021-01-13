@@ -70,11 +70,11 @@ class Loop {
     }
   }
 
-  public int getIndex() {
+  public int getIdx() {
     return idx;
   }
 
-  public void setIndex(int newIdx) {
+  public void setIdx(int newIdx) {
     idx = newIdx;
   }
 

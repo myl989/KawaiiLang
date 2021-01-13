@@ -134,22 +134,22 @@ class Interpreter {
                     Object resultB = new Runner(fn, this).interpret(Arrays.copyOfRange(exAb, 0, exAb.length));
                     if (resultA instanceof Double && resultB instanceof Double) {
                         Double dA = (Double) resultA;
-                        int a = (int) dA.doubleValue();
+                        int a = dA.intValue();
                         Double dB = (Double) resultB;
-                        int b = (int) dB.doubleValue();
+                        int b = dB.intValue();
                         loop = new Loop(this, a, b);
                         declaringLoop = true;
                         loopIdx++;
                     } else {
                         Position start = pos.clone();
-                        return new IllegalTypeError(start, pos, new StringBuilder("Start and ewnd lowp amwownt mwst bwe a numbwer, inpwtwed start lowp amwownt: ").append(resultA).append(", impwtwed ewnd lowp amwownt: ").append(" ._.").append(resultB).toString());
+                        return new IllegalTypeError(start, pos, new StringBuilder("Naooo uwu da start and ewnd lowp amwownt mwst bwe a numbwer, inpwtwed start lowp amwownt: ").append(resultA).append(", impwtwed ewnd lowp amwownt: ").append(" ._.").append(resultB).toString());
                     }
                 } else {
                     if (tokens.length > 1) {
                         Object result = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, 1, tokens.length - 1));
                         if (result instanceof Double) {
                             Double d = (Double) result;
-                            int i = (int) d.doubleValue();
+                            int i = d.intValue();
                             loop = new Loop(this, i);
                             declaringLoop = true;
                             loopIdx++;
@@ -157,11 +157,11 @@ class Interpreter {
                             return result;
                         } else {
                             Position start = pos.clone();
-                            return new IllegalTypeError(start, pos, new StringBuilder("Lowp amwownt mwst bwe a numbwer, inpwtwed lowp amwownt: ").append(result).append(" ._.").toString());
+                            return new IllegalTypeError(start, pos, new StringBuilder("Naooo uwu da lowp amwownt mwst bwe a numbwer, inpwtwed lowp amwownt: ").append(result).append(" ._.").toString());
                         }
                     } else {
                         Position start = pos.clone();
-                        return new InvalidSyntaxError(start, pos, "Expwecwed lowp amwownt ._.");
+                        return new InvalidSyntaxError(start, pos, "Naooo uwu expwecwed lowp amwownt hewe ._.");
                     }
                 }
             } else {
@@ -220,11 +220,11 @@ class Interpreter {
                                 return result;
                             } else {
                                 Position start = pos.clone();
-                                return new BadOprandTypeError(start, pos, new StringBuilder("Bwad owpwand twypes fwr \"nawt\" owpewawor: owpwand: ").append(result.toString()).append(" ._.").toString());
+                                return new BadOprandTypeError(start, pos, new StringBuilder("Naooo uwu u hab bwad owpwand twypes fwr \"nawt\" owpewawor: owpwand: ").append(result.toString()).append(" ._.").toString());
                             }
                         } else {
                             Position start = pos.clone();
-                            return new InvalidSyntaxError(start, pos, "Opwand not found for \"nawt\"opewawor ._.");
+                            return new InvalidSyntaxError(start, pos, "Naooo uwu opwand not found for \"nawt\"opewawor ._.");
                         }
                     }
 
@@ -288,27 +288,52 @@ class Interpreter {
                             expr.append(currentToken.value);
                             lastToken = currentToken;
                             advance();
-                        } //Logical operations here
+                        }
                         else if (currentToken.type == Token.TT_VARNAME) {
-                            if (pos.getIdx() + 1 < tokens.length && tokens[pos.getIdx() + 1].type == Token.TT_ASSIGN && heap.containsKey(currentToken)) {
+                          //Special variable for changing loop index
+                          if (currentToken.value.equals("inwex")) {
+                            if (loop != null) {
+                              if (pos.getIdx() + 1 < tokens.length && tokens[pos.getIdx() + 1].type == Token.TT_ASSIGN) {
                                 lastToken = currentToken;
                                 advance();
-                                int idx = pos.getIdx();
-                                Object value = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, idx + 1, tokens.length));
+                                Object value = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, pos.getIdx() + 1, tokens.length));
+                                if (value instanceof org.kawaiilang.Error) {
+                                    return value;
+                                } else if (value instanceof Double) {
+                                    Double d = (Double) value;
+                                    loop.setIdx(d.intValue());
+                                    return value;
+                                } else {
+                                  Position start = pos.clone();
+                                  return new IllegalTypeError(start, pos, "Naooo uwu da twype of variable fwor uwpdwated inwex mwst bwe Numwer ._.");
+                                }
+                              }
+                              //Otherwise it is recall of loop index
+                              return loop.getIdx();
+                            } else {
+                              Position start = pos.clone();
+                              return new InvalidSyntaxError(start, pos, "Naooo uwu u cwannot gwet orw updwate inwex witowt lowp ._.");
+                            }
+                          }
+
+                          //Variable reassignment
+                          if (pos.getIdx() + 1 < tokens.length && tokens[pos.getIdx() + 1].type == Token.TT_ASSIGN && heap.containsKey(currentToken)) {
+                                lastToken = currentToken;
+                                advance();
+                                Object value = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, pos.getIdx() + 1, tokens.length));
                                 if (value instanceof org.kawaiilang.Error) {
                                     return value;
                                 } else {
                                     currentToken = lastToken;
-                                    Variable
-                                    var = new Variable(heap.get(currentToken).getType(), value);
-                                    heap.put(currentToken,
-                                        var);
+                                    Variable var = new Variable(heap.get(currentToken).getType(), value);
+                                    heap.put(currentToken, var);
                                     return value;
                                 }
-                            }
-                            int idx = pos.getIdx();
-                            Variable varData = heap.get(currentToken);
-                            if (varData != null) {
+                          }
+
+                          //Variable recall
+                          Variable varData = heap.get(currentToken);
+                          if (varData != null) {
                                 Token type = varData.getType();
                                 Object stored = varData.getValue();
                                 Token varReplaced = null;
@@ -319,7 +344,7 @@ class Interpreter {
                                         varReplaced = new Token(Token.TT_FLOAT, stored);
                                     } else {
                                         Position start = pos.clone();
-                                        return new IllegalTypeError(start, pos, new StringBuilder("Twype of variable, ").append(type.type).append(", is nawt as decwared ._.").toString());
+                                        return new IllegalTypeError(start, pos, new StringBuilder("Naooo uwu da twype of variable, ").append(type.type).append(", is nawt as decwared ._.").toString());
                                     }
                                 } //More variable types in the future
                                 tokens[pos.getIdx()] = varReplaced;
@@ -327,11 +352,11 @@ class Interpreter {
                                 advance();
                                 Object value = interpret();
                                 return value;
-                            } else {
+                          } else {
                                 String varName = (String) currentToken.value;
                                 Position start = pos.clone();
-                                return new UnassignedVariableError(start, pos, new StringBuilder("Wariable ").append(varName).append(" newer asswigned ._.").toString());
-                            }
+                                return new UnassignedVariableError(start, pos, new StringBuilder("Naooo uwu da wariable ").append(varName).append(" newer asswigned ._.").toString());
+                          }
                         } else if (currentToken.type == Token.TT_LPAREN) {
                             expr.append("(");
                             lastToken = currentToken;
@@ -361,7 +386,7 @@ class Interpreter {
                                     }
                                 } else {
                                     Position start = pos.clone();
-                                    return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" cwannot cwome awfter awnowther owpewation ._.").toString());
+                                    return new InvalidSyntaxError(start, pos, new StringBuilder("Naooo uwu ").append(currentToken.toString()).append(" cwannot cwome awfter awnowther owpewation ._.").toString());
                                 }
                             } else if (currentToken.type == Token.TT_ADD || currentToken.type == Token.TT_MINUS || currentToken.type == Token.TT_MUL || currentToken.type == Token.TT_DIV || currentToken.type == Token.TT_MOD) {
                                 if (lastToken != null && (lastToken.type != Token.TT_INT && lastToken.type != Token.TT_FLOAT)) {
@@ -390,7 +415,7 @@ class Interpreter {
                                     } else {
                                         Position start = pos.clone();
                                         String varName = (String) lastToken.value;
-                                        return new UnassignedVariableError(start, pos, new StringBuilder("Wariable").append(varName).append(" decwared but nao walue was asswigned ._.").toString());
+                                        return new UnassignedVariableError(start, pos, new StringBuilder("Naooo uwu wariable ").append(varName).append(" decwared but nao walue was asswigned ._.").toString());
                                     }
                                 } //todo else if only vartype is given return the type class
                                 else {
@@ -405,18 +430,18 @@ class Interpreter {
                                         return null;
                                     } else {
                                         Position start = pos.clone();
-                                        return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is nawt wariable and i cwannot dewete ._.").toString());
+                                        return new InvalidSyntaxError(start, pos, new StringBuilder("Naooo uwu ").append(currentToken.toString()).append(" is nawt wariable and i cwannot dewete ._.").toString());
                                     }
                                 } else if (currentToken.value.equals("ewlse")) {
                                     return null; //Else does nothing on its own
                                 } //other keywords that appear at the beginning of statement goes here
                                 else {
                                   Position start = pos.clone();
-                                  return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is iwegal here ._.").toString());
+                                  return new InvalidSyntaxError(start, pos, new StringBuilder("Naooo uwu ").append(currentToken.toString()).append(" is iwegal here ._.").toString());
                                 }
                             } else {
                                 Position start = pos.clone();
-                                return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is iwegal here ._.").toString());
+                                return new InvalidSyntaxError(start, pos, new StringBuilder("Naooo uwu ").append(currentToken.toString()).append(" is iwegal here ._.").toString());
                             }
                         } else if (lastToken.type == Token.TT_INT) {
                             if (currentToken.type == Token.TT_ADD || currentToken.type == Token.TT_MINUS || currentToken.type == Token.TT_MUL || currentToken.type == Token.TT_DIV || currentToken.type == Token.TT_MOD) {
@@ -426,7 +451,7 @@ class Interpreter {
                             } //future operations go below here
                         } else {
                             Position start = pos.clone();
-                            return new InvalidSyntaxError(start, pos, new StringBuilder(currentToken.toString()).append(" is iwegal here ._.").toString());
+                            return new InvalidSyntaxError(start, pos, new StringBuilder("Naooo uwu ").append(currentToken.toString()).append(" is iwegal here ._.").toString());
                         }
                     }
                     if (expr.length() > 0) {
@@ -463,15 +488,16 @@ class Interpreter {
 
     private Object makeVar(Token type, Token name) {
         advance();
-        int idx = pos.getIdx();
-        Object value = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, idx, tokens.length));
+        Object value = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, pos.getIdx(), tokens.length));
         if (value instanceof org.kawaiilang.Error) {
             return value;
+        } else if (name.value.equals("inwex")) {
+          Position start = pos.clone();
+          return new InvalidSyntaxError(start, pos, "Naooo uwu u cwannot set inwex witowt lowp ._.");
         } else {
             Variable
             var = new Variable(type, value);
-            heap.put(name,
-                var);
+            heap.put(name, var);
             return value;
         }
     }
@@ -576,7 +602,7 @@ class Interpreter {
         }
 
         Position start = pos.clone();
-        return new BadOprandTypeError(start, pos, new StringBuilder("Bwad owpwand twypes fwr bwinwawy owpewawor \"").append(oper).append("\": first owpwand: ").append(resultA.toString()).append(", second owpwand: ").append(resultB.toString()).append(" ._.").toString());
+        return new BadOprandTypeError(start, pos, new StringBuilder("Naooo uwu u hab bwad owpwand twypes fwr bwinwawy owpewawor \"").append(oper).append("\": first owpwand: ").append(resultA.toString()).append(", second owpwand: ").append(resultB.toString()).append(" ._.").toString());
     }
 
 }
