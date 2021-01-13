@@ -77,6 +77,14 @@ class Loop {
     idx = newIdx;
   }
 
+  public int getMax() {
+    return max;
+  }
+
+  public void setMax(int newMax) {
+    max = newMax;
+  }
+
   //I don't think toString() works
   public String toString() {
     StringBuilder sb = new StringBuilder("[");

@@ -301,7 +301,6 @@ class Interpreter {
                                     return value;
                                 } else if (value instanceof Integer) {
                                     Integer i = (Integer) value;
-                                    System.out.println("i: " + i);
                                     loop.setIdx(i);
                                     return value;
                                 } else if (value instanceof Double) {
@@ -323,6 +322,40 @@ class Interpreter {
                             } else {
                               Position start = pos.clone();
                               return new InvalidSyntaxError(start, pos, "Naooo uwu u cwannot gwet orw updwate inwex witowt lowp ._.");
+                            }
+                          }
+                          //Same as above, but for changing max index
+                          if (currentToken.value.equals("max")) {
+                            if (loop != null) {
+                              if (pos.getIdx() + 1 < tokens.length && tokens[pos.getIdx() + 1].type == Token.TT_ASSIGN) {
+                                lastToken = currentToken;
+                                advance();
+                                Object value = new Runner(fn, this).interpret(Arrays.copyOfRange(tokens, pos.getIdx() + 1, tokens.length));
+                                if (value instanceof org.kawaiilang.Error) {
+                                    return value;
+                                } else if (value instanceof Integer) {
+                                    Integer i = (Integer) value;
+                                    loop.setMax(i);
+                                    return value;
+                                } else if (value instanceof Double) {
+                                    Double d = (Double) value;
+                                    loop.setMax(d.intValue());
+                                    return value;
+                                } else {
+                                  Position start = pos.clone();
+                                  return new IllegalTypeError(start, pos, "Naooo uwu da twype of variable fwor uwpdwated ,max inwex mwst bwe Numwer ._.");
+                                }
+                              }
+                              //Otherwise it is recall of loop max index
+                              Token varReplaced = new Token(Token.TT_INT, loop.getMax());
+                              tokens[pos.getIdx()] = varReplaced;
+                              pos = new Position(-1, 0, -1, fn, Arrays.toString(tokens));
+                              advance();
+                              Object value = interpret();
+                              return value;
+                            } else {
+                              Position start = pos.clone();
+                              return new InvalidSyntaxError(start, pos, "Naooo uwu u cwannot gwet orw updwate max inwex witowt lowp ._.");
                             }
                           }
 
