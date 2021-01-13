@@ -1,6 +1,5 @@
 Todo:
 * While loops
-* Update maximum value for loops
 
 Bugs (high priority):
 N/A
