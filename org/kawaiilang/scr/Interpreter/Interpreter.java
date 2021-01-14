@@ -42,6 +42,10 @@ class Interpreter {
         return fn;
     }
 
+    public Position getPosition() {
+      return pos;
+    }
+
     public void setTokens(Token[] tokens) {
         this.tokens = tokens;
         pos = new Position(-1, 0, -1, fn, Arrays.toString(tokens));
@@ -196,7 +200,7 @@ class Interpreter {
                         return result;
                     } else {
                         Position start = pos.clone();
-                        return new BadOprandTypeError(start, pos, new StringBuilder("Bwad reswlt twypes fwr \"if\" statement: reswlt: ").append(result.toString()).append(" ._.").toString());
+                        return new BadOprandTypeError(start, pos, new StringBuilder("Naooo uwu bwad reswlt twypes fwr \"if\" statement: reswlt: ").append(result.toString()).append(" ._.").toString());
                     }
                 }
 

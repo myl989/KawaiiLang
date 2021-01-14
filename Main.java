@@ -19,11 +19,11 @@ class Main {
         System.out.println(endTime - startTime);*/
 
         //The following code prints out the final results only! (unlike the testing print code in Runner class which prints every evaluation)
-        /*if (result == null) {
+        if (result == null) {
           System.out.println("nwthin");
         } else {
           System.out.println(result);
-        }*/
+        }
       } //endCheckIfToEndShell
     } //endInfiniteLoop
   }

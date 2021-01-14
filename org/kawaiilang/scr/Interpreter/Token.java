@@ -6,6 +6,7 @@ class Token {
 
   public static final String TT_INT = "INT";
   public static final String TT_FLOAT = "FLOAT";
+
   public static final String TT_ADD = "+";
   public static final String TT_MINUS = "-";
   public static final String TT_MUL = "ᴹ";
@@ -28,7 +29,10 @@ class Token {
   public static final String TT_STARTIF = "STARTIF";
   public static final String TT_ENDIF = "ENDIF";
 
-  public static final String[] KEYWORDS = {"OwO", "notices", "^_^ewndNotice", "^_^wepeatDat", "do", "doWen", "tw", "twimes", "ewlse", "stawp", "awnd", "orw", "nawt", "xwr", "dewete", "nwthin"};
+  public static final String TT_PARAM = "UwU";
+  public static final String TT_COMMA = "COMMA";
+
+  public static final String[] KEYWORDS = {"OwO", "notices", "^_^ewndNotice", "^_^wepeatDat", "do", "doWen", "tw", "twimes", "ewlse", "stawp", "awnd", "orw", "nawt", "xwr", "dewete", "nwthin", "canDo", "canGibU", "gibU"};
 
   public static final String[] DATA_TYPES = {"Numwer"};
 
