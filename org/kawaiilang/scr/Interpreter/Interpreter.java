@@ -115,6 +115,10 @@ class Interpreter {
                     }
                 }
             }
+
+            //Function declaration
+            //todo
+
             //While loops
             if (tokens.length > 2 && tokens[0].equals(new Token(Token.TT_KEYWORD, "doWen")) && tokens[1].equals(new Token(Token.TT_STARTIF)) && tokens[tokens.length - 1].equals(new Token(Token.TT_ENDIF))) {
               Token[] condition = Arrays.copyOfRange(tokens, 2, tokens.length - 1);
