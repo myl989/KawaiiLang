@@ -1,11 +1,14 @@
 package org.kawaiilang;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.HashMap;
-
 import net.objecthunter.exp4j.*;
 
 class Interpreter {
+    //Variables for handeling functions
+    private Function currentFunc = null;
+
     //Variables for handeling for loops
     private boolean declaringLoop = false;
     private LoopInterface loop;
@@ -77,7 +80,19 @@ class Interpreter {
         //System.out.println(heap);
         //System.out.println(heap.size());
 
-        if (declaringLoop) {
+        if (currentFunc != null) {
+          if (tokens.length == 1 && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^stawpCanDo"))) {
+            currentFunc = null;
+          } else {
+            //Statement to prevent nested function declarations
+            if (tokens.length > 6 && tokens[0].equals(new Token(Token.TT_KEYWORD, "OwO")) && tokens[1].equals(new Token(Token.TT_KEYWORD, "canDo")) && tokens[2].type.equals(Token.TT_VARNAME) && tokens[3].equals(new Token(Token.TT_PARAM)) && tokens[tokens.length - 3].equals(new Token(Token.TT_PARAM)) && tokens[tokens.length - 2].equals(new Token(Token.TT_KEYWORD, "canGibU")) && tokens[tokens.length - 1].type.equals(Token.TT_VARTYPE)) {
+              Position start = pos.clone();
+              return new InvalidSyntaxError(start, pos, "Naooo uwu u cwannot hab nwested fwnctwions ._.");
+            } else {
+              currentFunc.addAction(tokens);
+            }
+          }
+        } else if (declaringLoop) {
             if (tokens.length == 1 && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^wepeatDat"))) {
                 loopIdx--;
                 if (loopIdx == -1) {
@@ -117,10 +132,45 @@ class Interpreter {
             }
 
             //Function declaration
-            //todo
-
-            //While loops
-            if (tokens.length > 2 && tokens[0].equals(new Token(Token.TT_KEYWORD, "doWen")) && tokens[1].equals(new Token(Token.TT_STARTIF)) && tokens[tokens.length - 1].equals(new Token(Token.TT_ENDIF))) {
+            if (tokens.length > 6 && tokens[0].equals(new Token(Token.TT_KEYWORD, "OwO")) && tokens[1].equals(new Token(Token.TT_KEYWORD, "canDo")) && tokens[2].type.equals(Token.TT_VARNAME) && tokens[3].equals(new Token(Token.TT_PARAM)) && tokens[tokens.length - 3].equals(new Token(Token.TT_PARAM)) && tokens[tokens.length - 2].equals(new Token(Token.TT_KEYWORD, "canGibU")) && tokens[tokens.length - 1].type.equals(Token.TT_VARTYPE)) {
+              Token funcName = tokens[2];
+              Token canGibU = tokens[tokens.length - 1];
+              LinkedHashMap<String, String> param = null;
+              advance();
+              advance();
+              advance();
+              advance();  //Advance to the 4th token
+              while (true) {
+                if (currentToken.equals(new Token(Token.TT_PARAM))) {
+                  break;
+                } else {
+                  if (param == null) {
+                    param = new LinkedHashMap<>();
+                  }
+                  lastToken = currentToken;
+                  advance();
+                  if (currentToken.equals(new Token(Token.TT_PARAM))) { //Cannot have only vartype not varname
+                    Position start = pos.clone();
+                    return new InvalidParameterError(start, pos, "Naooo uwu fwnctwion pawamweters mwst hab wariable nwame awnd twype ._.");
+                  } else if (lastToken.type.equals(Token.TT_VARTYPE) && currentToken.type.equals(Token.TT_VARNAME)) {
+                    String paramType = (String) lastToken.value;
+                    String paramName = (String) currentToken.value;
+                    param.put(paramType, paramName);
+                    advance();
+                  } else {  //Wrong types
+                    Position start = pos.clone();
+                    return new InvalidParameterError(start, pos, "Naooo uwu fwnctwion pawamweters mwst hab wariable nwame awnd twype ._.");
+                  }
+                }
+              }
+              if (param == null) {
+                currentFunc = new Function(this, canGibU);
+              } else {
+                currentFunc = new Function(this, param, canGibU);
+              }
+              Variable funcVar = new Variable(new Token(Token.TT_VARNAME, "Fwnctwion"), currentFunc);
+              heap.put(tokens[2], funcVar);
+            } else if (tokens.length > 2 && tokens[0].equals(new Token(Token.TT_KEYWORD, "doWen")) && tokens[1].equals(new Token(Token.TT_STARTIF)) && tokens[tokens.length - 1].equals(new Token(Token.TT_ENDIF))) {  //While loops
               Token[] condition = Arrays.copyOfRange(tokens, 2, tokens.length - 1);
               loop = new DoWhen(this, condition);
               declaringLoop = true;

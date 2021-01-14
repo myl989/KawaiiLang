@@ -34,7 +34,7 @@ class Token {
 
   public static final String[] KEYWORDS = {"OwO", "notices", "^_^ewndNotice", "^_^wepeatDat", "do", "doWen", "tw", "twimes", "ewlse", "stawp", "awnd", "orw", "nawt", "xwr", "dewete", "nwthin", "canDo", "canGibU", "gibU", "^_^stawpCanDo"};
 
-  public static final String[] DATA_TYPES = {"Numwer"};
+  public static final String[] DATA_TYPES = {"Numwer", "Fwnctwion"};
 
   String type;
   Object value;
