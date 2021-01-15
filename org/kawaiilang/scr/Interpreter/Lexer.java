@@ -153,6 +153,8 @@ class Lexer {
       return new Token(Token.TT_ASSIGN, idStr);
     } else if (idStr.equals("eqwals")) {
       return new Token(Token.TT_EQUALS, idStr);
+    } else if (idStr.equals("nwthin")) {
+      return new Token(Token.TT_NOTHING);
     } else if (idStr.equals("UwU")) {
       return new Token(Token.TT_PARAM);
     } else if (idStr.equals(">_<")) {

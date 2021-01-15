@@ -355,20 +355,17 @@ class Interpreter {
                         return evalComparison(exA.toArray(new Token[0]), oper, exB.toArray(new Token[0]));
                     }
 
-                    while (true) {
+                    while (true) {  //Main interpretation loop
                         if (currentToken == null) {
                             break;
-                        }
-                        /*else if (???) { //new line?
-                               lastToken = null;
-                               advance();
-                             }*/
-                        else if (currentToken instanceof org.kawaiilang.Error) {
+                        } else if (currentToken instanceof org.kawaiilang.Error) {
                             return currentToken;
-                        } else if (currentToken.type == Token.TT_INT || currentToken.type == Token.TT_FLOAT) {
+                        } else if (currentToken.type.equals(Token.TT_INT) || currentToken.type.equals(Token.TT_FLOAT)) {
                             expr.append(currentToken.value);
                             lastToken = currentToken;
                             advance();
+                        } else if (currentToken.type.equals(Token.TT_NOTHING)) {
+                          return null;
                         }
                         else if (currentToken.type == Token.TT_VARNAME) {
                           //Special variable for changing loop index

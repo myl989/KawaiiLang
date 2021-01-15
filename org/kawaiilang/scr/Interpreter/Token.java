@@ -32,7 +32,9 @@ class Token implements Cloneable {
   public static final String TT_PARAM = "UwU";
   public static final String TT_COMMA = "COMMA";
 
-  public static final String[] KEYWORDS = {"OwO", "notices", "^_^ewndNotice", "^_^wepeatDat", "do", "doWen", "tw", "twimes", "ewlse", "stawp", "awnd", "orw", "nawt", "xwr", "dewete", "nwthin", "canDo", "canGibU", "gibU", "^_^ewndCanDo"};
+  public static final String TT_NOTHING = "NOTHING";
+
+  public static final String[] KEYWORDS = {"OwO", "notices", "^_^ewndNotice", "^_^wepeatDat", "do", "doWen", "tw", "twimes", "ewlse", "stawp", "awnd", "orw", "nawt", "xwr", "dewete", "canDo", "canGibU", "gibU", "^_^ewndCanDo"};
 
   public static final String[] DATA_TYPES = {"Numwer", "Fwnctwion"};
 
