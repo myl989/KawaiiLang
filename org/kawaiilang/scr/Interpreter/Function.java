@@ -35,6 +35,7 @@ class Function {
     }
   }
 
+  //Can only be used with functions with parameters
   public Object run(ArrayList<Object> inputs) {
     if (inputs.size() != parameters.size()) { // Checks if number of arguments is the same as declared
       Position start = interpreter.getPosition().clone();
@@ -83,9 +84,10 @@ class Function {
       } // end loop through variables
 
       // It is now okay to run the statement
-      Object o = new Runner(interpreter.getFileLocation(), interpreter).interpret(actions.get(anum));
       if (actions.get(anum).length > 1
           && Arrays.asList(actions.get(anum)).get(0).equals(new Token(Token.TT_KEYWORD, "gibU"))) {
+            Token[] action = actions.get(anum);
+            Object o = new Runner(interpreter.getFileLocation(), interpreter).interpret(Arrays.copyOfRange(action, 1, action.length));
         if (o == null && canGibU == null) {
           return null;
         } else if (o instanceof Double) {
@@ -104,6 +106,8 @@ class Function {
               new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
                   .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
         }
+      } else {
+        new Runner(interpreter.getFileLocation(), interpreter).interpret(actions.get(anum));
       }
     } // End loop through statements
     if (canGibU == null) {
@@ -114,6 +118,7 @@ class Function {
         " Naooo uwu u hab no weturn stwatemwent ._.");
   }
 
+  //Can only be used with functions without parameters
   public Object run() {
     if (parameters != null) {
       Position start = interpreter.getPosition().clone();
@@ -121,8 +126,8 @@ class Function {
           "Naooo uwu no awgwmwent iws giwen wen de fwnctwion hwas awgwments ._.");
     }
     for (Token[] action : actions) {
-      Object o = new Runner(interpreter.getFileLocation(), interpreter).interpret(action);
       if (action.length > 1 && Arrays.asList(action).get(0).equals(new Token(Token.TT_KEYWORD, "gibU"))) {
+        Object o = new Runner(interpreter.getFileLocation(), interpreter).interpret(Arrays.copyOfRange(action, 1, action.length));
         if (o == null && canGibU == null) {
           return null;
         } else if (o instanceof Double) {
@@ -141,6 +146,8 @@ class Function {
               new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
                   .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
         }
+      } else {
+        new Runner(interpreter.getFileLocation(), interpreter).interpret(action);
       }
     } // End loop through statements
     if (canGibU == null) {

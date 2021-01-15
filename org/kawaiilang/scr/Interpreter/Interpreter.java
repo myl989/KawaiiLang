@@ -2,6 +2,7 @@ package org.kawaiilang;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+
 import java.util.HashMap;
 import net.objecthunter.exp4j.*;
 
@@ -68,6 +69,8 @@ class Interpreter {
         StringBuilder expr = new StringBuilder();
         Token lastToken = null;
 
+        //System.out.println(currentFunc);
+
         //System.out.println("loopIdx: " + loopIdx);
         //System.out.println("declaringLoop: " + declaringLoop);
         //System.out.println(loop);
@@ -81,7 +84,7 @@ class Interpreter {
         //System.out.println(heap.size());
 
         if (currentFunc != null) {
-          if (tokens.length == 1 && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^stawpCanDo"))) {
+          if (tokens.length == 1 && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndCanDo"))) {
             currentFunc = null;
           } else {
             //Statement to prevent nested function declarations
@@ -141,23 +144,30 @@ class Interpreter {
               advance();
               advance();  //Advance to the 4th token
               while (true) {
+                lastToken = currentToken;
+                advance();
                 if (currentToken.equals(new Token(Token.TT_PARAM))) {
                   break;
                 } else {
                   if (param == null) {
                     param = new LinkedHashMap<>();
                   }
-                  lastToken = currentToken;
-                  advance();
-                  if (currentToken.equals(new Token(Token.TT_PARAM))) { //Cannot have only vartype not varname
-                    Position start = pos.clone();
-                    return new InvalidParameterError(start, pos, "Naooo uwu fwnctwion pawamweters mwst hab wariable nwame awnd twype ._.");
+                  /*System.out.print(lastToken);
+                  System.out.print(" ");
+                  System.out.println(currentToken);*/
+                  if (lastToken.equals(new Token(Token.TT_COMMA))) {
+                    advance();
+                    lastToken = currentToken;
+                    /*System.out.print(lastToken);
+                    System.out.print(" ");
+                    System.out.println(currentToken);*/
                   } else if (lastToken.type.equals(Token.TT_VARTYPE) && currentToken.type.equals(Token.TT_VARNAME)) {
                     String paramType = (String) lastToken.value;
                     String paramName = (String) currentToken.value;
                     param.put(paramType, paramName);
                     advance();
                   } else {  //Wrong types
+                    //Todo: fix false positives here
                     Position start = pos.clone();
                     return new InvalidParameterError(start, pos, "Naooo uwu fwnctwion pawamweters mwst hab wariable nwame awnd twype ._.");
                   }
@@ -385,7 +395,7 @@ class Interpreter {
                               return value;
                             } else {
                               Position start = pos.clone();
-                              return new InvalidSyntaxError(start, pos, "Naooo uwu u cwannot gwet orw updwate inwex witowt lowp ._.");
+                              return new IllegalAssignmentError(start, pos, "Naooo uwu u cwannot gwet orw updwate inwex witowt lowp ._.");
                             }
                           }
                           //Same as above, but for changing max index
@@ -420,7 +430,7 @@ class Interpreter {
                               return value;
                             } else {
                               Position start = pos.clone();
-                              return new InvalidSyntaxError(start, pos, "Naooo uwu u cwannot gwet orw updwate max inwex witowt lowp ._.");
+                              return new IllegalAssignmentError(start, pos, "Naooo uwu u cwannot gwet orw updwate max inwex witowt lowp ._.");
                             }
                           }
 
@@ -454,7 +464,40 @@ class Interpreter {
                                         Position start = pos.clone();
                                         return new IllegalTypeError(start, pos, new StringBuilder("Naooo uwu da twype of variable, ").append(type.type).append(", is nawt as decwared ._.").toString());
                                     }
-                                } //More variable types in the future
+                                } else if (type.value.equals("Fwnctwion")) {
+                                      Function retrievedFunc = (Function) stored;
+                                      ArrayList<Object> inputs = null;  //List of input parameters to pass into function
+                                      advance();
+                                      if (!currentToken.equals(new Token(Token.TT_PARAM))) {
+                                        Position start = pos.clone();
+                                        return new InvalidSyntaxError(start, pos, "Naooo \"UwU\" expected ._.");
+                                      }
+                                      advance();
+                                      ArrayList<Token> param2eval = new ArrayList<>();
+                                      while (true) {
+                                        if (currentToken.equals(new Token(Token.TT_PARAM))) {
+                                          if (!param2eval.isEmpty()) {
+                                            inputs.add(new Runner(fn, this).interpret(param2eval.toArray(new Token[0])));
+                                          }
+                                          break;
+                                        } else if (currentToken.equals(new Token(Token.TT_COMMA))) {
+                                          if (inputs == null) {
+                                            inputs = new ArrayList<>();
+                                          }
+                                          inputs.add(new Runner(fn, this).interpret(param2eval.toArray(new Token[0])));
+                                          param2eval = new ArrayList<>();
+                                        } else {
+                                          param2eval.add(currentToken);
+                                        }
+                                        advance();
+                                      }
+                                      if (inputs == null) {
+                                        return retrievedFunc.run();
+                                      } else {
+                                        return retrievedFunc.run(inputs);
+                                      }
+                                }
+                                //More variable types in the future
                                 tokens[pos.getIdx()] = varReplaced;
                                 pos = new Position(-1, 0, -1, fn, Arrays.toString(tokens));
                                 advance();
@@ -512,10 +555,13 @@ class Interpreter {
                                 expr.append("(");
                                 lastToken = currentToken;
                                 advance();
-                            } else if (currentToken.type == Token.TT_VARTYPE) {
+                            } else if (currentToken.type == Token.TT_VARTYPE) { //Variable assignment
                                 Token type = currentToken;
                                 advance();
-                                if (currentToken != null && currentToken.type == Token.TT_VARNAME) {
+                                if (currentToken.value.equals("Fwnctwion")) { //Cannot declare function like this!
+                                  Position start = pos.clone();
+                                  return new IllegalAssignmentError(start, pos, "Naooo uwu u cwannot asswign fwnctwion lwike dat ._.");
+                                } else if (currentToken != null && currentToken.type == Token.TT_VARNAME) {
                                     lastToken = currentToken;
                                     advance();
                                     if (currentToken != null && currentToken.type == Token.TT_ASSIGN) {
@@ -601,7 +647,7 @@ class Interpreter {
             return value;
         } else if (name.value.equals("inwex")) {
           Position start = pos.clone();
-          return new InvalidSyntaxError(start, pos, "Naooo uwu u cwannot set inwex witowt lowp ._.");
+          return new IllegalAssignmentError(start, pos, "Naooo uwu u cwannot set inwex witowt lowp ._.");
         } else {
             Variable
             var = new Variable(type, value);
