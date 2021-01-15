@@ -1,5 +1,4 @@
 package org.kawaiilang;
-
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -7,6 +6,7 @@ import java.util.LinkedHashMap;
 class Function {
 
   private ArrayList<Token[]> actions = new ArrayList<>();
+  private ArrayList<Token[]> orig = new ArrayList<>();
   private LinkedHashMap<String, String> parameters; // Variable name, variable type
   private Interpreter interpreter;
   private Token canGibU;
@@ -25,6 +25,7 @@ class Function {
 
   public void addAction(Token[] action) {
     actions.add(action);
+    orig.add(Token.cloneTokenArray(action));
   }
 
   public int parameterAmount() {
@@ -157,6 +158,10 @@ class Function {
     Position start = interpreter.getPosition().clone();
     return new MissingReturnStatementError(start, interpreter.getPosition(),
         " Naooo uwu u hab no weturn stwatemwent ._.");
+  }
+
+  public void resetActions() {  //Resets the actions to remove the substituted parameters
+    actions = (ArrayList<Token[]>) orig.clone();
   }
 
 }

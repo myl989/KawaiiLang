@@ -1,6 +1,6 @@
 package org.kawaiilang;
 
-class Token {
+class Token implements Cloneable {
   
   public static final String CHARS_ALLOWED_IN_IDENTIFIERS = "&^_?:>=<";
 
@@ -78,6 +78,18 @@ class Token {
     } else {
       return type.equals(t.type);
     }
+  }
+
+  public Token clone() {
+    return new Token(type, value);
+  }
+
+  public static Token[] cloneTokenArray(Token[] tokenArray) {
+    Token[] clone = new Token[tokenArray.length];
+    for (int i = 0; i < tokenArray.length; i++) {
+      clone[i] = tokenArray[i].clone();
+    }
+    return clone;
   }
 
 }

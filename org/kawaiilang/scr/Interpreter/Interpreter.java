@@ -490,6 +490,7 @@ class Interpreter {
                                             if (inputs == null) {
                                               inputs = new ArrayList<>();
                                             }
+                                            //System.out.println(param2eval);
                                             inputs.add(new Runner(fn, this).interpret(param2eval.toArray(new Token[0])));
                                             tokens = origT;
                                             pos = origP;
@@ -499,6 +500,7 @@ class Interpreter {
                                           if (inputs == null) {
                                             inputs = new ArrayList<>();
                                           }
+                                          //System.out.println(param2eval);
                                           inputs.add(new Runner(fn, this).interpret(param2eval.toArray(new Token[0])));
                                           tokens = origT;
                                           pos = origP;
@@ -509,10 +511,14 @@ class Interpreter {
                                         advance();
                                       }
                                       if (inputs == null) {
-                                        return retrievedFunc.run();
+                                        Object o = retrievedFunc.run();
+                                        retrievedFunc.resetActions();
+                                        return o;
                                       } else {
                                         //System.out.println(inputs);
-                                        return retrievedFunc.run(inputs);
+                                        Object o = retrievedFunc.run(inputs);
+                                        retrievedFunc.resetActions();
+                                        return o;
                                       }
                                 }
                                 //More variable types in the future
