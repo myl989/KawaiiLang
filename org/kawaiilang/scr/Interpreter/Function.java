@@ -66,7 +66,8 @@ class Function {
     for (int anum = 0; anum < actions.size(); anum++) {
       for (int j = 0; j < inputs.size(); j++) {
         while (true) {
-          int k = Arrays.asList(actions.get(anum)).indexOf(keySet[j]); // Location of inputs within action
+          int k = Arrays.asList(actions.get(anum)).indexOf(new Token(Token.TT_VARNAME, keySet[j])); // Location of inputs within action
+          System.out.println(k);
           if (k > -1) {
             Token[] action = actions.get(anum);
             Token t = null;

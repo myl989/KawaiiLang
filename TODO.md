@@ -4,7 +4,7 @@ Todo:
 * Using functions as variables (i.e. `def useFunc(Func f): return f()`)
 
 Bugs (high priority):
-* NullPointerException when trying to run functions with parameters
+* Cannot use expressions as function parameters
 
 Bugs (low priority):
 * Single lines of code with multiple `!`s do not work

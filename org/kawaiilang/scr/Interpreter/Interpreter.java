@@ -2,7 +2,6 @@ package org.kawaiilang;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-
 import java.util.HashMap;
 import net.objecthunter.exp4j.*;
 
@@ -146,7 +145,7 @@ class Interpreter {
               while (true) {
                 lastToken = currentToken;
                 advance();
-                if (currentToken.equals(new Token(Token.TT_PARAM))) {
+                if (currentToken.equals(new Token(Token.TT_PARAM)) || lastToken.equals(new Token(Token.TT_PARAM))) {
                   break;
                 } else {
                   if (param == null) {
@@ -156,15 +155,23 @@ class Interpreter {
                   System.out.print(" ");
                   System.out.println(currentToken);*/
                   if (lastToken.equals(new Token(Token.TT_COMMA))) {
-                    advance();
                     lastToken = currentToken;
+                    advance();
                     /*System.out.print(lastToken);
                     System.out.print(" ");
                     System.out.println(currentToken);*/
+                    if (lastToken.type.equals(Token.TT_VARTYPE) && currentToken.type.equals(Token.TT_VARNAME)) {
+                      String paramType = (String) lastToken.value;
+                      String paramName = (String) currentToken.value;
+                      param.put(paramName, paramType);
+                      advance();
+                    } else {  //Wrong types
+                      //error
+                    }
                   } else if (lastToken.type.equals(Token.TT_VARTYPE) && currentToken.type.equals(Token.TT_VARNAME)) {
                     String paramType = (String) lastToken.value;
                     String paramName = (String) currentToken.value;
-                    param.put(paramType, paramName);
+                    param.put(paramName, paramType);
                     advance();
                   } else {  //Wrong types
                     //Todo: fix false positives here
@@ -173,6 +180,7 @@ class Interpreter {
                   }
                 }
               }
+              //System.out.println(param);
               if (param == null) {
                 currentFunc = new Function(this, canGibU);
               } else {
@@ -474,10 +482,17 @@ class Interpreter {
                                       }
                                       advance();
                                       ArrayList<Token> param2eval = new ArrayList<>();
+                                      Token[] origT = tokens.clone();
                                       while (true) {
+                                        Position origP = pos.clone();
                                         if (currentToken.equals(new Token(Token.TT_PARAM))) {
                                           if (!param2eval.isEmpty()) {
+                                            if (inputs == null) {
+                                              inputs = new ArrayList<>();
+                                            }
                                             inputs.add(new Runner(fn, this).interpret(param2eval.toArray(new Token[0])));
+                                            tokens = origT;
+                                            pos = origP;
                                           }
                                           break;
                                         } else if (currentToken.equals(new Token(Token.TT_COMMA))) {
@@ -485,6 +500,8 @@ class Interpreter {
                                             inputs = new ArrayList<>();
                                           }
                                           inputs.add(new Runner(fn, this).interpret(param2eval.toArray(new Token[0])));
+                                          tokens = origT;
+                                          pos = origP;
                                           param2eval = new ArrayList<>();
                                         } else {
                                           param2eval.add(currentToken);
@@ -494,6 +511,7 @@ class Interpreter {
                                       if (inputs == null) {
                                         return retrievedFunc.run();
                                       } else {
+                                        //System.out.println(inputs);
                                         return retrievedFunc.run(inputs);
                                       }
                                 }
