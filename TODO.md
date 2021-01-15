@@ -4,7 +4,7 @@ Todo:
 * Using functions as variables (i.e. `def useFunc(Func f): return f()`)
 
 Bugs (high priority):
-* Functions with 1 parameter does not work
+N/A
 
 Bugs (low priority):
 * Single lines of code with multiple `!`s do not work
