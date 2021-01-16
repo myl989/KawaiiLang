@@ -56,7 +56,9 @@ class Function {
         }
       } else if (inputs.get(i) instanceof Double || inputs.get(i) instanceof Integer) {
         inputType = "Numwer";
-      } // More datatypes here
+      } else if (inputs.get(i) instanceof String) {
+        inputType = "Stwing";
+      } //More datatypes here
       if (!inputType.equals(valueSet[i])) {
         Position start = interpreter.getPosition().clone();
         return new InvalidParameterError(start, interpreter.getPosition(),
@@ -76,6 +78,8 @@ class Function {
               t = new Token(Token.TT_FLOAT, inputs.get(j));
             } else if (inputs.get(j) instanceof Integer) {
               t = new Token(Token.TT_INT, inputs.get(j));
+            } else if (inputs.get(j) instanceof String) {
+              t = new Token(Token.TT_STR, inputs.get(j));
             } // More datatypes here
             action[k] = t;
             actions.set(anum, action);
@@ -95,6 +99,16 @@ class Function {
         } else if (o instanceof Double) {
           String s = (String) canGibU.value;
           if (s.equals("Numwer")) {
+            return o;
+          } else {
+            Position start = interpreter.getPosition().clone();
+            return new IllegalReturnTypeError(start, interpreter.getPosition(),
+                new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
+                    .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
+          }
+        } else if (o instanceof String) {
+          String s = (String) canGibU.value;
+          if (s.equals("Stwing")) {
             return o;
           } else {
             Position start = interpreter.getPosition().clone();
@@ -135,6 +149,16 @@ class Function {
         } else if (o instanceof Double) {
           String s = (String) canGibU.value;
           if (s.equals("Numwer")) {
+            return o;
+          } else {
+            Position start = interpreter.getPosition().clone();
+            return new IllegalReturnTypeError(start, interpreter.getPosition(),
+                new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
+                    .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
+          }
+        } else if (o instanceof String) {
+          String s = (String) canGibU.value;
+          if (s.equals("Stwing")) {
             return o;
           } else {
             Position start = interpreter.getPosition().clone();

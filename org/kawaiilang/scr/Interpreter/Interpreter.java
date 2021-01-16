@@ -364,6 +364,8 @@ class Interpreter {
                             expr.append(currentToken.value);
                             lastToken = currentToken;
                             advance();
+                        } else if (currentToken.type.equals(Token.TT_STR)) {
+                          return currentToken.value;
                         } else if (currentToken.type.equals(Token.TT_NOTHING)) {
                           return null;
                         }
@@ -461,14 +463,21 @@ class Interpreter {
                                 Object stored = varData.getValue();
                                 Token varReplaced = null;
                                 if (type.value.equals("Numwer")) {
-                                    if (stored instanceof Integer) {
-                                        varReplaced = new Token(Token.TT_INT, stored);
-                                    } else if (stored instanceof Double) {
-                                        varReplaced = new Token(Token.TT_FLOAT, stored);
-                                    } else {
-                                        Position start = pos.clone();
-                                        return new IllegalTypeError(start, pos, new StringBuilder("Naooo uwu da twype of variable, ").append(type.type).append(", is nawt as decwared ._.").toString());
-                                    }
+                                  if (stored instanceof Integer) {
+                                    varReplaced = new Token(Token.TT_INT, stored);
+                                  } else if (stored instanceof Double) {
+                                    varReplaced = new Token(Token.TT_FLOAT, stored);
+                                  } else {
+                                    Position start = pos.clone();
+                                    return new IllegalTypeError(start, pos, new StringBuilder("Naooo uwu da twype of variable, ").append(type.type).append(", is nawt as decwared ._.").toString());
+                                  }
+                                } else if (type.value.equals("Stwing")) {
+                                  if (stored instanceof String) {
+                                    varReplaced = new Token(Token.TT_STR, stored);
+                                  } else {
+                                    Position start = pos.clone();
+                                    return new IllegalTypeError(start, pos, new StringBuilder("Naooo uwu da twype of variable, ").append(type.type).append(", is nawt as decwared ._.").toString());
+                                  }
                                 } else if (type.value.equals("Fwnctwion")) {
                                       Function retrievedFunc = (Function) stored;
                                       ArrayList<Object> inputs = null;  //List of input parameters to pass into function

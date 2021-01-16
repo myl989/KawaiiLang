@@ -6,6 +6,7 @@ class Token implements Cloneable {
 
   public static final String TT_INT = "INT";
   public static final String TT_FLOAT = "FLOAT";
+  public static final String TT_STR = "STR";
 
   public static final String TT_ADD = "+";
   public static final String TT_MINUS = "-";
@@ -36,7 +37,7 @@ class Token implements Cloneable {
 
   public static final String[] KEYWORDS = {"OwO", "notices", "^_^ewndNotice", "^_^wepeatDat", "do", "doWen", "tw", "twimes", "ewlse", "stawp", "awnd", "orw", "nawt", "xwr", "dewete", "canDo", "canGibU", "gibU", "^_^ewndCanDo"};
 
-  public static final String[] DATA_TYPES = {"Numwer", "Fwnctwion"};
+  public static final String[] DATA_TYPES = {"Numwer", "Fwnctwion", "Stwing"};
 
   String type;
   Object value;

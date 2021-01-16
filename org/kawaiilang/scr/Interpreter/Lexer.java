@@ -1,5 +1,6 @@
 package org.kawaiilang;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.ArrayList;
 
 class Lexer {
@@ -9,6 +10,13 @@ class Lexer {
   private Position pos;
   private char currentChar = Character.MIN_VALUE;
   private boolean firstChar = true;
+
+  public static final HashMap<Character, Character> escapeCharsList = new HashMap<>();
+
+  static {
+    escapeCharsList.put('n','\n');
+    escapeCharsList.put('t','\t');
+  }
 
   public Lexer(String fileName, String text) {
     this.text = text;
@@ -38,6 +46,8 @@ class Lexer {
         tokens.add(makeIdentifier());
       } else if (Character.isDigit(currentChar)) {
         tokens.add(makeNum());
+      } else if (currentChar == '\'') {
+        tokens.add(makeStr());
       } else if (currentChar == '+') {
         tokens.add(new Token(Token.TT_ADD));
         advance();
@@ -118,6 +128,30 @@ class Lexer {
     } else {
       return new Token(Token.TT_FLOAT, Double.parseDouble(numStr.toString()));
     }
+  }
+
+  private Token makeStr() {
+    StringBuilder sb = new StringBuilder();
+    Position start = pos.clone();
+    boolean esc = false;
+    advance();
+    while (currentChar != '\'' || esc) {
+      if (esc) {
+        if (escapeCharsList.containsKey(currentChar)) {
+          sb.append(escapeCharsList.get(currentChar));
+        } else {
+          sb.append(currentChar);
+        }
+        esc = false;
+      } else if (currentChar == '\\') {
+        esc = true;
+      } else {
+        sb.append(currentChar);
+      }
+      advance();
+    }
+    advance();
+    return new Token(Token.TT_STR, sb.toString());
   }
 
   private Token makeIdentifier() {
