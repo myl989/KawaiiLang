@@ -87,7 +87,7 @@ class Interpreter {
             currentFunc = null;
           } else {
             //Statement to prevent nested function declarations
-            if (tokens.length > 6 && tokens[0].equals(new Token(Token.TT_KEYWORD, "OwO")) && tokens[1].equals(new Token(Token.TT_KEYWORD, "canDo")) && tokens[2].type.equals(Token.TT_VARNAME) && tokens[3].equals(new Token(Token.TT_PARAM)) && tokens[tokens.length - 3].equals(new Token(Token.TT_PARAM)) && tokens[tokens.length - 2].equals(new Token(Token.TT_KEYWORD, "canGibU")) && tokens[tokens.length - 1].type.equals(Token.TT_VARTYPE)) {
+            if (tokens.length > 6 && tokens[0].equals(new Token(Token.TT_KEYWORD, "OwO")) && tokens[1].equals(new Token(Token.TT_KEYWORD, "canDo")) && tokens[2].type.equals(Token.TT_VARNAME) && tokens[3].equals(new Token(Token.TT_PARAM)) && tokens[tokens.length - 3].equals(new Token(Token.TT_PARAM)) && tokens[tokens.length - 2].equals(new Token(Token.TT_KEYWORD, "canGibU")) && (tokens[tokens.length - 1].type.equals(Token.TT_VARTYPE) || tokens[tokens.length - 1].type.equals(Token.TT_NOTHING))) {
               Position start = pos.clone();
               return new InvalidSyntaxError(start, pos, "Naooo uwu u cwannot hab nwested fwnctwions ._.");
             } else {
@@ -134,7 +134,7 @@ class Interpreter {
             }
 
             //Function declaration
-            if (tokens.length > 6 && tokens[0].equals(new Token(Token.TT_KEYWORD, "OwO")) && tokens[1].equals(new Token(Token.TT_KEYWORD, "canDo")) && tokens[2].type.equals(Token.TT_VARNAME) && tokens[3].equals(new Token(Token.TT_PARAM)) && tokens[tokens.length - 3].equals(new Token(Token.TT_PARAM)) && tokens[tokens.length - 2].equals(new Token(Token.TT_KEYWORD, "canGibU")) && tokens[tokens.length - 1].type.equals(Token.TT_VARTYPE)) {
+            if (tokens.length > 6 && tokens[0].equals(new Token(Token.TT_KEYWORD, "OwO")) && tokens[1].equals(new Token(Token.TT_KEYWORD, "canDo")) && tokens[2].type.equals(Token.TT_VARNAME) && tokens[3].equals(new Token(Token.TT_PARAM)) && tokens[tokens.length - 3].equals(new Token(Token.TT_PARAM)) && tokens[tokens.length - 2].equals(new Token(Token.TT_KEYWORD, "canGibU")) && (tokens[tokens.length - 1].type.equals(Token.TT_VARTYPE) || tokens[tokens.length - 1].type.equals(Token.TT_NOTHING))) {
               Token funcName = tokens[2];
               Token canGibU = tokens[tokens.length - 1];
               LinkedHashMap<String, String> param = null;

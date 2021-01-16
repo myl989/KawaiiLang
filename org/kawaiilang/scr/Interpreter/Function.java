@@ -90,7 +90,7 @@ class Function {
           && Arrays.asList(actions.get(anum)).get(0).equals(new Token(Token.TT_KEYWORD, "gibU"))) {
             Token[] action = actions.get(anum);
             Object o = new Runner(interpreter.getFileLocation(), interpreter).interpret(Arrays.copyOfRange(action, 1, action.length));
-        if (o == null && canGibU == null) {
+        if (o == null && canGibU.equals(new Token(Token.TT_NOTHING))) {
           return null;
         } else if (o instanceof Double) {
           String s = (String) canGibU.value;
@@ -130,7 +130,7 @@ class Function {
     for (Token[] action : actions) {
       if (action.length > 1 && Arrays.asList(action).get(0).equals(new Token(Token.TT_KEYWORD, "gibU"))) {
         Object o = new Runner(interpreter.getFileLocation(), interpreter).interpret(Arrays.copyOfRange(action, 1, action.length));
-        if (o == null && canGibU == null) {
+        if (o == null && canGibU.equals(new Token(Token.TT_NOTHING))) {
           return null;
         } else if (o instanceof Double) {
           String s = (String) canGibU.value;

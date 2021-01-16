@@ -1,5 +1,4 @@
 Todo:
-* Functions with return values of `nwthin`
 * Using functions as variables (i.e. `def useFunc(Func f): return f()`)
 
 Bugs (high priority):
