@@ -62,6 +62,10 @@ Comparisons: `eqwals`, `>_<`, `<_<`, `>=<`, and `<=<` are used for `==`, `>`, `<
 
 Operations or comparisons are evaluated kind of backwards. `:> xor :> xor :< xor :<` results in `:<` What does this mean? First, we remove the first few operation, and only look at the last operation: `:< xor :<` is `:<` as the two parameters are the samedifferent. Then we pass this operation to the operation to the right of it, `:> xor ...`, putting the result in the second position, so its `:> xor :<`, which results in `:>` as the two are different. Then we repeat the process by passing the result `:>` to the last operation, `:> xor ...`, resulting in `:> xor :>` which results in `:<`.
 
+String concatenations are as easy as ever: simply put two Strings next to each other, and your favourite waifu/husbando will do everything for you!
+Example: `'a' 'a'` (result `'aa'`) 
+Example: `Stwing s iws 'a'! s 'a'!` (result `'aa'`)
+
 If statements: `OwO *notices [expression]*?`
 Will run the next lines of code if the expression returns true, or a number greater than zero, and will return null if the expression returns false, or a number lesser than zero.
 If statements are ended by `^_^ewndNotice!`

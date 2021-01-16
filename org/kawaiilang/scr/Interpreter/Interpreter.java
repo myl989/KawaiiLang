@@ -66,6 +66,7 @@ class Interpreter {
 
     public Object interpret() {
         StringBuilder expr = new StringBuilder();
+        StringBuilder stringPool = new StringBuilder();
         Token lastToken = null;
 
         //System.out.println(currentFunc);
@@ -279,7 +280,7 @@ class Interpreter {
                 if (doInterpret == null || doInterpret == true) {
                     //This goes down alllllll the way
 
-                    //Checks for end of if. Expressions directly after end of if will not be evaluated.
+                    //Checks for end of if.
                     if (doInterpret != null && tokens.length == 1 && tokens[0].equals(new Token(Token.TT_KEYWORD, "^_^ewndNotice"))) {
                         justHadElse = false;
                         activeElseStatements--;
@@ -365,7 +366,9 @@ class Interpreter {
                             lastToken = currentToken;
                             advance();
                         } else if (currentToken.type.equals(Token.TT_STR)) {
-                          return currentToken.value;
+                          String str = (String) currentToken.value;
+                          stringPool.append(str);
+                          advance();
                         } else if (currentToken.type.equals(Token.TT_NOTHING)) {
                           return null;
                         }
@@ -638,7 +641,9 @@ class Interpreter {
                             return new InvalidSyntaxError(start, pos, new StringBuilder("Naooo uwu ").append(currentToken.toString()).append(" is iwegal here ._.").toString());
                         }
                     }
-                    if (expr.length() > 0) {
+                    if (stringPool.length() > 0) {
+                      return stringPool.toString();
+                    } else if (expr.length() > 0) {
                         try {
                             String s = expr.toString();
                             //System.out.println(s);

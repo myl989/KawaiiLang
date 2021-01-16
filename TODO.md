@@ -1,5 +1,4 @@
 Todo:
-* Append Strings using `awdd` and `mwltipwy`
 * Using functions as variables (i.e. `def useFunc(Func f): return f()`)
 
 Bugs (high priority):
