@@ -34,7 +34,7 @@ Variable declaration assignment: The following code shows a variable declaration
 
 Variable names must start with a letter, and can include all capital or lowercase English letters, digits 0~9, and the special characters `&^_?:>=<`. Snakecase is suggested, along with using UwU talk for variable names.
 
-Variables are declared with the data type, the current only one being `Numwer` (able to handle both integer and floating-point inputs).
+Variables are declared with the data type, the current ones being `Numwer` for both integer and floating points, as well as `Stwing` for Strings.
 
 The assignment operator is `iws`.
 
