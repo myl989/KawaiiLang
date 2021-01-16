@@ -72,3 +72,7 @@ There is no simple `ewlse!` statement (yet) so `ewlse! OwO *notices :>*?` should
 For loops: telling your waifu/husbando to do things over and over again is very easy! Simply use `do [x] times!`, followed by the code you want to run, followed by `^_^wepeatDat` to end the loop declaration! Note that `[x]` must evaluate to `<T extends Numwer>`. `stawp` can be used to ask your waifu/husbando to... stop the loop. `do [x] to [y] times!` can also be used to start at index `[x]` and loop until `[y]` is reached, for both `[x], [y]` evaluates to `<T extends Numwer>`. The index can be modified by using `inwex` as a variable within the loop.
 
 While loops: more loops, more fun! Use `doWen OwO *notices [expression]*?` to loop when the expression evaluates to true. Similar to above `^_^wepeatDat` ends the loop declaration and `stawp` can be used to break the loop.
+
+Functions: declare functions with `OwO canDo UwU [parameters] UwU canGibU [return value]!`! Parameters are formatted as followed: `[datatype1] [varname1], [datatype2] [varname2]...`, or there can be no parameters! The return value can give any datatype as well as `nwthin`.
+Functions are followed by code, a `gibU` return statement (`gibU nwthin` functions), and `^_^ewndCanDo` to end the function.
+Note: I haven't implemented variable scope, so have fun deleting variables declared inside functions.
