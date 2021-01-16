@@ -2,7 +2,7 @@
 
 <h1>Have you gotten sick and tired of normal programming language syntax? Have you ever wanted to code like your favourite anime girl or guy?</h1> 
 
-Come on, looking at programming syntax for long periods of time is really dehumanizing. But programming is nice! Can there not be a way to release your inner anime protag while big-braining game development, website making, or maybe some neural networks? Well, no, because KawaiiLang sucks, but it's at least one way of not dying of too much `if`s and `else`s, `while`s and `for`s, and who knows? Maybe it will increase the number of weebs in the game? 
+Come on, looking at programming syntax for long periods of time is really dehumanizing. But programming is nice! Can there not be a way to release your inner anime protag while big-braining game development, website making, or maybe some neural networks? Well, no, because KawaiiLang sucks, but it's at least one way of not dying of too much `if`s and `else`s, `while`s and `for`s, and who knows? Maybe it will increase the number of weebs doing programming? 
 
 (KawaiiLang is probably gonna be useless, but screw it I'm making this anyways.) 
 
