@@ -8,3 +8,4 @@ Bugs (low priority):
 * Single lines of code with multiple `!`s do not work
 * The line number in errors is often not correct as the line incrementer of Position class is weird
 * Null pointers hangs the program
+* Variable scope perhaps...?
