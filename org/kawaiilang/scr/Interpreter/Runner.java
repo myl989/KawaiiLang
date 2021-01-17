@@ -7,6 +7,19 @@ import java.util.HashMap;
 
 public class Runner {
 
+  /*
+   * TO USE:
+   * 
+   * 1. Import package
+   * `Import org.kawaiilang.Runner;`
+   *
+   * 2. Create Runner class
+   * `Runner r = new Runner([file location name]);`
+   *
+   * 3. Run the file
+   * `r.run();`
+   */
+
   public static final HashMap<String, String> UWU_KEY;
 
   static {
@@ -74,7 +87,16 @@ public class Runner {
     BufferedReader br = new BufferedReader(new FileReader(file));
     String line;
     while ((line = br.readLine()) != null) {
-      eval(line); 
+      long emc = line.codePoints().filter(ch -> ch == '!').count();
+      long qmc = line.codePoints().filter(ch -> ch == '?').count();
+      if (emc + qmc > 1) {
+        String[] splitInto = line.split("(?<=!)|(?<=\\?)");
+        for (String portionToEval : splitInto) {
+          eval(portionToEval);
+        }
+      } else {
+        eval(line);
+      }
     }
     //make it not line dependant in the future?
   }

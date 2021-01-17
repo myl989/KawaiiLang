@@ -1,30 +1,19 @@
-import java.util.Scanner;
-import org.kawaiilang.*;
+import java.io.IOException;
+import org.kawaiilang.Runner;
+import org.kawaiilang.Shell;
 
 class Main {
   public static void main(String[] args) {
-    Scanner s = new Scanner(System.in);
-    Runner r = new Runner();
-    while (true) {
-      System.out.print("KawaiiLang> ");
-      String input = s.nextLine();
-      if (input.equals("Senpai.stawpp UwU UwU!")) {
-        s.close();
-        break;
-      } else {
-        //long startTime = System.nanoTime();
-        Object result = r.eval(input);
-        /*long endTime = System.nanoTime();
-        System.out.print("Time taken: ");
-        System.out.println(endTime - startTime);*/
-
-        //The following code prints out the final results only! (unlike the testing print code in Runner class which prints every evaluation)
-        if (result == null) {
-          System.out.println("nwthin");
-        } else {
-          System.out.println(result);
-        }
-      } //endCheckIfToEndShell
-    } //endInfiniteLoop
+    if (args.length > 0) {
+      Runner r = new Runner(args[0]);
+      try {
+        r.run();
+      } catch (IOException ex) {
+        ex.printStackTrace();
+      }
+    } else {
+      Shell.main(args);
+    }
   }
+  
 }
