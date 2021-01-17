@@ -90,6 +90,7 @@ public class Runner {
       long emc = line.codePoints().filter(ch -> ch == '!').count();
       long qmc = line.codePoints().filter(ch -> ch == '?').count();
       if (emc + qmc > 1) {
+        //Splits line if it ends with "!" or "?"
         String[] splitInto = line.split("(?<=!)|(?<=\\?)");
         for (String portionToEval : splitInto) {
           eval(portionToEval);
