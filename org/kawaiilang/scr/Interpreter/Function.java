@@ -5,20 +5,23 @@ import java.util.LinkedHashMap;
 
 class Function {
 
+  private String name;
   private ArrayList<Token[]> actions = new ArrayList<>();
   private ArrayList<Token[]> orig = new ArrayList<>();
   private LinkedHashMap<String, String> parameters; // Variable name, variable type
   private Interpreter interpreter;
   private Token canGibU;
 
-  public Function(Interpreter interpreter, Token canGibU) {
+  public Function(Interpreter interpreter, String name, Token canGibU) {
     this.interpreter = interpreter;
+    this.name = name;
     this.parameters = null;
     this.canGibU = canGibU;
   }
 
-  public Function(Interpreter interpreter, LinkedHashMap<String, String> parameters, Token canGibU) {
+  public Function(Interpreter interpreter, String name, LinkedHashMap<String, String> parameters, Token canGibU) {
     this.interpreter = interpreter;
+    this.name = name;
     this.parameters = parameters;
     this.canGibU = canGibU;
   }
@@ -189,7 +192,11 @@ class Function {
   }
 
   public String toString() {
-    return new StringBuilder("<Function ").append(hashCode()).append(" from ").append(interpreter.getFileLocation()).append('>').toString();
+    return new StringBuilder("<Function ").append(name).append(" from ").append(interpreter.getFileLocation()).append('>').toString();
+  }
+
+  public String getName() {
+    return name;
   }
 
 }

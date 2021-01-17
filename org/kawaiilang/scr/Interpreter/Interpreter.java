@@ -183,9 +183,11 @@ class Interpreter {
               }
               //System.out.println(param);
               if (param == null) {
-                currentFunc = new Function(this, canGibU);
+                String funcNameStr = (String) tokens[2].value;
+                currentFunc = new Function(this, funcNameStr, canGibU);
               } else {
-                currentFunc = new Function(this, param, canGibU);
+                String funcNameStr = (String) tokens[2].value;
+                currentFunc = new Function(this, funcNameStr, param, canGibU);
               }
               Variable funcVar = new Variable(new Token(Token.TT_VARNAME, "Fwnctwion"), currentFunc);
               heap.put(tokens[2], funcVar);
