@@ -1,7 +1,10 @@
 Todo:
-* Handle multi-line statements
-* Using functions as variables (i.e. `def useFunc(Func f): return f()`) as well as having functions avaliable as return values.
+* Switch statements for `Numwer`s
+* Arrays
 * Type classes (get type of variable)
+* Some built-in functions to actually make it more usable, including print
+* Object orientated programming?
+* Compiler?
 
 Bugs (high priority):
 N/A
