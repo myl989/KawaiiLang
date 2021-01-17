@@ -51,16 +51,19 @@ class Function {
     String[] valueSet = parameters.values().toArray(new String[0]);
     for (int i = 0; i < inputs.size(); i++) {
       String inputType = "";
-      if (inputs.get(i) instanceof Token) {
+      //The below code probably is unnecessary as tokens would probably not be in the inputs
+      /*if (inputs.get(i) instanceof Token) {
         Token t = (Token) inputs.get(i);
         inputType = t.type;
         if (inputType.equals(Token.TT_INT) || inputType.equals(Token.TT_FLOAT)) {
           inputType = "Numwer";
         }
-      } else if (inputs.get(i) instanceof Double || inputs.get(i) instanceof Integer) {
+      } else*/ if (inputs.get(i) instanceof Double || inputs.get(i) instanceof Integer) {
         inputType = "Numwer";
       } else if (inputs.get(i) instanceof String) {
         inputType = "Stwing";
+      } else if (inputs.get(i) instanceof Function) {
+        inputType = "Fwnctwion";
       } //More datatypes here
       if (!inputType.equals(valueSet[i])) {
         Position start = interpreter.getPosition().clone();
@@ -83,6 +86,9 @@ class Function {
               t = new Token(Token.TT_INT, inputs.get(j));
             } else if (inputs.get(j) instanceof String) {
               t = new Token(Token.TT_STR, inputs.get(j));
+            } else if (inputs.get(j) instanceof Function) {
+              Function retrievedFunc = (Function) inputs.get(j);
+              t = new Token(Token.TT_VARNAME, retrievedFunc.getName());
             } // More datatypes here
             action[k] = t;
             actions.set(anum, action);
@@ -112,6 +118,16 @@ class Function {
         } else if (o instanceof String) {
           String s = (String) canGibU.value;
           if (s.equals("Stwing")) {
+            return o;
+          } else {
+            Position start = interpreter.getPosition().clone();
+            return new IllegalReturnTypeError(start, interpreter.getPosition(),
+                new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
+                    .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
+          }
+        } else if (o instanceof Function) {
+          String s = (String) canGibU.value;
+          if (s.equals("Fwnctwion")) {
             return o;
           } else {
             Position start = interpreter.getPosition().clone();
@@ -162,6 +178,16 @@ class Function {
         } else if (o instanceof String) {
           String s = (String) canGibU.value;
           if (s.equals("Stwing")) {
+            return o;
+          } else {
+            Position start = interpreter.getPosition().clone();
+            return new IllegalReturnTypeError(start, interpreter.getPosition(),
+                new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
+                    .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
+          }
+        } else if (o instanceof Function) {
+          String s = (String) canGibU.value;
+          if (s.equals("Fwnctwion")) {
             return o;
           } else {
             Position start = interpreter.getPosition().clone();
