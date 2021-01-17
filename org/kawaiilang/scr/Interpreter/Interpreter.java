@@ -485,7 +485,9 @@ class Interpreter {
                                       Function retrievedFunc = (Function) stored;
                                       ArrayList<Object> inputs = null;  //List of input parameters to pass into function
                                       advance();
-                                      if (!currentToken.equals(new Token(Token.TT_PARAM))) {
+                                      if (currentToken == null) {  //Just return the function itself
+                                        return retrievedFunc;
+                                      } else if (!currentToken.equals(new Token(Token.TT_PARAM))) {
                                         Position start = pos.clone();
                                         return new InvalidSyntaxError(start, pos, "Naooo \"UwU\" expected ._.");
                                       }
@@ -591,7 +593,7 @@ class Interpreter {
                             } else if (currentToken.type == Token.TT_VARTYPE) { //Variable assignment
                                 Token type = currentToken;
                                 advance();
-                                if (currentToken.value.equals("Fwnctwion")) { //Cannot declare function like this!
+                                if (type.value.equals("Fwnctwion")) { //Cannot declare function like this!
                                   Position start = pos.clone();
                                   return new IllegalAssignmentError(start, pos, "Naooo uwu u cwannot asswign fwnctwion lwike dat ._.");
                                 } else if (currentToken != null && currentToken.type == Token.TT_VARNAME) {

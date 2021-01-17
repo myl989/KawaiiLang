@@ -188,4 +188,8 @@ class Function {
     actions = (ArrayList<Token[]>) orig.clone();
   }
 
+  public String toString() {
+    return new StringBuilder("<Function ").append(hashCode()).append(" from ").append(interpreter.getFileLocation()).append('>').toString();
+  }
+
 }
