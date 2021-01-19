@@ -32,6 +32,12 @@ class Position implements Cloneable {
     return this;
   }
 
+  public Position retreat() {
+    idx--;
+    col--;
+    return this;
+  }
+
   public Position clone() {
     return new Position(idx, ln, col, fn, ftxt);
   }
@@ -46,6 +52,10 @@ class Position implements Cloneable {
 
   public String getFileName() {
     return fn;
+  }
+
+  public String toString() {
+    return new StringBuilder("File ").append(fn).append(", line ").append(ln).append(" column ").append(col).append(", tokenIdx ").append(idx);
   }
 
 }

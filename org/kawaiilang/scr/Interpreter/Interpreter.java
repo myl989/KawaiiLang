@@ -2,6 +2,7 @@ package org.kawaiilang;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+
 import java.util.HashMap;
 import net.objecthunter.exp4j.*;
 
@@ -64,9 +65,14 @@ class Interpreter {
         }
     }
 
+    private void retreat() {
+      pos.retreat();
+    }
+
     public Object interpret() {
         StringBuilder expr = new StringBuilder();
         StringBuilder stringPool = new StringBuilder();
+        OwOList listPool = new OwOList();
         Token lastToken = null;
 
         //System.out.println(currentFunc);
@@ -175,7 +181,6 @@ class Interpreter {
                     param.put(paramName, paramType);
                     advance();
                   } else {  //Wrong types
-                    //Todo: fix false positives here
                     Position start = pos.clone();
                     return new InvalidParameterError(start, pos, "Naooo uwu fwnctwion pawamweters mwst hab wariable nwame awnd twype ._.");
                   }
@@ -371,10 +376,38 @@ class Interpreter {
                           String str = (String) currentToken.value;
                           stringPool.append(str);
                           advance();
+                        } else if (currentToken.type.equals(Token.TT_LIST)) {
+                          OwOList l = (OwOList) currentToken.value;
+                          listPool.append(l.asArrayList());
+                          advance();
                         } else if (currentToken.type.equals(Token.TT_NOTHING)) {
                           return null;
-                        }
-                        else if (currentToken.type == Token.TT_VARNAME) {
+                        } else if (currentToken.type.equals(Token.TT_LSQU)) { //List creation
+                          advance();
+                          if (currentToken.type.equals(Token.TT_RSQU)) {
+                            return new OwOList();
+                          } else {
+                            ArrayList<Token> at = new ArrayList<>();
+                            OwOList l = new OwOList();
+                            Position origP = pos.clone();
+                            Token[] origT = tokens.clone();
+                            while (true) {
+                              if (currentToken.type.equals(Token.TT_COMMA)) {
+                                l.append(new Runner(fn, this).interpret(at.toArray(new Token[0])));
+                                at = new ArrayList<>();
+                                pos = origP;
+                                tokens = origT;
+                              } else if (currentToken.type.equals(Token.TT_RSQU)) {
+                                l.append(new Runner(fn, this).interpret(at.toArray(new Token[0])));
+                                if (l.length() > 1) l.pop(1);
+                                return l;
+                              } else {
+                                at.add(currentToken);
+                              }
+                              advance();
+                            }
+                          }
+                        } else if (currentToken.type.equals(Token.TT_VARNAME)) {
                           //Special variable for changing loop index
                           if (currentToken.value.equals("inwex") && loop instanceof Loop) {
                             Loop l = (Loop) loop;
@@ -533,6 +566,88 @@ class Interpreter {
                                         retrievedFunc.resetActions();
                                         return o;
                                       }
+                                } else if (type.value.equals("Lwist")) {
+                                  if (stored instanceof OwOList) {
+                                    advance();
+                                    if (currentToken != null && currentToken.type.equals(Token.TT_LSQU)) {  //Get and slice
+                                      OwOList l = (OwOList) stored;
+                                      Position origP = pos.clone();
+                                      Position origOrigP = pos.clone();
+                                      Token[] origT = tokens.clone();
+                                      boolean slice = false;
+                                      ArrayList<Token> at = new ArrayList<>();
+                                      ArrayList<Token> at2 = new ArrayList<>();
+                                      getNslice:
+                                      while (true) {
+                                        advance();
+                                        origP.advance();
+                                        if (currentToken.type.equals(Token.TT_RSQU)) {
+                                          if (at.isEmpty()) {
+                                            if (at2.isEmpty()) {
+                                              Object o = new Runner(fn, this).interpret(at2.toArray(new Token[0]));
+                                              pos = origP;
+                                              tokens = origT;
+                                              int i = ((Double) o).intValue();
+                                              OwOList slicedList = l.slice(0, i);
+                                              varReplaced = new Token(Token.TT_LIST, slicedList);
+                                              break getNslice;
+                                            } else {
+                                              //error
+                                            }
+                                          } else if (at2.isEmpty()) {
+                                            if (slice) {
+                                              Object o = new Runner(fn, this).interpret(at.toArray(new Token[0]));
+                                              pos = origP;
+                                              tokens = origT;
+                                              int i = ((Double) o).intValue();
+                                              OwOList slicedList = l.slice(i, l.length());
+                                              varReplaced = new Token(Token.TT_LIST, slicedList);
+                                              break getNslice;
+                                            } else {  //Get
+                                              Object o = new Runner(fn, this).interpret(at.toArray(new Token[0]));
+                                              pos = origP;
+                                              tokens = origT;
+                                              int i = ((Double) o).intValue();
+                                              Object fromList = l.get(i);
+                                              if (fromList instanceof Double) {
+                                                varReplaced = new Token(Token.TT_FLOAT, o);
+                                              } else if (fromList instanceof String) {
+                                                varReplaced = new Token(Token.TT_STR, o);
+                                              } else if (fromList instanceof Function) {
+                                                Function retrievedFunc = (Function) o;
+                                                varReplaced = new Token(Token.TT_VARNAME, retrievedFunc.getName());
+                                              } //More datatypes here
+                                              break getNslice;
+                                            }
+                                          } else {
+                                            Object o = new Runner(fn, this).interpret(at.toArray(new Token[0]));
+                                            Object o2 = new Runner(fn, this).interpret(at2.toArray(new Token[0]));
+                                            pos = origP;
+                                            tokens = origT;
+                                            int i = ((Double) o).intValue();
+                                            int j = ((Double) o2).intValue();
+                                            OwOList slicedList = l.slice(i, j);
+                                            varReplaced = new Token(Token.TT_LIST, slicedList);
+                                            pos = origP;
+                                          }
+                                        } else if (currentToken.equals(new Token(Token.TT_KEYWORD, "tw"))) {
+                                          slice = true;
+                                        } else if (!slice) {
+                                          at.add(currentToken);
+                                        } else {
+                                          at2.add(currentToken);
+                                        }
+                                      }
+                                      pos = origOrigP;
+                                      //End getNslice
+                                    } else {
+                                      retreat();
+                                      varReplaced = new Token(Token.TT_LIST, stored);
+                                    }
+                                  } else {
+                                    Position start = pos.clone();
+                                    return new IllegalTypeError(start, pos, new StringBuilder("Naooo uwu da twype of variable, ").append(type.type).append(", is nawt as decwared ._.").toString());
+                                  }
                                 }
                                 //More variable types in the future
                                 tokens[pos.getIdx()] = varReplaced;
@@ -580,7 +695,7 @@ class Interpreter {
                                 if (lastToken != null && (lastToken.type != Token.TT_INT && lastToken.type != Token.TT_FLOAT)) {
                                     expr.append("0").append(currentToken.type);
                                 } else {
-                                    if (currentToken.type == Token.TT_MUL) {
+                                    if (currentToken.type.equals(Token.TT_MUL)) {
                                         expr.append('*');
                                     } else {
                                         expr.append(currentToken.type);
@@ -588,20 +703,43 @@ class Interpreter {
                                 }
                                 lastToken = currentToken;
                                 advance();
-                            } else if (currentToken.type == Token.TT_LPAREN) {
+                            } else if (currentToken.type.equals(Token.TT_LPAREN)) {
                                 expr.append("(");
                                 lastToken = currentToken;
                                 advance();
-                            } else if (currentToken.type == Token.TT_VARTYPE) { //Variable assignment
+                            } else if (currentToken.type.equals(Token.TT_VARTYPE)) { //Variable assignment
                                 Token type = currentToken;
                                 advance();
                                 if (type.value.equals("Fwnctwion")) { //Cannot declare function like this!
                                   Position start = pos.clone();
                                   return new IllegalAssignmentError(start, pos, "Naooo uwu u cwannot asswign fwnctwion lwike dat ._.");
-                                } else if (currentToken != null && currentToken.type == Token.TT_VARNAME) {
+                                } //The following code might come in handy when I add list object restrictions
+                                /*else if (type.value.equals("Lwist")) {
+                                  advance();
+                                  if (currentToken != null && currentToken.type.equals(Token.TT_LSQU)) {
+                                    advance();
+                                    if (currentToken != null && currentToken.type.equals(Token.TT_RSQU)) {
+                                      advance();
+                                      if (currentToken != null && currentToken.type.equals(Token.TT_VARNAME)) {
+                                        lastToken = currentToken;
+                                        advance();
+                                        if (currentToken != null && currentToken.type.equals(Token.TT_ASSIGN)) {
+                                          return makeVar(type, lastToken);
+                                        } else {
+                                          //e*rror
+                                        }
+                                      } else {
+                                        //e*rror
+                                      }
+                                    }
+                                    //List type restrictions maybe?
+                                  } else {
+                                    //e*rror
+                                  }
+                                }*/ else if (currentToken != null && currentToken.type.equals(Token.TT_VARNAME)) {
                                     lastToken = currentToken;
                                     advance();
-                                    if (currentToken != null && currentToken.type == Token.TT_ASSIGN) {
+                                    if (currentToken != null && currentToken.type.equals(Token.TT_ASSIGN)) {
                                         return makeVar(type, lastToken);
                                     } else {
                                         Position start = pos.clone();
@@ -647,6 +785,8 @@ class Interpreter {
                     }
                     if (stringPool.length() > 0) {
                       return stringPool.toString();
+                    } else if (listPool.length() > 0) {
+                      return listPool;
                     } else if (expr.length() > 0) {
                         try {
                             String s = expr.toString();

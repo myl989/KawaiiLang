@@ -80,6 +80,12 @@ class Lexer {
       } else if (currentChar == ')') {
         tokens.add(new Token(Token.TT_RPAREN));
         advance();
+      } else if (currentChar == '[') {
+        tokens.add(new Token(Token.TT_LSQU));
+        advance();
+      } else if (currentChar == ']') {
+        tokens.add(new Token(Token.TT_RSQU));
+        advance();
       } else if (currentChar == '%') {
         tokens.add(new Token(Token.TT_MOD));
         advance();

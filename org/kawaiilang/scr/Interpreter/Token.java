@@ -1,12 +1,14 @@
 package org.kawaiilang;
 
-class Token implements Cloneable {
+public class Token implements Cloneable {
   
   public static final String CHARS_ALLOWED_IN_IDENTIFIERS = "&^_?:>=<";
 
   public static final String TT_INT = "INT";
   public static final String TT_FLOAT = "FLOAT";
   public static final String TT_STR = "STR";
+  public static final String TT_LIST = "LIST";
+  public static final String TT_NOTHING = "NOTHING";
 
   public static final String TT_ADD = "+";
   public static final String TT_MINUS = "-";
@@ -33,14 +35,23 @@ class Token implements Cloneable {
   public static final String TT_PARAM = "UwU";
   public static final String TT_COMMA = "COMMA";
 
-  public static final String TT_NOTHING = "NOTHING";
+  public static final String TT_LSQU = "LSQU";
+  public static final String TT_RSQU = "RSQU";
 
   public static final String[] KEYWORDS = {"OwO", "notices", "^_^ewndNotice", "^_^wepeatDat", "do", "doWen", "tw", "twimes", "ewlse", "stawp", "awnd", "orw", "nawt", "xwr", "dewete", "canDo", "canGibU", "gibU", "^_^ewndCanDo"};
 
-  public static final String[] DATA_TYPES = {"Numwer", "Fwnctwion", "Stwing"};
+  public static final String[] DATA_TYPES = {"Numwer", "Fwnctwion", "Stwing", "Lwist"};
 
   String type;
   Object value;
+
+  public String getType() {
+    return type;
+  }
+
+  public Object getValue() {
+    return value;
+  }
 
   public Token(String type, Object value) {
     this.type = type;

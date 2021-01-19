@@ -3,7 +3,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-class Function {
+public class Function {
 
   private String name;
   private ArrayList<Token[]> actions = new ArrayList<>();

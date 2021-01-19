@@ -114,11 +114,11 @@ public class Runner {
     Object result = interpreter.interpret();
 
     //Prints the result so I can actually see what is going on. Every single one of them. Ah yes the pains of debugging.
-    /*if (result == null) {
+    if (result == null) {
       System.out.println("nwthin");
     } else {
       System.out.println(result);
-    }*/
+    }
 
     return result;
   }
