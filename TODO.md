@@ -6,6 +6,7 @@ Todo:
 * Matrixes?
 * Type infrence?
 * Get list length
+* Convert String to list or slicing Strings
 * Error output when running files
 * Get type of variable
 * Some built-in functions to actually make it more usable, including print
@@ -14,7 +15,7 @@ Todo:
 * Auto deletion of variables out of scope?
 
 Bugs (high priority):
-N/A
+* Null pointers with slicing like this: `l[2 tw 3]!`
 
 Bugs (low priority):
 * The line number in errors is often not correct as the line incrementer of Position class is weird
