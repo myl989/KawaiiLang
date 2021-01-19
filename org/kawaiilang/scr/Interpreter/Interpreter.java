@@ -2,7 +2,6 @@ package org.kawaiilang;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-
 import java.util.HashMap;
 import net.objecthunter.exp4j.*;
 
@@ -499,6 +498,7 @@ class Interpreter {
                           if (varData != null) {
                                 Token type = varData.getType();
                                 Object stored = varData.getValue();
+                                boolean listOper = false;  //true when array get or slice operations are called
                                 Token varReplaced = null;
                                 if (type.value.equals("Numwer")) {
                                   if (stored instanceof Integer) {
@@ -570,6 +570,7 @@ class Interpreter {
                                   if (stored instanceof OwOList) {
                                     advance();
                                     if (currentToken != null && currentToken.type.equals(Token.TT_LSQU)) {  //Get and slice
+                                      listOper = true;
                                       OwOList l = (OwOList) stored;
                                       Position origP = pos.clone();
                                       Position origOrigP = pos.clone();
@@ -583,7 +584,7 @@ class Interpreter {
                                         origP.advance();
                                         if (currentToken.type.equals(Token.TT_RSQU)) {
                                           if (at.isEmpty()) {
-                                            if (at2.isEmpty()) {
+                                            if (!at2.isEmpty()) {
                                               Object o = new Runner(fn, this).interpret(at2.toArray(new Token[0]));
                                               pos = origP;
                                               tokens = origT;
@@ -610,11 +611,11 @@ class Interpreter {
                                               int i = ((Double) o).intValue();
                                               Object fromList = l.get(i);
                                               if (fromList instanceof Double) {
-                                                varReplaced = new Token(Token.TT_FLOAT, o);
+                                                varReplaced = new Token(Token.TT_FLOAT, fromList);
                                               } else if (fromList instanceof String) {
-                                                varReplaced = new Token(Token.TT_STR, o);
+                                                varReplaced = new Token(Token.TT_STR, fromList);
                                               } else if (fromList instanceof Function) {
-                                                Function retrievedFunc = (Function) o;
+                                                Function retrievedFunc = (Function) fromList;
                                                 varReplaced = new Token(Token.TT_VARNAME, retrievedFunc.getName());
                                               } //More datatypes here
                                               break getNslice;
@@ -639,6 +640,7 @@ class Interpreter {
                                         }
                                       }
                                       pos = origOrigP;
+                                      tokens = origT;
                                       //End getNslice
                                     } else {
                                       retreat();
@@ -651,6 +653,21 @@ class Interpreter {
                                 }
                                 //More variable types in the future
                                 tokens[pos.getIdx()] = varReplaced;
+                                //System.out.println("varReplaced "+ varReplaced);
+                                if (listOper) {
+                                  ArrayList<Token> tmp = new ArrayList(Arrays.asList(tokens));
+                                  tmp.remove(0);
+                                  System.out.println(tmp);
+                                  int i = pos.getIdx();
+                                  while (true) {
+                                    Token t = tmp.remove(i);
+                                    if (t.type.equals(Token.TT_RSQU)) {
+                                      tokens = tmp.toArray(new Token[0]);
+                                      break;
+                                    }
+                                  }
+                                }
+                                //System.out.println(Arrays.toString(tokens));
                                 pos = new Position(-1, 0, -1, fn, Arrays.toString(tokens));
                                 advance();
                                 Object value = interpret();

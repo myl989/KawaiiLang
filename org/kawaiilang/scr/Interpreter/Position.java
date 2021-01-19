@@ -55,7 +55,7 @@ class Position implements Cloneable {
   }
 
   public String toString() {
-    return new StringBuilder("File ").append(fn).append(", line ").append(ln).append(" column ").append(col).append(", tokenIdx ").append(idx);
+    return new StringBuilder("File ").append(fn).append(", line ").append(ln).append(" column ").append(col).append(", tokenIdx ").append(idx).toString();
   }
 
 }

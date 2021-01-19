@@ -5,6 +5,7 @@ Todo:
 * Lists with type restrictions?
 * Matrixes?
 * Type infrence?
+* Get list length
 * Error output when running files
 * Get type of variable
 * Some built-in functions to actually make it more usable, including print
@@ -13,7 +14,7 @@ Todo:
 * Auto deletion of variables out of scope?
 
 Bugs (high priority):
-* List get index does not work
+N/A
 
 Bugs (low priority):
 * The line number in errors is often not correct as the line incrementer of Position class is weird
