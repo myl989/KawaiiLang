@@ -627,6 +627,8 @@ class Interpreter {
                                             tokens = origT;
                                             int i = ((Double) o).intValue();
                                             int j = ((Double) o2).intValue();
+                                            System.out.println(i);
+                                            System.out.println(j);
                                             OwOList slicedList = l.slice(i, j);
                                             varReplaced = new Token(Token.TT_LIST, slicedList);
                                             pos = origP;
