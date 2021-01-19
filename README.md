@@ -15,9 +15,11 @@ Currently status: Interpreter works for calculations with the following operatio
 
 Current features: Integers, floating-points, add, subtract, multiply, divide, parenthesis, and modular arithmatic operations. Variable assignment and use, as well as variable deletion.
 
-Java (for PC, Linux, and Android) and Swift/Objective-C (for iOS) implementations of KawaiiLang are both being developed.
+Java (for PC, Linux, and Android) and Swift/Objective-C (for Apple-based platforms) implementations of KawaiiLang are both being developed.
 
 **Breif documentation**
+
+Note: whitespace doesn't matter in KawaiiLang. Feel free to write everything in one line.
 
 Might make a more beginner-friendly tutorial someday.
 
@@ -34,7 +36,33 @@ Variable declaration assignment: The following code shows a variable declaration
 
 Variable names must start with a letter, and can include all capital or lowercase English letters, digits 0~9, and the special characters `&^_?:>=<`. Snakecase is suggested, along with using UwU talk for variable names.
 
-Variables are declared with the data type, the current ones being `Numwer` for both integer and floating points, as well as `Stwing` for Strings.
+Variables are declared with the data type.
+
+`Numwer`s are numbers, both integer and floating-point, which can be declared simply by typing the number, e.g. `53`.
+
+`Stwing`s are Strings of text declared like this: `'str'`. `'\''`, `'\\'`, `'\n'`, and `'\t'` can be used to write apostrophes, backslashes, new lines, and tabs respectively.
+`Stwing`s can be concatenated simply by putting them together, such as `'str' 'str'` resulting in `'strstr'`, and `'Stwing s iws 'hello '! s 'world'!` results in `'hello world!'`.
+
+When functions are declared (see below), they are stored as `Fwnctwion` datatypes. They can be used similar to python, like below: 
+`def useFunc(f):
+  f()`
+  
+KawaiiLang translation (yes I do notice that it's a very verbose language, but when you're talking in UwU does the length still matter?): 
+`OwO canDo useFunc UwU Fwnctwion f UwU canGibU nwthin!
+  f UwU UwU!
+  gibU nwthin!
+ ^_^ewndCanDo`
+
+`Lwist`s are mutable collections of objects. They are declared like this: `Lwist l iws [1, 'two', nwthin]!`
+As you can see, there isn't any type restrictions, but I might add them in the future.
+
+Cool operations can also be done with lists: for example...
+
+Appending lists (like Strings): `Lwist l iws [1,2]! Lwist l2 iws [3]! Lwist l3 iws l l2!` resulting in `l3 eqwals [1, 2, 3]` (Yes I do notice that you need to assign variables to append lists, will work on fixing that in the future)
+
+Getting item from list: `Lwist l iws [1,2]! l[0]!` results in `1`
+
+Slicing list: `l[n tw m]` returns the list from index n to index m. You can also not write one of them (e.g. `l[tw m]` will use 0 for n)
 
 The assignment operator is `iws`.
 
