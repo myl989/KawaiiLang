@@ -1,6 +1,6 @@
 package org.kawaiilang;
 
-class Position implements Cloneable {
+public class Position implements Cloneable {
 
   private int idx;
   private int ln;
@@ -31,6 +31,12 @@ class Position implements Cloneable {
     col++;
     return this;
   }
+  
+  public Position advanceLine() {
+	ln++;
+	col = 0;
+	return this;
+  }
 
   public Position retreat() {
     idx--;
@@ -55,7 +61,7 @@ class Position implements Cloneable {
   }
 
   public String toString() {
-    return new StringBuilder("File ").append(fn).append(", line ").append(ln).append(" column ").append(col).append(", tokenIdx ").append(idx).toString();
+    return new StringBuilder("File ").append(fn).append(", line ").append(ln).append(" column ").append(col).append(", idx ").append(idx).toString();
   }
 
 }

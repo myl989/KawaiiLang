@@ -1,9 +1,9 @@
 package org.kawaiilang;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-class Lexer {
+final class Lexer {
 
   private String text;
   private String fn;
@@ -11,6 +11,8 @@ class Lexer {
   private char currentChar = Character.MIN_VALUE;
   private boolean firstChar = true;
 
+  private static HashMap<String, String> classNames = new HashMap<>();	//Short name (if first), long name
+  
   public static final HashMap<Character, Character> escapeCharsList = new HashMap<>();
 
   static {
@@ -22,6 +24,14 @@ class Lexer {
     this.text = text;
     this.fn = fileName;
     pos = new Position(-1, 0, -1, fn, text);
+  }
+  
+  public static void addClassName(String longName, String shortName) {
+	if (classNames.containsKey(shortName)) {
+	  classNames.put(longName, longName);
+	} else {
+	  classNames.put(shortName, longName);
+	}
   }
 
   private void advance() {
@@ -36,61 +46,70 @@ class Lexer {
     }
   }
 
-  public Token[] makeTokens() {
+  public Token[] makeTokens() {	
     ArrayList<Token> tokens = new ArrayList<>();
-    while (true) { //handel nullType maybe?
-    //System.out.println(currentChar);
+    while (true) {
       if (Character.isWhitespace(currentChar)) {
         advance();
-      } else if (Character.isLetter(currentChar) || Token.CHARS_ALLOWED_IN_IDENTIFIERS.indexOf(currentChar) > -1) {
-        tokens.add(makeIdentifier());
+      } else if (Character.isLetter(currentChar) || TokenV1.CHARS_ALLOWED_IN_IDENTIFIERS.indexOf(currentChar) > -1) {
+    	Token t = makeIdentifier();
+        tokens.add(t);
+        if (t.getType().equals(TokenV1.TT_INCLUDE)) {
+          break;
+        }
       } else if (Character.isDigit(currentChar)) {
         tokens.add(makeNum());
+      } else if (currentChar == '~') {
+    	tokens.add(new TokenV1(TokenV1.TT_TILDE));
+    	advance();
       } else if (currentChar == '\'') {
         tokens.add(makeStr());
       } else if (currentChar == '+') {
-        tokens.add(new Token(Token.TT_ADD));
+        tokens.add(new TokenV1(TokenV1.TT_ADD));
         advance();
       } else if (currentChar == '-') {
-        tokens.add(new Token(Token.TT_MINUS));
+        tokens.add(new TokenV1(TokenV1.TT_MINUS));
         advance();
       } else if (currentChar == '*') {
         //If there is a start if then another * must be end if
-        if (tokens.contains(new Token(Token.TT_STARTIF))) {
-          tokens.add(new Token(Token.TT_ENDIF));
+        if (tokens.contains(new TokenV1(TokenV1.TT_STARTIF))) {
+          tokens.add(new TokenV1(TokenV1.TT_ENDIF));
           advance();
           if (currentChar == '?') {
             break;
+          } else if (currentChar == '~') {
+        	tokens.add(new TokenV1(TokenV1.TT_TILDE));
+        	break;
           } else {
             Position start = pos.clone();
-            Token[] errorArray = new Token[1];
+            Token[] errorArray = new TokenV1[1];
             errorArray[0] = new InvalidSyntaxError(start, pos, "Naooo uwu if statement must end with \"?\" ._.");
             return errorArray;
           }
         } else {
-          tokens.add(new Token(Token.TT_MUL));
+          tokens.add(new TokenV1(TokenV1.TT_MUL));
           advance();
         }
       } else if (currentChar == '/') {
-        tokens.add(new Token(Token.TT_DIV));
+        tokens.add(new TokenV1(TokenV1.TT_DIV));
         advance();
       } else if (currentChar == '(') {
-        tokens.add(new Token(Token.TT_LPAREN));
+        tokens.add(new TokenV1(TokenV1.TT_LPAREN));
         advance();
       } else if (currentChar == ')') {
-        tokens.add(new Token(Token.TT_RPAREN));
+        tokens.add(new TokenV1(TokenV1.TT_RPAREN));
         advance();
       } else if (currentChar == '[') {
-        tokens.add(new Token(Token.TT_LSQU));
+        tokens.add(new TokenV1(TokenV1.TT_LSQU));
         advance();
       } else if (currentChar == ']') {
-        tokens.add(new Token(Token.TT_RSQU));
+        tokens.add(new TokenV1(TokenV1.TT_RSQU));
         advance();
       } else if (currentChar == '%') {
-        tokens.add(new Token(Token.TT_MOD));
+        tokens.add(new TokenV1(TokenV1.TT_MOD));
         advance();
       } else if (currentChar == ',') {
-        tokens.add(new Token(Token.TT_COMMA));
+        tokens.add(new TokenV1(TokenV1.TT_COMMA));
         advance();
       } else if (currentChar == '!') {
         break;
@@ -100,7 +119,7 @@ class Lexer {
         advance();
         if (!tmp) {
           Position start = pos.clone();
-          Token[] errorArray = new Token[1];
+          Token[] errorArray = new TokenV1[1];
           if (badC == Character.MIN_VALUE) {
             errorArray[0] = new InvalidSyntaxError(start, pos, "Naooo uwu line must end with \"!\" ._.");
           } else {
@@ -110,7 +129,7 @@ class Lexer {
         }
       }
     }
-    return tokens.toArray(new Token[0]);
+    return tokens.toArray(new TokenV1[0]);
   }
 
   private Token makeNum() {
@@ -130,15 +149,14 @@ class Lexer {
       advance();
     }
     if (dotCount == 0) {
-      return new Token(Token.TT_INT, Integer.parseInt(numStr.toString()));
+      return new TokenV1(TokenV1.TT_INT, Integer.parseInt(numStr.toString()));
     } else {
-      return new Token(Token.TT_FLOAT, Double.parseDouble(numStr.toString()));
+      return new TokenV1(TokenV1.TT_FLOAT, Double.parseDouble(numStr.toString()));
     }
   }
 
   private Token makeStr() {
     StringBuilder sb = new StringBuilder();
-    Position start = pos.clone();
     boolean esc = false;
     advance();
     while (currentChar != '\'' || esc) {
@@ -157,18 +175,17 @@ class Lexer {
       advance();
     }
     advance();
-    return new Token(Token.TT_STR, sb.toString());
+    return new TokenV1(TokenV1.TT_STR, sb.toString());
   }
 
   private Token makeIdentifier() {
     StringBuilder idSB = new StringBuilder();
-    Position start = pos.clone();
-    while (currentChar != Character.MIN_VALUE && (Character.isLetter(currentChar) || Character.isDigit(currentChar) || Token.CHARS_ALLOWED_IN_IDENTIFIERS.indexOf(currentChar) > -1)) {
+    while (currentChar != Character.MIN_VALUE && (Character.isLetter(currentChar) || Character.isDigit(currentChar) || TokenV1.CHARS_ALLOWED_IN_IDENTIFIERS.indexOf(currentChar) > -1)) {
       idSB.append(currentChar);
       advance();
     }
     String idStr = idSB.toString();
-    if (Arrays.asList(Token.KEYWORDS).contains(idStr)) {
+    if (Arrays.asList(TokenV1.KEYWORDS).contains(idStr)) {
       if (idStr.equals("OwO")) {
         //OwO has a different meaning in classes!
         //The following code detects OwO *notices
@@ -181,34 +198,40 @@ class Lexer {
         }
         String noticesResults = noticesSB.toString();
         if (noticesResults.equals("*notices")) {
-          return new Token(Token.TT_STARTIF);
+          return new TokenV1(TokenV1.TT_STARTIF);
         } else {
           //just assume it's a normal OwO
           pos = before;
-          return new Token(Token.TT_KEYWORD, "OwO");
+          return new TokenV1(TokenV1.TT_KEYWORD, "OwO");
         }
       }
-      return new Token(Token.TT_KEYWORD, idStr);
+      return new TokenV1(TokenV1.TT_KEYWORD, idStr);
     } else if (idStr.equals("iws")) {
-      return new Token(Token.TT_ASSIGN, idStr);
+      return new TokenV1(TokenV1.TT_ASSIGN, idStr);
     } else if (idStr.equals("eqwals")) {
-      return new Token(Token.TT_EQUALS, idStr);
+      return new TokenV1(TokenV1.TT_EQUALS, idStr);
     } else if (idStr.equals("nwthin")) {
-      return new Token(Token.TT_NOTHING);
+      return new TokenV1(TokenV1.TT_NOTHING);
     } else if (idStr.equals("UwU")) {
-      return new Token(Token.TT_PARAM);
+      return new TokenV1(TokenV1.TT_PARAM);
     } else if (idStr.equals(">_<")) {
-      return new Token(Token.TT_GT, idStr);
+      return new TokenV1(TokenV1.TT_GT, idStr);
     } else if (idStr.equals("<_<")) {
-      return new Token(Token.TT_LT, idStr);
+      return new TokenV1(TokenV1.TT_LT, idStr);
     } else if (idStr.equals(">=<")) {
-      return new Token(Token.TT_GTE, idStr);
+      return new TokenV1(TokenV1.TT_GTE, idStr);
     } else if (idStr.equals("<=<")) {
-      return new Token(Token.TT_LTE, idStr);
-    } else if (Arrays.asList(Token.DATA_TYPES).contains(idStr)) {
-      return new Token(Token.TT_VARTYPE, idStr);
+      return new TokenV1(TokenV1.TT_LTE, idStr);
+    } else if (idStr.equals("isForMe?")) {
+      return new TokenV1(TokenV1.TT_INCLUDE);
+    } else if (Arrays.asList(TokenV1.DATA_TYPES).contains(idStr)) {
+      return new TokenV1(TokenV1.TT_VARTYPE, idStr);
+    } else if (classNames.containsKey(idStr)) {
+      return new TokenV1(TokenV1.TT_CLASS, classNames.get(idStr));
+    } else if (classNames.containsValue(idStr)) {
+      return new TokenV1(TokenV1.TT_CLASS, idStr);
     } else {
-      return new Token(Token.TT_VARNAME, idStr);
+      return new TokenV1(TokenV1.TT_VARNAME, idStr);
     }
   }
 

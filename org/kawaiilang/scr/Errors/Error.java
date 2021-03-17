@@ -1,22 +1,18 @@
 package org.kawaiilang;
 
-class Error extends Token {
+abstract class Error extends TokenV1 {
 
-  private Position positionStart;
-  private Position positionEnd;
-
-  //internal use only
-  Error(Position positionStart, Position positionEnd, String type, String message) {
-    super(type, message);
-    this.positionStart = positionStart;
-    this.positionEnd = positionEnd;
+    private Position positionStart;
+    private Position positionEnd;
+  
+    //internal use only
+    Error(Position positionStart, Position positionEnd, String type, String message) {
+      super(type, message);
+      this.positionStart = positionStart;
+      this.positionEnd = positionEnd;
+    }
+  
+    public String toString() {
+      return new StringBuilder("file ").append(positionStart.getFileName()).append(": ").append(getType()).append(": ").append(getValue().toString()).toString();
+    }
   }
-
-  public Error(Position positionStart, Position positionEnd, String message) {
-    this(positionStart, positionEnd, "Ewwor", message);
-  }
-
-  public String toString() {
-    return new StringBuilder("File ").append(positionStart.getFileName()).append(", line ").append(positionStart.getLine() + 1).append(":").append(type).append(":").append(value.toString()).toString();
-  }
-}

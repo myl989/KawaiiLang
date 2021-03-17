@@ -3,9 +3,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileReader;
+import java.util.Arrays;
 import java.util.HashMap;
 
-public class Runner {
+public final class Runner {
 
   /*
    * TO USE:
@@ -20,36 +21,39 @@ public class Runner {
    * `r.run();`
    */
 
-  public static final HashMap<String, String> UWU_KEY;
+  public static final HashMap<String, String> UWU_KEY = new HashMap<>();
+  
+  private static Token anyErrorsFound = null;	//Any errors found by the lexer will go here
 
   static {
-
-    HashMap<String, String> uwuKi = new HashMap<>();
-    uwuKi.put("awdd", "+");
-    uwuKi.put("mwinws", "-");
-    uwuKi.put("mwltipwy", "*");
-    uwuKi.put("diwide", "/");
-    uwuKi.put("mwd", "%");
-    UWU_KEY = uwuKi;
-
+    UWU_KEY.put("awdd", "+");
+    UWU_KEY.put("mwinws", "-");
+    UWU_KEY.put("mwltipwy", "*");
+    UWU_KEY.put("diwide", "/");
+    UWU_KEY.put("mwd", "%");
+    UWU_KEY.put("waifu", "cwass");
+    UWU_KEY.put("husbando", "cwass");
+    UWU_KEY.put("^_^ewndWaifu", "ewndCwass");
+    UWU_KEY.put("^_^ewndHusbando", "^_^ewndCwass");
   }
 
   private String fileLocation = "<stdin>";
-  private Interpreter interpreter;
+  private KawaiiLangRuntime runtime;
 
   public Runner() {
-    interpreter = new Interpreter(fileLocation);
+    runtime = new KawaiiLangRuntime(fileLocation);
   }
 
   public Runner(String fileLocation) {
     this.fileLocation = fileLocation;
-    interpreter = new Interpreter(fileLocation);
+    runtime = new KawaiiLangRuntime(fileLocation);
   }
 
-  //internal use only
-  Runner(String fileLocation, Interpreter interpreter) {
+  //Internal use only
+  //Sets the runtime for objects
+  Runner(String fileLocation, KawaiiLangRuntime runtime) {
     this.fileLocation = fileLocation;
-    this.interpreter = interpreter;
+    this.runtime = runtime;
   }
 
   public static String unUwUfy(String uwufiedText) {
@@ -79,47 +83,76 @@ public class Runner {
 
   public void setFileLocation(String fileLocation) {
     this.fileLocation = fileLocation;
-    interpreter.setFileLocation(fileLocation);
+    runtime.setFileLocation(fileLocation);
   }
 
   public void run() throws IOException {
     File file = new File(fileLocation);
     BufferedReader br = new BufferedReader(new FileReader(file));
     String line;
+    int i = 1;
     while ((line = br.readLine()) != null) {
+      Object result = null;
       long emc = line.codePoints().filter(ch -> ch == '!').count();
       long qmc = line.codePoints().filter(ch -> ch == '?').count();
-      if (emc + qmc > 1) {
-        //Splits line if it ends with "!" or "?"
-        String[] splitInto = line.split("(?<=!)|(?<=\\?)");
-        for (String portionToEval : splitInto) {
-          eval(portionToEval);
-        }
+      if (line.isBlank()) {
+    	//System.out.println("Blank " + i);
+    	i++;
       } else {
-        eval(line);
+    	//System.out.println(i);
+        i++;
+    	if (emc + qmc > 1) {
+          //Splits line if it ends with "!" or "?", but allows typing the two symbols with "\!" and "\?"
+          String[] splitInto = line.split("((?<=!)(?<!\\\\!)|(?<=\\?)(?<!\\\\\\?))");
+          for (String portionToEval : splitInto) {
+            result = eval(portionToEval);
+          }
+        } else {
+          result = eval(line);
+        }
+        runtime.advanceLine();
+        if (result instanceof org.kawaiilang.Error) {
+          	System.out.print("Error: line ");
+          	System.out.print(i);
+          	System.out.print(" of ");
+      		System.out.println(result);
+      		br.close();
+      		return;
+        }
       }
+      
     }
-    //make it not line dependant in the future?
+    br.close();
   }
 
   public Object eval(String text) {
+	if (text.startsWith(".-.")) {	//Comment
+	  return null;
+	}
     Lexer lexer = new Lexer(fileLocation, unUwUfy(text));
     Token[] tokens = lexer.makeTokens();
-    //System.out.println(java.util.Arrays.toString(tokens));
-    return interpret(tokens);
+    Arrays.asList(tokens).forEach(t -> {
+      if (t instanceof org.kawaiilang.Error) {
+    	anyErrorsFound = t;
+      }
+    });
+    if (anyErrorsFound != null) {
+      return anyErrorsFound;
+    } else {
+      return interpret(tokens);
+    }
   }
 
   public Object interpret(Token[] tokens) {
-    interpreter.setTokens(tokens);
-    Object result = interpreter.interpret();
+    runtime.setTokens(tokens);
+    Object result = runtime.interpret();
 
     //Prints the result so I can actually see what is going on. Every single one of them. Ah yes the pains of debugging.
-    if (result == null) {
+    /*if (result == null) {
       System.out.println("nwthin");
     } else {
       System.out.println(result);
-    }
-
+    }*/
     return result;
   }
 
