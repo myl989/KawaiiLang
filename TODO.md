@@ -17,7 +17,7 @@ Long-term todo:
 * Auto deletion of variables out of scope?
 
 Bugs (high priority):
-N/A
+* In console mode, forgetting to type `!` is a death sentence.
 
 Bugs (low priority):
 * Null pointers hangs the program
