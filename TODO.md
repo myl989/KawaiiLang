@@ -4,6 +4,8 @@ Short-term todo:
 * Auto-write default constructor
 
 Long-term todo:
+* Delete out-of-scope variables
+* Garbage collection
 * More built-in functions!!! More!!!!!!
 * GUI API (if Processing did it, so can I)
 * Dictionaries and sets
