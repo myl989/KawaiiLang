@@ -22,3 +22,8 @@ org/kawaiilang/.DS_Store
 # Eclipse files
 #
 .settings/
+
+#
+# Class files
+#
+*.class
