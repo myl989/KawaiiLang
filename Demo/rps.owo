@@ -1,0 +1,53 @@
+.-. A simple rock paper scissors game in KawaiiLang
+.-. by myl
+
+Stwing rock iws 'rock'!
+Stwing paper iws 'paper'!
+Stwing scissors iws 'scissors'!
+
+'wandom' isForMe?
+
+nuzzle UwU 'uwu haiii senpai\!\!\!\nlet\'s play wock pwaper swcissors\!\! :3' UwU!
+
+doWen OwO *notices :>*?
+	Numwer waifuNum iws wandomIntewer UwU 0, 2 UwU!
+	Numwer senpaiNum iws mwinws 1!
+	Stwing senpaiPlay iws whatsThis UwU 'w-what do u choose senpai uwu\? '!
+	senpaiPlay iws lwer UwU senpaiPlay UwU!
+	
+	OwO *notices senpaiPlay eqwals 'rock'*?
+		senpaiNum iws 0!
+	^_^ewndNotice!
+	ewlse!
+	OwO *notices senpaiPlay eqwals 'paper'*?
+		senpaiNum iws 1!
+	^_^ewndNotice!
+	ewlse!
+	OwO *notices senpaiPlay eqwals 'scissors'*?
+		senpaiNum iws 2!
+	^_^ewndNotice!
+	ewlse!
+	OwO *notices senpaiPlay eqwals 'stop'*?
+		nuzzle UwU 'OwO senpai you\'ve played enough\?\nw-well, goodbaii senpai\! UwU <3' UwU!
+		senpaiStawp UwU UwU!
+	^_^ewndNotice!
+	ewlse!
+	OwO *notices :>*?
+		nuzzle UwU 'OwO senpai i think thats an incowwect input .~.' UwU!
+	^_^ewndNotice!
+	
+	OwO *notices senpaiNum eqwals waifuNum*?
+		nuzzle UwU 'nyaa- that was a tie\! OwO' UwU!
+	^_^ewndNotice!
+	ewlse!
+	OwO *notices senpaiNum eqwals mwinws 1*?
+	^_^ewndNotice!
+	ewlse!
+	OwO *notices senpaiNum awdd 1 mwd 3 eqwals waifuNum*?
+		nuzzle UwU 's-senpai, you wonn\!\! UwU :3' UwU!
+	^_^ewndNotice!
+	ewlse!
+	OwO *notices :>*?
+		nuzzle UwU 'OwO I won this round~' UwU!
+	^_^ewndNotice!
+^_^wepeatDat!
