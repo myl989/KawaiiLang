@@ -10,11 +10,7 @@ public final class Shell {
     while (true) {
       System.out.print("KawaiiLang> ");
       String input = s.nextLine();
-      //long startTime = System.nanoTime();
       Object result = r.eval(input);
-      /*long endTime = System.nanoTime();
-      System.out.print("Time taken: ");
-      System.out.println(endTime - startTime);*/
           
       //The following code prints out any errors. Please disable if the "print return values" option is turned on.
       /*if (result instanceof Error) {

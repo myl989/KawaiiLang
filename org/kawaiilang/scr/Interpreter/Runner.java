@@ -8,19 +8,6 @@ import java.util.HashMap;
 
 public final class Runner {
 
-  /*
-   * TO USE:
-   * 
-   * 1. Import package
-   * `Import org.kawaiilang.Runner;`
-   *
-   * 2. Create Runner class
-   * `Runner r = new Runner([file location name]);`
-   *
-   * 3. Run the file
-   * `r.run();`
-   */
-
   public static final HashMap<String, String> UWU_KEY = new HashMap<>();
   
   private static Token anyErrorsFound = null;	//Any errors found by the lexer will go here
@@ -49,7 +36,6 @@ public final class Runner {
     runtime = new KawaiiLangRuntime(fileLocation);
   }
 
-  //Internal use only
   //Sets the runtime for objects
   Runner(String fileLocation, KawaiiLangRuntime runtime) {
     this.fileLocation = fileLocation;
