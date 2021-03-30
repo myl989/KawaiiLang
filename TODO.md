@@ -1,24 +1,24 @@
-Todo:
-* Fill in places with `//error`
-* Switch statements for `Numwer`s
-* Bitwise operators
-* Lists with type restrictions?
+Short-term todo:
+* Let functions take objects as input/output
+* Allow use of super and this in constructor
+* Auto-write default constructor
+
+Long-term todo:
+* More built-in functions!!! More!!!!!!
+* GUI API (if Processing did it, so can I)
+* Dictionaries and sets
 * Matrixes?
-* Type infrence?
-* Get list length
-* Convert String to list or slicing Strings
-* Error output when running files
-* Get type of variable
-* Some built-in functions to actually make it more usable, including print
+* List generics
+* Allow proper unload/reloading of include statements
+* Type inference?
+* Break a specific loop instead of breaking the whole thing
 * Object orientated programming?
-* Compiler?
+* Function kwargs?
 * Auto deletion of variables out of scope?
 
 Bugs (high priority):
-* Null pointers with slicing like this: `l[2 tw 3]!`
+N/A
 
 Bugs (low priority):
-* The line number in errors is often not correct as the line incrementer of Position class is weird
-* Frequent unchecked null pointers in variable declaration and assignment code
 * Null pointers hangs the program
 * Incompatable variable type declaration and contents are not detected until variable is used
