@@ -112,18 +112,20 @@ public final class Runner {
   }
 
   public Object eval(String text) {
-	if (text.startsWith(".-.")) {	//Comment
-	  return null;
-	}
+	  if (text.startsWith(".-.")) { //Comment
+	    return null;
+	  }
     Lexer lexer = new Lexer(fileLocation, unUwUfy(text));
     Token[] tokens = lexer.makeTokens();
     Arrays.asList(tokens).forEach(t -> {
       if (t instanceof org.kawaiilang.Error) {
-    	anyErrorsFound = t;
+    	  anyErrorsFound = t;
       }
     });
     if (anyErrorsFound != null) {
-      return anyErrorsFound;
+      Object tmp = anyErrorsFound;
+      anyErrorsFound = null;
+      return tmp;
     } else {
       return interpret(tokens);
     }
