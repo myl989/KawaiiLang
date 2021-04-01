@@ -14,17 +14,8 @@ public class RandomAPI {
   private RandomAPI() {
   }
 
-  public static void addAPI(KawaiiLangRuntime i) {
-    i.addFunction(new Random(i));
-    i.overloadFunction(new RandomWithMinMax(i));
-    i.addFunction(new RandomGaussian(i));
-    i.addFunction(new RandomInt(i));
-    i.addFunction(new SetRandomSeed(i));
-    i.addFunction(new Randomize(i));
-  }
-
   static class Random extends BuiltInFunction {
-    private Random(KawaiiLangRuntime runtime) {
+     Random(KawaiiLangRuntime runtime) {
       super(runtime, "Wandom", "wandom", TokenV1.C_NUMVT);
     }
 
@@ -34,7 +25,7 @@ public class RandomAPI {
   }
 
   static class RandomGaussian extends BuiltInFunction {
-    private RandomGaussian(KawaiiLangRuntime runtime) {
+     RandomGaussian(KawaiiLangRuntime runtime) {
       super(runtime, "Wandom", "wandomGaussian", TokenV1.C_NUMVT);
     }
 
@@ -43,14 +34,14 @@ public class RandomAPI {
     }
   }
 
-  static class RandomWithMinMax extends BuiltInFunction {
+  static class RandomWithMinMax extends BuiltInFunction implements OverloadFunction {
     static final LinkedHashMap<String, String> parameters = new LinkedHashMap<>();
     static {
       parameters.put("min", "Numwer");
       parameters.put("max", "Numwer");
     }
 
-    private RandomWithMinMax(KawaiiLangRuntime runtime) {
+     RandomWithMinMax(KawaiiLangRuntime runtime) {
       super(runtime, "Wandom", "wandom", parameters, TokenV1.C_NUMVT);
     }
 
@@ -75,7 +66,7 @@ public class RandomAPI {
       parameters.put("max", "Numwer");
     }
 
-    private RandomInt(KawaiiLangRuntime runtime) {
+     RandomInt(KawaiiLangRuntime runtime) {
       super(runtime, "Wandom", "wandomIntewer", parameters, TokenV1.C_NUMVT);
     }
 
@@ -100,7 +91,7 @@ public class RandomAPI {
       parameters.put("", "Numwer");
     }
 
-    private SetRandomSeed(KawaiiLangRuntime runtime) {
+     SetRandomSeed(KawaiiLangRuntime runtime) {
       super(runtime, "Wandom", "setWandomSeed", parameters, TokenV1.C_NOTHING);
     }
 
@@ -117,7 +108,7 @@ public class RandomAPI {
   }
 
   static class Randomize extends BuiltInFunction {
-    private Randomize(KawaiiLangRuntime runtime) {
+     Randomize(KawaiiLangRuntime runtime) {
       super(runtime, "Wandom", "genewateWandomSeed", TokenV1.C_NOTHING);
     }
 

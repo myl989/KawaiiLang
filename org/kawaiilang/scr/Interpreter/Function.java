@@ -316,6 +316,7 @@ public class Function {
     }
   }
 
+  @Override
   public String toString() {
     return new StringBuilder("<Function ").append(name).append(" from ").append(runtime.getFileLocation()).append('>').toString();
   }

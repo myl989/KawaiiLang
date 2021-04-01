@@ -29,7 +29,7 @@ public class CoreAPI {
   }
 
   static class SenpaiStawp extends BuiltInFunction {
-    private SenpaiStawp(KawaiiLangRuntime runtime) {
+    SenpaiStawp(KawaiiLangRuntime runtime) {
       super(runtime, "CoreAPI", "senpaiStawp", TokenV1.C_NOTHING);
     }
 
@@ -39,13 +39,13 @@ public class CoreAPI {
     }
   }
 
-  static class SenpaiStawpEndCode extends BuiltInFunction {
+  static class SenpaiStawpEndCode extends BuiltInFunction implements OverloadFunction {
     static final LinkedHashMap<String, String> parameters = new LinkedHashMap<>();
     static {
       parameters.put("", "Numwer");
     }
 
-    private SenpaiStawpEndCode(KawaiiLangRuntime runtime) {
+    SenpaiStawpEndCode(KawaiiLangRuntime runtime) {
       super(runtime, "CoreAPI", "senpaiStawp", parameters, TokenV1.C_NOTHING);
     }
 
@@ -62,7 +62,7 @@ public class CoreAPI {
   }
 
   static class WhatsThis extends BuiltInFunction {
-    private WhatsThis(KawaiiLangRuntime runtime) {
+    WhatsThis(KawaiiLangRuntime runtime) {
       super(runtime, "CoreAPI", "whatsThis", TokenV1.C_STRVT);
     }
 
@@ -72,13 +72,13 @@ public class CoreAPI {
     }
   }
 
-  static class WhatsThisWithPrompt extends BuiltInFunction {
+  static class WhatsThisWithPrompt extends BuiltInFunction implements OverloadFunction {
     static final LinkedHashMap<String, String> parameters = new LinkedHashMap<>();
     static {
       parameters.put("", "Stwing");
     }
 
-    private WhatsThisWithPrompt(KawaiiLangRuntime runtime) {
+    WhatsThisWithPrompt(KawaiiLangRuntime runtime) {
       super(runtime, "CoreAPI", "whatsThis", parameters, TokenV1.C_STRVT);
     }
 
@@ -100,7 +100,7 @@ public class CoreAPI {
       parameters.put("", "Anwy");
     }
 
-    private Nuzzle(KawaiiLangRuntime runtime) {
+    Nuzzle(KawaiiLangRuntime runtime) {
       super(runtime, "CoreAPI", "nuzzle", parameters, TokenV1.C_NOTHING);
     }
 
@@ -115,14 +115,14 @@ public class CoreAPI {
     }
   }
 
-  static class NuzzleEnd extends BuiltInFunction {
+  static class NuzzleEnd extends BuiltInFunction implements OverloadFunction {
     static final LinkedHashMap<String, String> parameters = new LinkedHashMap<>();
     static {
       parameters.put("", "Stwing");
       parameters.put("a", "Stwing");
     }
 
-    private NuzzleEnd(KawaiiLangRuntime runtime) {
+    NuzzleEnd(KawaiiLangRuntime runtime) {
       super(runtime, "CoreAPI", "nuzzle", parameters, TokenV1.C_NOTHING);
     }
 
@@ -138,14 +138,14 @@ public class CoreAPI {
     }
   }
 
-  static class NuzzleEndNothing extends BuiltInFunction {
+  static class NuzzleEndNothing extends BuiltInFunction implements OverloadFunction {
     static final LinkedHashMap<String, String> parameters = new LinkedHashMap<>();
     static {
       parameters.put("", "Stwing");
       parameters.put("a", "nwthin");
     }
 
-    private NuzzleEndNothing(KawaiiLangRuntime runtime) {
+    NuzzleEndNothing(KawaiiLangRuntime runtime) {
       super(runtime, "CoreAPI", "nuzzle", parameters, TokenV1.C_NOTHING);
     }
 
@@ -160,8 +160,8 @@ public class CoreAPI {
     }
   }
 
-  static class NuzzleNothing extends BuiltInFunction {
-    private NuzzleNothing(KawaiiLangRuntime runtime) {
+  static class NuzzleNothing extends BuiltInFunction implements OverloadFunction {
+    NuzzleNothing(KawaiiLangRuntime runtime) {
       super(runtime, "CoreAPI", "nuzzle", TokenV1.C_NOTHING);
     }
 
@@ -177,7 +177,7 @@ public class CoreAPI {
       parameters.put("", "Anwy");
     }
 
-    private GiveString(KawaiiLangRuntime runtime) {
+    GiveString(KawaiiLangRuntime runtime) {
       super(runtime, "CoreAPI", "gibStwing", parameters, TokenV1.C_STRVT);
     }
 
@@ -204,7 +204,7 @@ public class CoreAPI {
       parameters.put("a", "Numwer");
     }
 
-    private Pop(KawaiiLangRuntime runtime) {
+    Pop(KawaiiLangRuntime runtime) {
       super(runtime, "CoreAPI", "pwp", parameters, TokenV1.C_ANYVT);
     }
 
@@ -227,7 +227,7 @@ public class CoreAPI {
       parameters.put("a", "Anwy");
     }
 
-    private Append(KawaiiLangRuntime runtime) {
+    Append(KawaiiLangRuntime runtime) {
       super(runtime, "CoreAPI", "appwnd", parameters, TokenV1.C_LISTVT);
     }
 
@@ -253,7 +253,7 @@ public class CoreAPI {
       parameters.put("", "Stwing");
     }
 
-    private Upper(KawaiiLangRuntime runtime) {
+    Upper(KawaiiLangRuntime runtime) {
       super(runtime, "CoreAPI", "uwpper", parameters, TokenV1.C_STRVT);
     }
 
@@ -274,7 +274,7 @@ public class CoreAPI {
       parameters.put("", "Stwing");
     }
 
-    private Lower(KawaiiLangRuntime runtime) {
+    Lower(KawaiiLangRuntime runtime) {
       super(runtime, "CoreAPI", "lwer", parameters, TokenV1.C_STRVT);
     }
 

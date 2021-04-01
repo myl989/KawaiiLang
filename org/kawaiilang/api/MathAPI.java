@@ -13,31 +13,9 @@ public class MathAPI {
   private MathAPI() {
   }
 
-  public static void addAPI(KawaiiLangRuntime i) {
-    i.addFunction(new Pi(i));
-    i.addFunction(new E(i));
-    i.addFunction(new Acos(i));
-    i.addFunction(new Asin(i));
-    i.addFunction(new Atan(i));
-    i.addFunction(new Atan2(i));
-    i.addFunction(new Cos(i));
-    i.addFunction(new Sin(i));
-    i.addFunction(new Tan(i));
-    i.addFunction(new Cosh(i));
-    i.addFunction(new Sinh(i));
-    i.addFunction(new Tanh(i));
-    i.addFunction(new Sqrt(i));
-    i.addFunction(new Cbrt(i));
-    i.addFunction(new Log10(i));
-    i.addFunction(new Log(i));
-    i.addFunction(new Round(i));
-    i.addFunction(new Floor(i));
-    i.addFunction(new Ceil(i));
-  }
-
   // Pi senpai
   static class Pi extends BuiltInFunction {
-    private Pi(KawaiiLangRuntime interpreter) {
+     Pi(KawaiiLangRuntime interpreter) {
       super(interpreter, "API name", "pi", TokenV1.C_NUMVT);
     }
 
@@ -48,7 +26,7 @@ public class MathAPI {
 
   // Euler senpai
   static class E extends BuiltInFunction {
-    private E(KawaiiLangRuntime interpreter) {
+     E(KawaiiLangRuntime interpreter) {
       super(interpreter, "API name", "e", TokenV1.C_NUMVT);
     }
 
@@ -63,7 +41,7 @@ public class MathAPI {
       parameters.put("", "Numwer");
     }
 
-    private Acos(KawaiiLangRuntime runtime) {
+     Acos(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "acos", parameters, TokenV1.C_NUMVT);
     }
 
@@ -83,7 +61,7 @@ public class MathAPI {
       parameters.put("", "Numwer");
     }
 
-    private Asin(KawaiiLangRuntime runtime) {
+     Asin(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "asin", parameters, TokenV1.C_NUMVT);
     }
 
@@ -103,7 +81,7 @@ public class MathAPI {
       parameters.put("", "Numwer");
     }
 
-    private Atan(KawaiiLangRuntime runtime) {
+     Atan(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "atan", parameters, TokenV1.C_NUMVT);
     }
 
@@ -123,7 +101,7 @@ public class MathAPI {
       parameters.put("", "Numwer");
     }
 
-    private Atan2(KawaiiLangRuntime runtime) {
+     Atan2(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "atan2", parameters, TokenV1.C_NUMVT);
     }
 
@@ -143,7 +121,7 @@ public class MathAPI {
       parameters.put("", "Numwer");
     }
 
-    private Cos(KawaiiLangRuntime runtime) {
+     Cos(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "cos", parameters, TokenV1.C_NUMVT);
     }
 
@@ -163,7 +141,7 @@ public class MathAPI {
       parameters.put("", "Numwer");
     }
 
-    private Sin(KawaiiLangRuntime runtime) {
+     Sin(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "sin", parameters, TokenV1.C_NUMVT);
     }
 
@@ -183,7 +161,7 @@ public class MathAPI {
       parameters.put("", "Numwer");
     }
 
-    private Tan(KawaiiLangRuntime runtime) {
+     Tan(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "tan", parameters, TokenV1.C_NUMVT);
     }
 
@@ -203,7 +181,7 @@ public class MathAPI {
       parameters.put("", "Numwer");
     }
 
-    private Cosh(KawaiiLangRuntime runtime) {
+     Cosh(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "cosh", parameters, TokenV1.C_NUMVT);
     }
 
@@ -223,7 +201,7 @@ public class MathAPI {
       parameters.put("", "Numwer");
     }
 
-    private Sinh(KawaiiLangRuntime runtime) {
+     Sinh(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "sinh", parameters, TokenV1.C_NUMVT);
     }
 
@@ -243,7 +221,7 @@ public class MathAPI {
       parameters.put("", "Numwer");
     }
 
-    private Tanh(KawaiiLangRuntime runtime) {
+     Tanh(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "tanh", parameters, TokenV1.C_NUMVT);
     }
 
@@ -263,7 +241,7 @@ public class MathAPI {
       parameters.put("", "Numwer");
     }
 
-    private Sqrt(KawaiiLangRuntime runtime) {
+     Sqrt(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "sqrt", parameters, TokenV1.C_NUMVT);
     }
 
@@ -283,7 +261,7 @@ public class MathAPI {
       parameters.put("", "Numwer");
     }
 
-    private Cbrt(KawaiiLangRuntime runtime) {
+     Cbrt(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "cbrt", parameters, TokenV1.C_NUMVT);
     }
 
@@ -304,7 +282,7 @@ public class MathAPI {
       parameters.put("a", "Numwer");
     }
 
-    private Pow(KawaiiLangRuntime runtime) {
+     Pow(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "expowonwent", parameters, TokenV1.C_NUMVT);
     }
 
@@ -324,7 +302,7 @@ public class MathAPI {
       parameters.put("", "Numwer");
     }
 
-    private Log10(KawaiiLangRuntime runtime) {
+     Log10(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "lwg", parameters, TokenV1.C_NUMVT);
     }
 
@@ -344,7 +322,7 @@ public class MathAPI {
       parameters.put("", "Numwer");
     }
 
-    private Log(KawaiiLangRuntime runtime) {
+     Log(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "lwn", parameters, TokenV1.C_NUMVT);
     }
 
@@ -364,7 +342,7 @@ public class MathAPI {
       parameters.put("", "Numwer");
     }
 
-    private Round(KawaiiLangRuntime runtime) {
+     Round(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "ruwund", parameters, TokenV1.C_NUMVT);
     }
 
@@ -384,7 +362,7 @@ public class MathAPI {
       parameters.put("", "Numwer");
     }
 
-    private Floor(KawaiiLangRuntime runtime) {
+     Floor(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "ruwundDwwn", parameters, TokenV1.C_NUMVT);
     }
 
@@ -404,7 +382,7 @@ public class MathAPI {
       parameters.put("", "Numwer");
     }
 
-    private Ceil(KawaiiLangRuntime runtime) {
+     Ceil(KawaiiLangRuntime runtime) {
       super(runtime, "Mwath", "ruwundUwup", parameters, TokenV1.C_NUMVT);
     }
 

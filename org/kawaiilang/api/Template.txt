@@ -1,7 +1,7 @@
 TEMPLATE CLASSES BUILT-IN FUNCTIONS
   
   static class Template extends BuiltInFunction {
-	private Template(KawaiiLangRuntime interpreter) {
+	Template(KawaiiLangRuntime interpreter) {
 	  super(interpreter, "API name", "senpaiStawp", return value);
 	}
 	public Object call() {
@@ -15,7 +15,7 @@ TEMPLATE CLASSES BUILT-IN FUNCTIONS
 	static {
 	  parameters.put("a", "Stwing");
 	}
-	private TemplateWithInputs(KawaiiLangRuntime runtime) {
+	TemplateWithInputs(KawaiiLangRuntime runtime) {
 	  super(runtime, "API name", "senpaiStawp", parameters, return value);
 	}
 	public Object call(ArrayList<Object> inputs) {

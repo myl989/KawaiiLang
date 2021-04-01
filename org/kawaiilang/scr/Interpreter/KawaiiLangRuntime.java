@@ -85,12 +85,12 @@ public final class KawaiiLangRuntime {
   public KawaiiLangRuntime(String fileName, Token[] tokens) {
     this.fn = fileName;
     setTokens(tokens);
-    CoreAPI.addAPI(this);
+    APILoader.addAPI(this, CoreAPI.class);
   }
 
   public KawaiiLangRuntime(String fileName) {
     this.fn = fileName;
-    CoreAPI.addAPI(this);
+    APILoader.addAPI(this, CoreAPI.class);
   }
 
   public void setFileLocation(String fileLocation) {
@@ -257,10 +257,10 @@ public final class KawaiiLangRuntime {
         // Built-in APIs
         String s = (String) tokens[0].getValue();
         if (s.equals("wandom")) {
-          RandomAPI.addAPI(this);
+          APILoader.addAPI(this, RandomAPI.class);
           return null;
         } else if (s.equals("mwath")) {
-          MathAPI.addAPI(this);
+          APILoader.addAPI(this, MathAPI.class);
           return null;
         }
 
@@ -270,8 +270,7 @@ public final class KawaiiLangRuntime {
         try {
           new Runner(fn, this).run();
         } catch (IOException ie) {
-          
-          return new RunTimeError(pos, ie.getMessage());
+          return new RunTimeError(pos, ie.getMessage().replaceAll("(r|u)(?! )", "w"));
         }
         fn = thisFn;
         return null;
@@ -1200,8 +1199,7 @@ public final class KawaiiLangRuntime {
               Object result = e.evaluate();
               return result;
             } catch (Exception ex) {
-              
-              return new RunTimeError(pos, ex.getMessage());
+              return new RunTimeError(pos, ex.getMessage().replaceAll("(r|u)(?! )", "w"));
             }
           } else {
             return null;
@@ -1390,7 +1388,7 @@ public final class KawaiiLangRuntime {
         new Variable(new TokenV1(TokenV1.TT_VARNAME, "Fwnctwion"), f));
   }
 
-  public void overloadFunction(Function f) {
+  public void overloadFunction(BuiltInFunction f) {
     Map.Entry<String, String> e;
     if (f.getParameterTypes() == null) {
       e = new AbstractMap.SimpleEntry<>(f.getName(), null);
