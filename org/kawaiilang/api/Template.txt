@@ -1,0 +1,30 @@
+TEMPLATE CLASSES BUILT-IN FUNCTIONS
+  
+  static class Template extends BuiltInFunction {
+	private Template(KawaiiLangRuntime interpreter) {
+	  super(interpreter, "API name", "senpaiStawp", return value);
+	}
+	public Object call() {
+	  //TODO
+	  return null;
+	}
+  }
+  
+  static class TemplateWithInputs extends BuiltInFunction {
+	static final LinkedHashMap<String, String> parameters = new LinkedHashMap<>();
+	static {
+	  parameters.put("a", "Stwing");
+	}
+	private TemplateWithInputs(KawaiiLangRuntime runtime) {
+	  super(runtime, "API name", "senpaiStawp", parameters, return value);
+	}
+	public Object call(ArrayList<Object> inputs) {
+	  Object ci = checkInputs(inputs);
+	  if (ci == null) {
+		//TODO
+		return null;
+	  } else {
+		return ci;
+	  }
+	}
+  }

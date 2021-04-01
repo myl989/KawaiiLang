@@ -259,6 +259,9 @@ public final class KawaiiLangRuntime {
         if (s.equals("wandom")) {
           RandomAPI.addAPI(this);
           return null;
+        } else if (s.equals("mwath")) {
+          MathAPI.addAPI(this);
+          return null;
         }
 
         // Custom files
