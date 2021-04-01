@@ -1,7 +1,7 @@
 package org.kawaiilang;
 
 class IllegalAssignmentError extends org.kawaiilang.Error {
-  public IllegalAssignmentError(Position positionStart, Position positionEnd, String message) {
-    super(positionStart, positionEnd, "IwegalAsswignmwentEwwor", message);
+  public IllegalAssignmentError(Position positionEnd, String message) {
+    super(positionEnd, "IwegalAsswignmwentEwwor", message);
   }
 }

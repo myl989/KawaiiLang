@@ -83,7 +83,7 @@ final class Lexer {
           } else {
             Position start = pos.clone();
             Token[] errorArray = new TokenV1[1];
-            errorArray[0] = new InvalidSyntaxError(start, pos, "Naooo uwu if statement must end with \"?\" ._.");
+            errorArray[0] = new InvalidSyntaxError(pos, "Naooo uwu if statement must end with \"?\" ._.");
             return errorArray;
           }
         } else {
@@ -121,9 +121,9 @@ final class Lexer {
           Position start = pos.clone();
           Token[] errorArray = new TokenV1[1];
           if (badC == Character.MIN_VALUE) {
-            errorArray[0] = new InvalidSyntaxError(start, pos, "Naooo uwu line must end with \"!\" ._.");
+            errorArray[0] = new InvalidSyntaxError(pos, "Naooo uwu line must end with \"!\" ._.");
           } else {
-            errorArray[0] = new IllegalCharacterError(start, pos, "\"" + badC + "\"");
+            errorArray[0] = new IllegalCharacterError(pos, "\"" + badC + "\"");
           }
           return errorArray;
         }

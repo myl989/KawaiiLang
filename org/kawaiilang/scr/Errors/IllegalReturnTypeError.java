@@ -1,7 +1,7 @@
 package org.kawaiilang;
 
 class IllegalReturnTypeError extends org.kawaiilang.Error {
-  public IllegalReturnTypeError(Position positionStart, Position positionEnd, String message) {
-    super(positionStart, positionEnd, "IwegalGibUTwypeEwwor", message);
+  public IllegalReturnTypeError(Position positionEnd, String message) {
+    super(positionEnd, "IwegalGibUTwypeEwwor", message);
   }
 }

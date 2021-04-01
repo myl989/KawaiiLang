@@ -44,7 +44,7 @@ public class Function {
   public Object call(ArrayList<Object> inputs) {
     if (inputs.size() != parameters.size()) { // Checks if number of arguments is the same as declared
       Position start = runtime.getPosition().clone();
-      return new InvalidParameterError(start, runtime.getPosition(),
+      return new InvalidParameterError(runtime.getPosition(),
           "Naooo uwu numwer of arwgwmwents nawt aws swame aws decwared ._.");
     }
     // Checks if the inputs types and required types match
@@ -73,7 +73,7 @@ public class Function {
       //More datatypes here
       if (!inputType.equals(valueSet[i]) && !valueSet[i].equals("Anwy")) {	//Parameter type of Anwy accepts any input
         Position start = runtime.getPosition().clone();
-        return new InvalidParameterError(start, runtime.getPosition(),
+        return new InvalidParameterError(runtime.getPosition(),
             new StringBuilder("Naooo uwu giben awgwmwent twype, \"").append(inputType)
                 .append("\", is nawt swame aws expwectwed twype, \"").append(valueSet[i]).append("\" ._.").toString());
       }
@@ -123,7 +123,7 @@ public class Function {
             return o;
           } else {
             Position start = runtime.getPosition().clone();
-            return new IllegalReturnTypeError(start, runtime.getPosition(),
+            return new IllegalReturnTypeError(runtime.getPosition(),
                 new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
                     .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
           }
@@ -133,7 +133,7 @@ public class Function {
             return o;
           } else {
             Position start = runtime.getPosition().clone();
-            return new IllegalReturnTypeError(start, runtime.getPosition(),
+            return new IllegalReturnTypeError(runtime.getPosition(),
                 new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
                     .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
           }
@@ -143,7 +143,7 @@ public class Function {
             return o;
           } else {
             Position start = runtime.getPosition().clone();
-            return new IllegalReturnTypeError(start, runtime.getPosition(),
+            return new IllegalReturnTypeError(runtime.getPosition(),
                 new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
                     .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
           }
@@ -153,13 +153,13 @@ public class Function {
             return o;
           } else {
             Position start = runtime.getPosition().clone();
-            return new IllegalReturnTypeError(start, runtime.getPosition(),
+            return new IllegalReturnTypeError(runtime.getPosition(),
                     new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
                         .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
               }
         } else { // More datatypes here
           Position start = runtime.getPosition().clone();
-          return new IllegalReturnTypeError(start, runtime.getPosition(),
+          return new IllegalReturnTypeError(runtime.getPosition(),
               new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
                   .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
         }
@@ -168,7 +168,7 @@ public class Function {
     	   return null;
     	 } else {
     	   Position start = runtime.getPosition().clone();
-    	   return new IllegalReturnTypeError(start, runtime.getPosition(), "Naooo uwu onlwy constwctwrs can hab finishMaking");
+    	   return new IllegalReturnTypeError(runtime.getPosition(), "Naooo uwu onlwy constwctwrs can hab finishMaking");
     	 }
       } else {
         new Runner(runtime.getFileLocation(), runtime).interpret(actions.get(anum));
@@ -178,7 +178,7 @@ public class Function {
       return null;
     }
     Position start = runtime.getPosition().clone();
-    return new MissingReturnStatementError(start, runtime.getPosition(),
+    return new MissingReturnStatementError(runtime.getPosition(),
         " Naooo uwu u hab no weturn stwatemwent ._.");
   }
 
@@ -186,7 +186,7 @@ public class Function {
   public Object call() {
     if (parameters != null) {
       Position start = runtime.getPosition().clone();
-      return new InvalidParameterError(start, runtime.getPosition(),
+      return new InvalidParameterError(runtime.getPosition(),
           "Naooo uwu awgwmwents r giwen wen de fwnctwion does nawt hwas awgwments ._.");
     }
     for (Token[] action : actions) {
@@ -200,7 +200,7 @@ public class Function {
             return o;
           } else {
             Position start = runtime.getPosition().clone();
-            return new IllegalReturnTypeError(start, runtime.getPosition(),
+            return new IllegalReturnTypeError(runtime.getPosition(),
                 new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
                     .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
           }
@@ -210,7 +210,7 @@ public class Function {
             return o;
           } else {
             Position start = runtime.getPosition().clone();
-            return new IllegalReturnTypeError(start, runtime.getPosition(),
+            return new IllegalReturnTypeError(runtime.getPosition(),
                 new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
                     .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
           }
@@ -220,7 +220,7 @@ public class Function {
             return o;
           } else {
             Position start = runtime.getPosition().clone();
-            return new IllegalReturnTypeError(start, runtime.getPosition(),
+            return new IllegalReturnTypeError(runtime.getPosition(),
                 new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
                     .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
           }
@@ -230,13 +230,13 @@ public class Function {
               return o;
             } else {
               Position start = runtime.getPosition().clone();
-              return new IllegalReturnTypeError(start, runtime.getPosition(),
+              return new IllegalReturnTypeError(runtime.getPosition(),
                   new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
                       .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
             }
         } else { // More datatypes here
           Position start = runtime.getPosition().clone();
-          return new IllegalReturnTypeError(start, runtime.getPosition(),
+          return new IllegalReturnTypeError(runtime.getPosition(),
               new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
                   .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
         }
@@ -245,7 +245,7 @@ public class Function {
    	 		return null;
     	} else {
 	   		Position start = runtime.getPosition().clone();
-	   		return new IllegalReturnTypeError(start, runtime.getPosition(), "Naooo uwu onlwy constwctwrs can hab finishMaking");
+	   		return new IllegalReturnTypeError(runtime.getPosition(), "Naooo uwu onlwy constwctwrs can hab finishMaking");
     	}
      } else {
         new Runner(runtime.getFileLocation(), runtime).interpret(action);
@@ -255,7 +255,7 @@ public class Function {
       return null;
     }
     Position start = runtime.getPosition().clone();
-    return new MissingReturnStatementError(start, runtime.getPosition(),
+    return new MissingReturnStatementError(runtime.getPosition(),
         " Naooo uwu u hab no weturn stwatemwent ._.");
   }
 
@@ -357,7 +357,7 @@ public class Function {
       //More datatypes here
       if (!inputType.equals(valueSet[i]) && !valueSet[i].equals("Anwy")) {	//Parameter type of Anwy accepts any input
     	Position start = runtime.getPosition().clone();
-    	return new InvalidParameterError(start, runtime.getPosition(),
+    	return new InvalidParameterError(runtime.getPosition(),
         new StringBuilder("Naooo uwu giben awgwmwent twype, \"").append(inputType)
                 .append("\", is nawt swame aws expwectwed twype, \"").append(valueSet[i]).append("\" ._.").toString());
       }
