@@ -8,16 +8,18 @@ import java.util.HashMap;
 
 public final class Runner {
 
-  public static final HashMap<String, String> UWU_KEY = new HashMap<>();
+  public static final HashMap<String, String> UWU_KEY = new HashMap<>(9);
   
   private static Token anyErrorsFound = null;	//Any errors found by the lexer will go here
 
   static {
+    //better math keywords
     UWU_KEY.put("awdd", "+");
     UWU_KEY.put("mwinws", "-");
     UWU_KEY.put("mwltipwy", "*");
     UWU_KEY.put("diwide", "/");
     UWU_KEY.put("mwd", "%");
+    //alternate class keywords
     UWU_KEY.put("waifu", "cwass");
     UWU_KEY.put("husbando", "cwass");
     UWU_KEY.put("^_^ewndWaifu", "ewndCwass");

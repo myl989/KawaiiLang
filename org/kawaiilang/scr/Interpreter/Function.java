@@ -177,6 +177,7 @@ public class Function {
     if (canGibU == null) {
       return null;
     }
+    //The only reason you are still here is because there is no return value.
     Position start = runtime.getPosition().clone();
     return new MissingReturnStatementError(runtime.getPosition(),
         " Naooo uwu u hab no weturn stwatemwent ._.");

@@ -78,6 +78,10 @@ public final class KawaiiLangRuntime {
   // The current token
   private String fn;
   // The filename
+  private int scopeDepth = 0;
+  // The depth of the scope, for example, having an class, if, or etc. will increase the depth by 1.
+  // This includes: functions, lambda functions*, branching (if/elif/else/switch), loops (while/for) when ran.
+  // This makes variables "die" once it is outside its scope.
   private HashMap<Token, Variable> heap = new HashMap<>();
   // A collection of all variables and tokens currently in use, built-in or custom
   // mapped by the varname
@@ -147,10 +151,9 @@ public final class KawaiiLangRuntime {
 
     // CODE FOR PRINTING STUFF OUT FOR DEBUGGING
     // The following code prints out the heap without any built-in functions.
-    /*
-    heap.forEach((K, V) -> { if (!(V.getValue() instanceof BuiltInFunction)) {
-    System.out.println(K.toString() + ' ' + V.getValue() + '\t'); } });
-    */
+    
+    /*heap.forEach((K, V) -> { if (!(V.getValue() instanceof BuiltInFunction)) {
+    System.out.println(K.toString() + ' ' + V.getValue() + '\t'); } });*/
 
     if (classDeclaring != null) { // Declaring insides of class
       if (classHelper == null) {
@@ -160,7 +163,7 @@ public final class KawaiiLangRuntime {
         classHelper.setupClassCode();
         classHelper = null;
         heap.put(new TokenV1(TokenV1.TT_CLASS, classDeclaring.className()),
-            new Variable(TokenV1.C_CLASSVT, classDeclaring));
+            new Variable(TokenV1.C_CLASSVT, classDeclaring, scopeDepth));
         classDeclaring = null;
       } else {
         classHelper.addCodeToClass(tokens);
@@ -177,7 +180,9 @@ public final class KawaiiLangRuntime {
         if (loopIdx == -1) {
           declaringLoop = false;
           // System.out.println(loop);
+          incrScope();
           loop.loop();
+          decrScope();
           loop = null;
         } else {
           loop.addAction(tokens);
@@ -199,7 +204,9 @@ public final class KawaiiLangRuntime {
         // End switch declaration and execute
         switches.peek().addStatement(caseNumToPut, caseContents);
         // System.out.println(switches.peek().toString());
+        incrScope();
         switches.pop().doSwitch(caseNumToExecute);
+        decrScope();
         caseContents = new ArrayList<>();
         return null;
       } else if (tokens.length == 1 && tokens[0].equals(TokenV1.C_NEXTCASEK)) {
@@ -275,7 +282,7 @@ public final class KawaiiLangRuntime {
         fn = thisFn;
         return null;
       } else if (tokens.length > 1 && tokens[0].equals(TokenV1.C_CLASSK)) {
-        // Class declaration
+        // Class declaration        
         String className = tokens[1].getValue().toString();
         if (tokens.length > 3 && tokens[2].equals(TokenV1.C_EXTENDSK) && tokens[3].getType().equals(TokenV1.TT_CLASS)) {
           OwObject parent = (OwObject) heap.get(tokens[3]).getValue();
@@ -303,7 +310,7 @@ public final class KawaiiLangRuntime {
         advance();
         advance();
         advance();
-        advance(); // Advance to the 4th token
+        advance();
         while (true) {
           lastToken = currentToken;
           advance();
@@ -355,7 +362,7 @@ public final class KawaiiLangRuntime {
           currentFunc = new Function(this, funcNameStr, param, canGibU);
         }
         if (!overload) {
-          Variable funcVar = new Variable(new TokenV1(TokenV1.TT_VARNAME, "Fwnctwion"), currentFunc);
+          Variable funcVar = new Variable(new TokenV1(TokenV1.TT_VARNAME, "Fwnctwion"), currentFunc, scopeDepth);
           heap.put(tokens[2], funcVar);
         } else {
           Map.Entry<String, String> e;
@@ -409,7 +416,6 @@ public final class KawaiiLangRuntime {
             declaringLoop = true;
             loopIdx++;
           } else {
-            
             return new IllegalTypeError(pos,
                 new StringBuilder(
                     "Naooo uwu da start and ewnd lowp amwownt mwst bwe a numbwer, inpwtwed start lowp amwownt: ")
@@ -424,7 +430,7 @@ public final class KawaiiLangRuntime {
               int i = d.intValue();
               loop = new Loop(this, i);
               declaringLoop = true;
-              loopIdx++;
+              loopIdx++;              
             } else if (result instanceof org.kawaiilang.Error) {
               return result;
             } else {
@@ -462,6 +468,7 @@ public final class KawaiiLangRuntime {
                 if (d > 0) {
                   activeElseStatements++;
                   doInterpret = true;
+                  incrScope(); //Only increments if the if statement is actually true
                   prevDoInterpret.add(true);
                   hasBeenTrue = true;
                 } else {
@@ -492,6 +499,9 @@ public final class KawaiiLangRuntime {
 
           // Checks for end of if.
           if (doInterpret != null && tokens.length == 1 && tokens[0].equals(TokenV1.C_ENDIFK)) {
+            if (doInterpret == true) {
+              decrScope();  // Scope should only change if the if statement is true
+            }
             justHadElse = false;
             activeElseStatements--;
             prevDoInterpret.remove(activeElseStatements);
@@ -716,7 +726,8 @@ public final class KawaiiLangRuntime {
                   return value;
                 } else if (verifyVar(heap.get(lastToken).getType(), value)) {
                   currentToken = lastToken;
-                  Variable var = new Variable(heap.get(currentToken).getType(), value);
+                  var origVariable = heap.get(currentToken);
+                  Variable var = new Variable(origVariable.getType(), value, origVariable.scopeDepth());
                   heap.put(currentToken, var);
                   return value;
                 } else {
@@ -739,7 +750,7 @@ public final class KawaiiLangRuntime {
                   }
                 } else if (type.getValue().equals("Stwing")) {
                     varReplaced = new TokenV1(TokenV1.TT_STR, stored);
-                } else if (type.getValue().equals("Fwnctwion")) {
+                } else if (type.getValue().equals("Fwnctwion")) { //Function recall
                   Function retrievedFunc = (Function) stored;
                   ArrayList<Object> inputs = null; // List of input parameters to pass into function
                   advance();
@@ -813,7 +824,9 @@ public final class KawaiiLangRuntime {
                       // Checks for any overloaded functions
                       Function ovld = getOverloadedFunction(retrievedFunc.getName(), inputs);
                       if (ovld != null) {
+                        if (!(ovld instanceof BuiltInFunction)) incrScope();
                         o = ovld.call(inputs);
+                        if (!(ovld instanceof BuiltInFunction)) decrScope();
                         ovld.resetActions();
                         return o;
                       } else {
@@ -823,7 +836,9 @@ public final class KawaiiLangRuntime {
                         // No overloaded function so just return error
                       }
                     } else {
+                      if (!(retrievedFunc instanceof BuiltInFunction)) incrScope();
                       o = retrievedFunc.call();
+                      if (!(retrievedFunc instanceof BuiltInFunction)) decrScope();
                       retrievedFunc.resetActions();
                     }
                     return o;
@@ -831,6 +846,8 @@ public final class KawaiiLangRuntime {
                     // System.out.println(inputs);
                     Object o = null;
                     if (inputs != null) {
+                      if (!(retrievedFunc instanceof BuiltInFunction)) incrScope();
+                      // This may need to change in the future if users are allowed to write their own external functions, as then internal functions can override external ones
                       try {
                         o = retrievedFunc.call(inputs);
                       } catch (ArrayIndexOutOfBoundsException e) { // If more parameters than expected
@@ -849,6 +866,8 @@ public final class KawaiiLangRuntime {
                           return o; // No overloaded function so just return the error
                         }
                       } finally {
+                        if (!(retrievedFunc instanceof BuiltInFunction)) decrScope();
+                        // This may need to change in the future if users are allowed to write their own external functions, as then internal functions can override external ones
                         retrievedFunc.resetActions();
                       }
                     }
@@ -856,11 +875,13 @@ public final class KawaiiLangRuntime {
                       // Checks for any overloaded functions
                       Function ovld = getOverloadedFunction(retrievedFunc.getName(), inputs);
                       if (ovld != null) {
+                        if (!(ovld instanceof BuiltInFunction)) incrScope();
                         if (inputs == null) {
                           o = ovld.call();
                         } else {
                           o = ovld.call(inputs);
                         }
+                        if (!(ovld instanceof BuiltInFunction)) decrScope();
                         ovld.resetActions();
                         return o;
                       } else {
@@ -1227,7 +1248,7 @@ public final class KawaiiLangRuntime {
       
       return new IllegalAssignmentError(pos, "Naooo uwu u cwannot set inwex witowt lowp ._.");
     } else if (verifyVar(type, value)) {
-      Variable var = new Variable(type, value);
+      Variable var = new Variable(type, value, scopeDepth);
       heap.put(name, var);
       return value;
     } else {
@@ -1245,6 +1266,25 @@ public final class KawaiiLangRuntime {
     return ((actualObj instanceof Integer || actualObj instanceof Double) && supposedType.getValue().equals("Numwer"))
         || (actualObj instanceof String && supposedType.getValue().equals("Stwing"))
         || (actualObj instanceof OwOList && supposedType.getValue().equals("Lwist")) || classTest;
+  }
+
+  private void killOutOfScopeVars() {
+    heap.values().removeIf(e -> e.scopeDepth() > scopeDepth);
+  }
+
+  private void incrScope() {
+    scopeDepth++;
+    //System.out.print("Incremented scope to ");
+    //System.out.println(scopeDepth);
+  }
+
+  private void decrScope() {
+    scopeDepth--;
+    /*System.out.print("Decremented scope to ");
+    System.out.println(scopeDepth);
+    heap.forEach((K, V) -> { if (!(V.getValue() instanceof BuiltInFunction) && (V.scopeDepth() > scopeDepth)) {
+    System.out.println(K.toString() + ' ' + V.getValue() + '\t'); } });*/
+    killOutOfScopeVars();
   }
 
   private Object evalComparison(Token[] exprA, Token oper, Token[] exprB) {
@@ -1385,7 +1425,7 @@ public final class KawaiiLangRuntime {
 
   public void addFunction(Function f) {
     heap.put(new TokenV1(TokenV1.TT_VARNAME, f.getName()),
-        new Variable(new TokenV1(TokenV1.TT_VARNAME, "Fwnctwion"), f));
+        new Variable(new TokenV1(TokenV1.TT_VARNAME, "Fwnctwion"), f, scopeDepth));
   }
 
   public void overloadFunction(BuiltInFunction f) {
