@@ -321,15 +321,15 @@ public final class KawaiiLangRuntime {
               param = new LinkedHashMap<>();
             }
             /*
-             * System.out.print(lastToken); System.out.print(" ");
-             * System.out.println(currentToken);
+            System.out.print(lastToken); System.out.print(" ");
+            System.out.println(currentToken);
              */
             if (lastToken.equals(TokenV1.C_COMMA)) {
               lastToken = currentToken;
               advance();
               /*
-               * System.out.print(lastToken); System.out.print(" ");
-               * System.out.println(currentToken);
+              System.out.print(lastToken); System.out.print(" ");
+              System.out.println(currentToken);
                */
               if (lastToken.getType().equals(TokenV1.TT_VARTYPE) && currentToken.getType().equals(TokenV1.TT_VARNAME)) {
                 String paramType = (String) lastToken.getValue();
