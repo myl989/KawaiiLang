@@ -12,6 +12,11 @@ class Variable {
     this.scopeDepth = scopeDepth;
   }
 
+  public Variable(Token type, Object value) {
+    this.type = type;
+    this.value = value;
+  }
+
   public Token getType() {
     return type;
   }
