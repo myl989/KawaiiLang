@@ -7,6 +7,8 @@ I know this is kind of silly, and it has been done (to varying degrees) before, 
 
 **DISCLAIMER: This whole thing is meant as a joke.** But... you can use it for regular coding too if you really want to.
 
+**Another disclaimer: ** this thing is known to have bugs. You can see the issues I have on the "todo" or "bugs" list in my projects tab. So program at your own risk. As this is not a serious project don't expect me to maintain this like the Mona Lisa!
+
 <h2>In case you want a feel of what it looks like, check out the demo folder! (MD code snippets is being weird so I'm not putting it here)</h2>
 
 Currently status: Interpreter works for calculations with the following operations
