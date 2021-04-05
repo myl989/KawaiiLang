@@ -16,7 +16,7 @@ public class MathAPI {
   // Pi senpai
   static class Pi extends BuiltInFunction {
      Pi(KawaiiLangRuntime interpreter) {
-      super(interpreter, "API name", "pi", TokenV1.C_NUMVT);
+      super(interpreter, "Mwath", "pi", TokenV1.C_NUMVT);
     }
 
     public Object call() {
@@ -27,7 +27,7 @@ public class MathAPI {
   // Euler senpai
   static class E extends BuiltInFunction {
      E(KawaiiLangRuntime interpreter) {
-      super(interpreter, "API name", "e", TokenV1.C_NUMVT);
+      super(interpreter, "Mwath", "e", TokenV1.C_NUMVT);
     }
 
     public Object call() {
