@@ -26,11 +26,13 @@ public final class KawaiiLangRuntime {
   // The current list pool for list creation
 
   // Variables for handling functions
-  private Function currentFunc = null;
+  private AbstractFunction currentFunc = null;
   // The current function for function declaration
+  private int functionDepth = 0;
+  // The depth of functions being declared for nesting
   private boolean overload = false;
   // Whether the function is an overload
-  private HashMap<Map.Entry<String, String>, Function> overloadedFunctions = new HashMap<>();
+  private HashMap<Map.Entry<String, String>, AbstractFunction> overloadedFunctions = new HashMap<>();
   // A hash map of overloaded functions based on param varname and vartype
 
   // Variables for handling for loops
@@ -79,8 +81,10 @@ public final class KawaiiLangRuntime {
   private String fn;
   // The filename
   private int scopeDepth = 0;
-  // The depth of the scope, for example, having an class, if, or etc. will increase the depth by 1.
-  // This includes: functions, lambda functions*, branching (if/elif/else/switch), loops (while/for) when ran.
+  // The depth of the scope, for example, having an class, if, or etc. will
+  // increase the depth by 1.
+  // This includes: functions, lambda functions*, branching (if/elif/else/switch),
+  // loops (while/for) when ran.
   // This makes variables "die" once it is outside its scope.
   private HashMap<Token, Variable> heap = new HashMap<>();
   // A collection of all variables and tokens currently in use, built-in or custom
@@ -119,11 +123,7 @@ public final class KawaiiLangRuntime {
     return heap;
   }
 
-  public void putHeapItem(Token t, Variable var) {
-    heap.put(t, var);
-  }
-
-  public void advanceLine() {
+  void advanceLine() {
     pos.advanceLine();
   }
 
@@ -151,9 +151,11 @@ public final class KawaiiLangRuntime {
 
     // CODE FOR PRINTING STUFF OUT FOR DEBUGGING
     // The following code prints out the heap without any built-in functions.
-    
-    /*heap.forEach((K, V) -> { if (!(V.getValue() instanceof BuiltInFunction)) {
-    System.out.println(K.toString() + ' ' + V.getValue() + '\t'); } });*/
+
+    /*
+     * heap.forEach((K, V) -> { if (!(V.getValue() instanceof BuiltInFunction)) {
+     * System.out.println(K.toString() + ' ' + V.getValue() + '\t'); } });
+     */
 
     if (classDeclaring != null) { // Declaring insides of class
       if (classHelper == null) {
@@ -170,16 +172,30 @@ public final class KawaiiLangRuntime {
       }
     } else if (currentFunc != null) { // Declaring insides of function
       if (tokens.length == 1 && tokens[0].equals(TokenV1.C_ENDFUNCK)) {
+        functionDepth--;
+      } else if (tokens.length > 6 && tokens[0].equals(TokenV1.C_OWOK) && tokens[1].equals(TokenV1.C_FUNCK)
+          && tokens[2].getType().equals(TokenV1.TT_VARNAME) && tokens[3].equals(TokenV1.C_PARAM)
+          && tokens[tokens.length - 3].equals(TokenV1.C_PARAM)
+          && tokens[tokens.length - 2].equals(new TokenV1(TokenV1.TT_KEYWORD, "canGibU"))
+          && (tokens[tokens.length - 1].getType().equals(TokenV1.TT_VARTYPE)
+              || tokens[tokens.length - 1].getType().equals(TokenV1.TT_NOTHING))) {
+        if (verifyFunction(tokens)) {
+          functionDepth++;
+        } else {
+          return new InvalidParameterError(pos,
+              "Naooo uwu fwnctwion pawamweters mwst hab wariable nwame awnd twype ._.");
+        }
+      }
+      if (functionDepth == 0) {
         currentFunc = null;
       } else {
-        currentFunc.addAction(tokens);
+        ((Function) currentFunc).addAction(tokens);
       }
     } else if (declaringLoop) { // Declaring insides of loop
       if (tokens.length == 1 && tokens[0].equals(TokenV1.C_ENDLOOPK)) {
         loopIdx--;
         if (loopIdx == -1) {
           declaringLoop = false;
-          // System.out.println(loop);
           incrScope();
           loop.loop();
           decrScope();
@@ -226,7 +242,7 @@ public final class KawaiiLangRuntime {
           if (o instanceof Double) {
             caseNumToPut = ((Double) o).intValue();
           } else {
-            
+
             return new InvalidParameterError(pos, "Naooo uwu numwer tw switch mwst be awn intewer ._.");
           }
           return null;
@@ -282,7 +298,7 @@ public final class KawaiiLangRuntime {
         fn = thisFn;
         return null;
       } else if (tokens.length > 1 && tokens[0].equals(TokenV1.C_CLASSK)) {
-        // Class declaration        
+        // Class declaration
         String className = tokens[1].getValue().toString();
         if (tokens.length > 3 && tokens[2].equals(TokenV1.C_EXTENDSK) && tokens[3].getType().equals(TokenV1.TT_CLASS)) {
           OwObject parent = (OwObject) heap.get(tokens[3]).getValue();
@@ -305,81 +321,7 @@ public final class KawaiiLangRuntime {
           && (tokens[tokens.length - 1].getType().equals(TokenV1.TT_VARTYPE)
               || tokens[tokens.length - 1].getType().equals(TokenV1.TT_NOTHING))) {
         // Function declaration
-        Token canGibU = tokens[tokens.length - 1];
-        LinkedHashMap<String, String> param = null;
-        advance();
-        advance();
-        advance();
-        advance();
-        while (true) {
-          lastToken = currentToken;
-          advance();
-          if (currentToken.equals(TokenV1.C_PARAM) || lastToken.equals(TokenV1.C_PARAM)) {
-            break;
-          } else {
-            if (param == null) {
-              param = new LinkedHashMap<>();
-            }
-            /*
-            System.out.print(lastToken); System.out.print(" ");
-            System.out.println(currentToken);
-             */
-            if (lastToken.equals(TokenV1.C_COMMA)) {
-              lastToken = currentToken;
-              advance();
-              /*
-              System.out.print(lastToken); System.out.print(" ");
-              System.out.println(currentToken);
-               */
-              if (lastToken.getType().equals(TokenV1.TT_VARTYPE) && currentToken.getType().equals(TokenV1.TT_VARNAME)) {
-                String paramType = (String) lastToken.getValue();
-                String paramName = (String) currentToken.getValue();
-                param.put(paramName, paramType);
-                advance();
-              } else { // Wrong types
-                
-                return new InvalidParameterError(pos,
-                    "Naooo uwu fwnctwion pawamweters mwst hab wariable nwame awnd twype ._.");
-              }
-            } else if (lastToken.getType().equals(TokenV1.TT_VARTYPE)
-                && currentToken.getType().equals(TokenV1.TT_VARNAME)) {
-              String paramType = (String) lastToken.getValue();
-              String paramName = (String) currentToken.getValue();
-              param.put(paramName, paramType);
-              advance();
-            } else { // Wrong types
-              
-              return new InvalidParameterError(pos,
-                  "Naooo uwu fwnctwion pawamweters mwst hab wariable nwame awnd twype ._.");
-            }
-          }
-        }
-        // System.out.println(param);
-        String funcNameStr = (String) tokens[2].getValue();
-        if (param == null) {
-          currentFunc = new Function(this, funcNameStr, canGibU);
-        } else {
-          currentFunc = new Function(this, funcNameStr, param, canGibU);
-        }
-        if (!overload) {
-          Variable funcVar = new Variable(new TokenV1(TokenV1.TT_VARNAME, "Fwnctwion"), currentFunc, scopeDepth);
-          heap.put(tokens[2], funcVar);
-        } else {
-          Map.Entry<String, String> e;
-          if (param == null) {
-            e = new AbstractMap.SimpleEntry<>(funcNameStr, null);
-            overloadedFunctions.put(e, currentFunc);
-          } else {
-            StringBuilder sb = new StringBuilder();
-            for (String s : param.values()) {
-              sb.append(s).append('_');
-            }
-            e = new AbstractMap.SimpleEntry<>(funcNameStr, sb.toString());
-            overloadedFunctions.put(e, currentFunc);
-          }
-        }
-        overload = false;
-        // end function declaration
+        return declareFunction();
       } else if (tokens.length > 2 && tokens[0].equals(TokenV1.C_WHILEK) && tokens[1].equals(TokenV1.C_STARTIF)
           && tokens[tokens.length - 1].equals(TokenV1.C_ENDIF)) { // While loops
         Token[] condition = Arrays.copyOfRange(tokens, 2, tokens.length - 1);
@@ -430,17 +372,17 @@ public final class KawaiiLangRuntime {
               int i = d.intValue();
               loop = new Loop(this, i);
               declaringLoop = true;
-              loopIdx++;              
+              loopIdx++;
             } else if (result instanceof org.kawaiilang.Error) {
               return result;
             } else {
-              
+
               return new IllegalTypeError(pos,
                   new StringBuilder("Naooo uwu da lowp amwownt mwst bwe a numbwer, inpwtwed lowp amwownt: ")
                       .append(result).append(" ._.").toString());
             }
           } else {
-            
+
             return new InvalidSyntaxError(pos, "Naooo uwu expwecwed lowp amwownt hewe ._.");
           }
         }
@@ -454,7 +396,7 @@ public final class KawaiiLangRuntime {
             if (o instanceof org.kawaiilang.Error) {
               return o;
             } else if (!((o instanceof Double) && (((Double) o) % 1 == 0))) {
-              
+
               return new InvalidParameterError(pos, "Naooo uwu numwer tw switch mwst be awn intewer ._.");
             }
             caseNumToExecute = ((Double) o).intValue();
@@ -468,7 +410,7 @@ public final class KawaiiLangRuntime {
                 if (d > 0) {
                   activeElseStatements++;
                   doInterpret = true;
-                  incrScope(); //Only increments if the if statement is actually true
+                  incrScope(); // Only increments if the if statement is actually true
                   prevDoInterpret.add(true);
                   hasBeenTrue = true;
                 } else {
@@ -486,7 +428,7 @@ public final class KawaiiLangRuntime {
             } else if (result instanceof org.kawaiilang.Error) {
               return result;
             } else {
-              
+
               return new BadOprandTypeError(pos,
                   new StringBuilder("Naooo uwu bwad reswlt twypes fwr \"if\" statement: reswlt: ")
                       .append(result.toString()).append(" ._.").toString());
@@ -500,7 +442,7 @@ public final class KawaiiLangRuntime {
           // Checks for end of if.
           if (doInterpret != null && tokens.length == 1 && tokens[0].equals(TokenV1.C_ENDIFK)) {
             if (doInterpret == true) {
-              decrScope();  // Scope should only change if the if statement is true
+              decrScope(); // Scope should only change if the if statement is true
             }
             justHadElse = false;
             activeElseStatements--;
@@ -525,13 +467,13 @@ public final class KawaiiLangRuntime {
               } else if (result instanceof org.kawaiilang.Error) {
                 return result;
               } else {
-                
+
                 return new BadOprandTypeError(pos,
                     new StringBuilder("Naooo uwu u hab bwad owpwand twypes fwr \"nawt\" owpewawor: owpwand: ")
                         .append(result.toString()).append(" ._.").toString());
               }
             } else {
-              
+
               return new InvalidSyntaxError(pos, "Naooo uwu opwand not found for \"nawt\"opewawor ._.");
             }
           }
@@ -658,7 +600,7 @@ public final class KawaiiLangRuntime {
                       l.setIdx(d.intValue());
                       return value;
                     } else {
-                      
+
                       return new IllegalTypeError(pos,
                           "Naooo uwu da twype of variable fwor uwpdwated inwex mwst bwe Numwer ._.");
                     }
@@ -671,9 +613,8 @@ public final class KawaiiLangRuntime {
                   Object value = interpret();
                   return value;
                 } else {
-                  
-                  return new IllegalAssignmentError(pos,
-                      "Naooo uwu u cwannot gwet orw updwate inwex witowt lowp ._.");
+
+                  return new IllegalAssignmentError(pos, "Naooo uwu u cwannot gwet orw updwate inwex witowt lowp ._.");
                 }
               }
               // Same as above, but for changing max index
@@ -696,7 +637,7 @@ public final class KawaiiLangRuntime {
                       l.setMax(d.intValue());
                       return value;
                     } else {
-                      
+
                       return new IllegalTypeError(pos,
                           "Naooo uwu da twype of variable fwor uwpdwated ,max inwex mwst bwe Numwer ._.");
                     }
@@ -709,7 +650,7 @@ public final class KawaiiLangRuntime {
                   Object value = interpret();
                   return value;
                 } else {
-                  
+
                   return new IllegalAssignmentError(pos,
                       "Naooo uwu u cwannot gwet orw updwate max inwex witowt lowp ._.");
                 }
@@ -731,7 +672,8 @@ public final class KawaiiLangRuntime {
                   heap.put(currentToken, var);
                   return value;
                 } else {
-                  return new IllegalTypeError(pos, new StringBuilder("Naooo uwu da twype of variable, ").append(heap.get(lastToken).getType().getValue()).append(", is nawt as decwared ._.").toString());
+                  return new IllegalTypeError(pos, new StringBuilder("Naooo uwu da twype of variable, ")
+                      .append(heap.get(lastToken).getType().getValue()).append(", is nawt as decwared ._.").toString());
                 }
               }
 
@@ -749,15 +691,15 @@ public final class KawaiiLangRuntime {
                     varReplaced = new TokenV1(TokenV1.TT_FLOAT, stored);
                   }
                 } else if (type.getValue().equals("Stwing")) {
-                    varReplaced = new TokenV1(TokenV1.TT_STR, stored);
-                } else if (type.getValue().equals("Fwnctwion")) { //Function recall
-                  Function retrievedFunc = (Function) stored;
+                  varReplaced = new TokenV1(TokenV1.TT_STR, stored);
+                } else if (type.getValue().equals("Fwnctwion")) { // Function recall
+                  AbstractFunction retrievedFunc = (AbstractFunction) stored;
                   ArrayList<Object> inputs = null; // List of input parameters to pass into function
                   advance();
                   if (currentToken == null) { // Just return the function itself
                     return retrievedFunc;
                   } else if (!currentToken.equals(TokenV1.C_PARAM)) {
-                    
+
                     return new InvalidSyntaxError(pos, "Naooo \"UwU\" expected ._.");
                   }
                   advance();
@@ -822,43 +764,53 @@ public final class KawaiiLangRuntime {
                     Object o;
                     if (inputs != null) {
                       // Checks for any overloaded functions
-                      Function ovld = getOverloadedFunction(retrievedFunc.getName(), inputs);
+                      AbstractFunction ovld = getOverloadedFunction(retrievedFunc.getName(), inputs);
                       if (ovld != null) {
-                        if (!(ovld instanceof BuiltInFunction)) incrScope();
+                        if (!(ovld instanceof BuiltInFunction))
+                          incrScope();
                         o = ovld.call(inputs);
-                        if (!(ovld instanceof BuiltInFunction)) decrScope();
-                        ovld.resetActions();
+                        if (!(ovld instanceof BuiltInFunction)) {
+                          decrScope();
+                          ((Function) ovld).resetActions();
+                        }
                         return o;
                       } else {
-                        
+
                         return new InvalidParameterError(pos,
                             "Naooo uwu awgwmwents r giwen wen de fwnctwion does nawt hwas awgwments ._.");
                         // No overloaded function so just return error
                       }
                     } else {
-                      if (!(retrievedFunc instanceof BuiltInFunction)) incrScope();
+                      if (!(retrievedFunc instanceof BuiltInFunction))
+                        incrScope();
                       o = retrievedFunc.call();
-                      if (!(retrievedFunc instanceof BuiltInFunction)) decrScope();
-                      retrievedFunc.resetActions();
+                      if (!(retrievedFunc instanceof BuiltInFunction)) {
+                        decrScope();
+                        ((Function) retrievedFunc).resetActions();
+                      }
                     }
                     return o;
                   } else {
                     // System.out.println(inputs);
                     Object o = null;
                     if (inputs != null) {
-                      if (!(retrievedFunc instanceof BuiltInFunction)) incrScope();
-                      // This may need to change in the future if users are allowed to write their own external functions, as then internal functions can override external ones
+                      if (!(retrievedFunc instanceof BuiltInFunction))
+                        incrScope();
+                      // This may need to change in the future if users are allowed to write their own
+                      // external functions, as then internal functions can override external ones
                       try {
                         o = retrievedFunc.call(inputs);
                       } catch (ArrayIndexOutOfBoundsException e) { // If more parameters than expected
-                        Function ovld = getOverloadedFunction(retrievedFunc.getName(), inputs);
+                        AbstractFunction ovld = getOverloadedFunction(retrievedFunc.getName(), inputs);
                         if (ovld != null) {
                           o = ovld.call(inputs);
-                          ovld.resetActions();
+                          if (ovld instanceof Function) {
+                            ((Function) ovld).resetActions();
+                          }
                           return o;
                         } else {
                           if (o == null) {
-                            
+
                             return new InvalidParameterError(pos,
                                 new StringBuilder("Naooo uwu nao too mwany awgwmwents r giwen fwr the fwnctwion ")
                                     .append(retrievedFunc.getName()).append(" ._.").toString());
@@ -866,27 +818,33 @@ public final class KawaiiLangRuntime {
                           return o; // No overloaded function so just return the error
                         }
                       } finally {
-                        if (!(retrievedFunc instanceof BuiltInFunction)) decrScope();
-                        // This may need to change in the future if users are allowed to write their own external functions, as then internal functions can override external ones
-                        retrievedFunc.resetActions();
+                        if (!(retrievedFunc instanceof BuiltInFunction)) {
+                          decrScope();
+                          ((Function) retrievedFunc).resetActions();
+                        }
+                        // This may need to change in the future if users are allowed to write their own
+                        // external functions, as then internal functions can override external ones
                       }
                     }
                     if (inputs == null || o instanceof InvalidParameterError) {
                       // Checks for any overloaded functions
-                      Function ovld = getOverloadedFunction(retrievedFunc.getName(), inputs);
+                      AbstractFunction ovld = getOverloadedFunction(retrievedFunc.getName(), inputs);
                       if (ovld != null) {
-                        if (!(ovld instanceof BuiltInFunction)) incrScope();
+                        if (!(ovld instanceof BuiltInFunction))
+                          incrScope();
                         if (inputs == null) {
                           o = ovld.call();
                         } else {
                           o = ovld.call(inputs);
                         }
-                        if (!(ovld instanceof BuiltInFunction)) decrScope();
-                        ovld.resetActions();
+                        if (!(ovld instanceof BuiltInFunction)) {
+                          decrScope();
+                          ((Function) ovld).resetActions();
+                        }
                         return o;
                       } else {
                         if (o == null) {
-                          
+
                           return new InvalidParameterError(pos,
                               "Naooo uwu nao awgwmwents r giwen wen de fwnctwion hwas awgwments ._.");
                         }
@@ -897,118 +855,115 @@ public final class KawaiiLangRuntime {
                   }
                   // End function recall
                 } else if (type.getValue().equals("Lwist")) {
-                    advance();
-                    if (currentToken != null && currentToken.getType().equals(TokenV1.TT_LSQU)) { // Get and slice
-                      listOper = true;
-                      OwOList l = (OwOList) stored;
-                      Position origP = pos.clone();
-                      Position origOrigP = pos.clone();
-                      Token[] origT = tokens.clone();
-                      boolean slice = false;
-                      ArrayList<Token> at = new ArrayList<>();
-                      ArrayList<Token> at2 = new ArrayList<>();
-                      getNslice: while (true) {
-                        advance();
-                        origP.advance();
-                        if (currentToken.getType().equals(TokenV1.TT_RSQU)) {
-                          if (at.isEmpty()) {
-                            if (!at2.isEmpty()) { // Slice at end
-                              Object o = new Runner(fn, this).interpret(at2.toArray(new TokenV1[0]));
-                              pos = origP;
-                              tokens = origT;
-                              int i = ((Double) o).intValue();
-                              if (i >= l.length()) {
-                                
-                                return new IndexOutOfBoundsError(pos, "uwu naooo inwex iws owt ofw bwownds ._.");
-                              }
-                              OwOList slicedList = l.slice(0, i);
-                              varReplaced = new TokenV1(TokenV1.TT_LIST, slicedList);
-                              break getNslice;
-                            } else {
-                              
-                              return new InvalidParameterError(pos,
-                                  "uwu naooo u must spwecify an inwex between the sqware bwackets ._.");
-                            }
-                          } else if (at2.isEmpty()) {
-                            if (slice) { // Slice at beginning
-                              Object o = new Runner(fn, this).interpret(at.toArray(new TokenV1[0]));
-                              pos = origP;
-                              tokens = origT;
-                              int i = ((Double) o).intValue();
-                              if (i < 0) {
-                                
-                                return new IndexOutOfBoundsError(pos, "uwu naooo inwex iws owt ofw bwownds ._.");
-                              }
-                              OwOList slicedList = l.slice(i, l.length());
-                              varReplaced = new TokenV1(TokenV1.TT_LIST, slicedList);
-                              break getNslice;
-                            } else { // Get
-                              // System.out.println(at);
-                              Object o = new Runner(fn, this).interpret(at.toArray(new TokenV1[0]));
-                              // System.out.println(o);
-                              pos = origP;
-                              tokens = origT;
-                              int i = ((Double) o).intValue();
-                              if (i >= l.length()) {
-                                
-                                return new IndexOutOfBoundsError(pos, "uwu naooo inwex iws owt ofw bwownds ._.");
-                              }
-                              Object fromList = l.get(i);
-                              if (fromList instanceof Double) {
-                                varReplaced = new TokenV1(TokenV1.TT_FLOAT, fromList);
-                              } else if (fromList instanceof String) {
-                                varReplaced = new TokenV1(TokenV1.TT_STR, fromList);
-                              } else if (fromList instanceof Function) {
-                                Function retrievedFunc = (Function) fromList;
-                                varReplaced = new TokenV1(TokenV1.TT_VARNAME, retrievedFunc.getName());
-                              } // More datatypes here
-                              break getNslice;
-                            }
-                          } else { // Slice at beginning and end
-                            Object o = new Runner(fn, this).interpret(at.toArray(new TokenV1[0]));
-                            pos = origP;
-                            tokens = origT;
-                            Object o2 = new Runner(fn, this).interpret(at2.toArray(new TokenV1[0]));
+                  advance();
+                  if (currentToken != null && currentToken.getType().equals(TokenV1.TT_LSQU)) { // Get and slice
+                    listOper = true;
+                    OwOList l = (OwOList) stored;
+                    Position origP = pos.clone();
+                    Position origOrigP = pos.clone();
+                    Token[] origT = tokens.clone();
+                    boolean slice = false;
+                    ArrayList<Token> at = new ArrayList<>();
+                    ArrayList<Token> at2 = new ArrayList<>();
+                    getNslice: while (true) {
+                      advance();
+                      origP.advance();
+                      if (currentToken.getType().equals(TokenV1.TT_RSQU)) {
+                        if (at.isEmpty()) {
+                          if (!at2.isEmpty()) { // Slice at end
+                            Object o = new Runner(fn, this).interpret(at2.toArray(new TokenV1[0]));
                             pos = origP;
                             tokens = origT;
                             int i = ((Double) o).intValue();
-                            int j = ((Double) o2).intValue();
-                            if ((i < 0 || i >= l.length()) || (j > l.length() || j < 0)) {
-                              
+                            if (i >= l.length()) {
+
                               return new IndexOutOfBoundsError(pos, "uwu naooo inwex iws owt ofw bwownds ._.");
                             }
-                            OwOList slicedList = l.slice(i, j);
+                            OwOList slicedList = l.slice(0, i);
                             varReplaced = new TokenV1(TokenV1.TT_LIST, slicedList);
+                            break getNslice;
+                          } else {
+
+                            return new InvalidParameterError(pos,
+                                "uwu naooo u must spwecify an inwex between the sqware bwackets ._.");
+                          }
+                        } else if (at2.isEmpty()) {
+                          if (slice) { // Slice at beginning
+                            Object o = new Runner(fn, this).interpret(at.toArray(new TokenV1[0]));
                             pos = origP;
+                            tokens = origT;
+                            int i = ((Double) o).intValue();
+                            if (i < 0) {
+
+                              return new IndexOutOfBoundsError(pos, "uwu naooo inwex iws owt ofw bwownds ._.");
+                            }
+                            OwOList slicedList = l.slice(i, l.length());
+                            varReplaced = new TokenV1(TokenV1.TT_LIST, slicedList);
+                            break getNslice;
+                          } else { // Get
+                            Object o = new Runner(fn, this).interpret(at.toArray(new TokenV1[0]));
+                            pos = origP;
+                            tokens = origT;
+                            int i = ((Double) o).intValue();
+                            if (i >= l.length()) {
+
+                              return new IndexOutOfBoundsError(pos, "uwu naooo inwex iws owt ofw bwownds ._.");
+                            }
+                            Object fromList = l.get(i);
+                            if (fromList instanceof Double) {
+                              varReplaced = new TokenV1(TokenV1.TT_FLOAT, fromList);
+                            } else if (fromList instanceof String) {
+                              varReplaced = new TokenV1(TokenV1.TT_STR, fromList);
+                            } else if (fromList instanceof AbstractFunction) {
+                              AbstractFunction retrievedFunc = (AbstractFunction) fromList;
+                              varReplaced = new TokenV1(TokenV1.TT_VARNAME, retrievedFunc.getName());
+                            } // More datatypes here
                             break getNslice;
                           }
-                        } else if (currentToken.equals(TokenV1.C_TOK)) {
-                          slice = true;
-                        } else if (!slice) {
-                          at.add(currentToken);
-                        } else {
-                          at2.add(currentToken);
+                        } else { // Slice at beginning and end
+                          Object o = new Runner(fn, this).interpret(at.toArray(new TokenV1[0]));
+                          pos = origP;
+                          tokens = origT;
+                          Object o2 = new Runner(fn, this).interpret(at2.toArray(new TokenV1[0]));
+                          pos = origP;
+                          tokens = origT;
+                          int i = ((Double) o).intValue();
+                          int j = ((Double) o2).intValue();
+                          if ((i < 0 || i >= l.length()) || (j > l.length() || j < 0)) {
+                            return new IndexOutOfBoundsError(pos, "uwu naooo inwex iws owt ofw bwownds ._.");
+                          }
+                          OwOList slicedList = l.slice(i, j);
+                          varReplaced = new TokenV1(TokenV1.TT_LIST, slicedList);
+                          pos = origP;
+                          break getNslice;
                         }
+                      } else if (currentToken.equals(TokenV1.C_TOK)) {
+                        slice = true;
+                      } else if (!slice) {
+                        at.add(currentToken);
+                      } else {
+                        at2.add(currentToken);
                       }
-                      pos = origOrigP;
-                      tokens = origT;
-                      // End getNslice
-                    } else {
-                      listOper = false;
-                      retreatWithoutUpdating();
-                      varReplaced = new TokenV1(TokenV1.TT_LIST, stored);
                     }
+                    pos = origOrigP;
+                    tokens = origT;
+                    // End getNslice
+                  } else {
+                    listOper = false;
+                    retreatWithoutUpdating();
+                    varReplaced = new TokenV1(TokenV1.TT_LIST, stored);
+                  }
                   // End list recall
                 } else if (type.getType().equals(TokenV1.TT_CLASS)) {
                   // Recall of object
                   if (tokens.length > 1 && tokens[pos.getIdx() + 1].equals(TokenV1.C_DOK)) {
                     Object o = heap.get(currentToken).getValue();
-                      OwObject owoo = (OwObject) o;
-                        return owoo.doActions(Arrays.copyOfRange(tokens, pos.getIdx() + 2, tokens.length));
+                    OwObject owoo = (OwObject) o;
+                    return owoo.doActions(Arrays.copyOfRange(tokens, pos.getIdx() + 2, tokens.length));
                   } else {
                     Object o = heap.get(currentToken).getValue();
-                      OwObject owoo = (OwObject) o;
-                        return owoo;
+                    OwObject owoo = (OwObject) o;
+                    return owoo;
                   }
                 }
                 // More variable types in the future
@@ -1034,9 +989,9 @@ public final class KawaiiLangRuntime {
                 return value == null ? new OwOList<Object>() : value;
               } else {
                 String varName = (String) currentToken.getValue();
-                
-                return new UnassignedVariableError(pos, new StringBuilder("Naooo uwu da wariable ")
-                    .append(varName).append(" newer asswigned ._.").toString());
+
+                return new UnassignedVariableError(pos, new StringBuilder("Naooo uwu da wariable ").append(varName)
+                    .append(" newer asswigned ._.").toString());
               }
             } else if (currentToken.getType() == TokenV1.TT_LPAREN) {
               expr.append("(");
@@ -1069,10 +1024,9 @@ public final class KawaiiLangRuntime {
                     advance();
                   }
                 } else {
-                  
-                  return new InvalidSyntaxError(pos,
-                      new StringBuilder("Naooo uwu ").append(currentToken.toString())
-                          .append(" cwannot cwome awfter awnowther owpewation ._.").toString());
+
+                  return new InvalidSyntaxError(pos, new StringBuilder("Naooo uwu ").append(currentToken.toString())
+                      .append(" cwannot cwome awfter awnowther owpewation ._.").toString());
                 }
               } else if (currentToken.getType() == TokenV1.TT_ADD || currentToken.getType() == TokenV1.TT_MINUS
                   || currentToken.getType() == TokenV1.TT_MUL || currentToken.getType() == TokenV1.TT_DIV
@@ -1099,7 +1053,7 @@ public final class KawaiiLangRuntime {
                 Token type = currentToken;
                 advance();
                 if (type.getValue().equals("Fwnctwion")) { // Cannot declare function like this!
-                  
+
                   return new IllegalAssignmentError(pos, "Naooo uwu u cwannot asswign fwnctwion lwike dat ._.");
                 } else if (currentToken != null && currentToken.getType().equals(TokenV1.TT_VARNAME)) {
                   lastToken = currentToken;
@@ -1107,15 +1061,15 @@ public final class KawaiiLangRuntime {
                   if (currentToken != null && currentToken.getType().equals(TokenV1.TT_ASSIGN)) {
                     return makeVar(type, lastToken);
                   } else {
-                    
+
                     String varName = (String) lastToken.getValue();
-                    return new UnassignedVariableError(pos, new StringBuilder("Naooo uwu wariable ")
-                        .append(varName).append(" decwared but nao walue was asswigned ._.").toString());
+                    return new UnassignedVariableError(pos, new StringBuilder("Naooo uwu wariable ").append(varName)
+                        .append(" decwared but nao walue was asswigned ._.").toString());
                   }
                 } else {
-                  
-                  return new InvalidSyntaxError(pos, new StringBuilder("Naooo uwu ")
-                      .append(currentToken.toString()).append(" iws iwegal here ._.").toString());
+
+                  return new InvalidSyntaxError(pos, new StringBuilder("Naooo uwu ").append(currentToken.toString())
+                      .append(" iws iwegal here ._.").toString());
                 }
               } else if (currentToken.getType().equals(TokenV1.TT_KEYWORD)) {
                 if (currentToken.getValue().equals("make")) { // Class construction
@@ -1134,7 +1088,7 @@ public final class KawaiiLangRuntime {
                         }
                       }
                       if (totalParamIndicators % 2 != 0) {
-                        
+
                         return new InvalidSyntaxError(pos, "Unclosed parameter indicator");
                       }
                       totalParamIndicators--;
@@ -1160,9 +1114,9 @@ public final class KawaiiLangRuntime {
                       return o.construct();
                     }
                   } else {
-                    
-                    return new InvalidSyntaxError(pos, new StringBuilder("Naooo uwu \"")
-                        .append(lastToken.toString()).append("\" is nawt a proper cwass ._.").toString());
+
+                    return new InvalidSyntaxError(pos, new StringBuilder("Naooo uwu \"").append(lastToken.toString())
+                        .append("\" is nawt a proper cwass ._.").toString());
                   }
                 } else if (currentToken.getValue().equals("dewete")) { // Variable deletion
                   advance();
@@ -1170,23 +1124,22 @@ public final class KawaiiLangRuntime {
                     heap.remove(currentToken);
                     return null;
                   } else {
-                    
-                    return new InvalidSyntaxError(pos,
-                        new StringBuilder("Naooo uwu ").append(currentToken.toString())
-                            .append(" is nawt wariable and i cwannot dewete ._.").toString());
+
+                    return new InvalidSyntaxError(pos, new StringBuilder("Naooo uwu ").append(currentToken.toString())
+                        .append(" is nawt wariable and i cwannot dewete ._.").toString());
                   }
                 } else if (currentToken.getValue().equals("ewlse")) {
                   return null; // Else does nothing on its own
                 } // other keywords that appear at the beginning of statement goes here
                 else {
-                  
-                  return new InvalidSyntaxError(pos, new StringBuilder("Naooo uwu ")
-                      .append(currentToken.toString()).append(" iws iwegal here ._.").toString());
+
+                  return new InvalidSyntaxError(pos, new StringBuilder("Naooo uwu ").append(currentToken.toString())
+                      .append(" iws iwegal here ._.").toString());
                 }
               } else {
-                
-                return new InvalidSyntaxError(pos, new StringBuilder("Naooo uwu ")
-                    .append(currentToken.toString()).append(" is iwegal here ._.").toString());
+
+                return new InvalidSyntaxError(pos, new StringBuilder("Naooo uwu ").append(currentToken.toString())
+                    .append(" is iwegal here ._.").toString());
               }
             } else if (lastToken.getType() == TokenV1.TT_INT) {
               if (currentToken.getType() == TokenV1.TT_ADD || currentToken.getType() == TokenV1.TT_MINUS
@@ -1197,7 +1150,7 @@ public final class KawaiiLangRuntime {
                 advance();
               } // future operations go below here
             } else {
-              
+
               return new InvalidSyntaxError(pos, new StringBuilder("Naooo uwu ").append(currentToken.toString())
                   .append(" is iwegal here ._.").toString());
             }
@@ -1213,7 +1166,7 @@ public final class KawaiiLangRuntime {
               String s = expr.toString();
               // System.out.println(s);
               if (s.contains("/0")) {
-                
+
                 return new DivisionByZeroError(pos);
               }
               Expression e = new ExpressionBuilder(s).build();
@@ -1245,14 +1198,15 @@ public final class KawaiiLangRuntime {
     if (value instanceof org.kawaiilang.Error) {
       return value;
     } else if (name.getValue().equals("inwex")) {
-      
+
       return new IllegalAssignmentError(pos, "Naooo uwu u cwannot set inwex witowt lowp ._.");
     } else if (verifyVar(type, value)) {
       Variable var = new Variable(type, value, scopeDepth);
       heap.put(name, var);
       return value;
     } else {
-      return new IllegalTypeError(pos, new StringBuilder("Naooo uwu da twype of variable, ").append(type.getValue()).append(", is nawt as decwared ._.").toString());
+      return new IllegalTypeError(pos, new StringBuilder("Naooo uwu da twype of variable, ").append(type.getValue())
+          .append(", is nawt as decwared ._.").toString());
     }
   }
 
@@ -1282,6 +1236,7 @@ public final class KawaiiLangRuntime {
     scopeDepth--;
     /*System.out.print("Decremented scope to ");
     System.out.println(scopeDepth);
+    System.out.println("Removed the following items:");
     heap.forEach((K, V) -> { if (!(V.getValue() instanceof BuiltInFunction) && (V.scopeDepth() > scopeDepth)) {
     System.out.println(K.toString() + ' ' + V.getValue() + '\t'); } });*/
     killOutOfScopeVars();
@@ -1368,6 +1323,115 @@ public final class KawaiiLangRuntime {
     return new OwObject(sb.toString(), parent);
   }
 
+  //Verifies if a function declaration statement is valid
+  public static boolean verifyFunction(Token[] tokens) {
+    Token lastToken, currentToken;
+    Token canGibU = tokens[tokens.length - 1];
+    for (int at = 4; at < tokens.length;) {
+      lastToken = tokens[at];
+      currentToken = tokens[++at];
+      if (currentToken.equals(TokenV1.C_PARAM) || lastToken.equals(TokenV1.C_PARAM)) {
+        break;
+      } else {
+        if (lastToken.equals(TokenV1.C_COMMA)) {
+          lastToken = currentToken;
+          currentToken = tokens[++at];
+          if (lastToken.getType().equals(TokenV1.TT_VARTYPE) && currentToken.getType().equals(TokenV1.TT_VARNAME)) {
+            currentToken = tokens[++at];
+          } else { // Wrong types
+            return false;
+          }
+        } else if (lastToken.getType().equals(TokenV1.TT_VARTYPE)
+            && currentToken.getType().equals(TokenV1.TT_VARNAME)) {
+          currentToken = tokens[++at];
+        } else { // Wrong types
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  private Object declareFunction() {
+    Token lastToken;
+    Token canGibU = tokens[tokens.length - 1];
+    LinkedHashMap<String, String> param = null;
+    advance();
+    advance();
+    advance();
+    advance();
+    while (true) {
+      lastToken = currentToken;
+      advance();
+      if (currentToken.equals(TokenV1.C_PARAM) || lastToken.equals(TokenV1.C_PARAM)) {
+        break;
+      } else {
+        if (param == null) {
+          param = new LinkedHashMap<>();
+        }
+        /*
+        System.out.print(lastToken); System.out.print(" ");
+        System.out.println(currentToken);
+        */
+        if (lastToken.equals(TokenV1.C_COMMA)) {
+          lastToken = currentToken;
+          advance();
+          /*
+          System.out.print(lastToken); System.out.print(" ");
+          System.out.println(currentToken);
+          */
+          if (lastToken.getType().equals(TokenV1.TT_VARTYPE) && currentToken.getType().equals(TokenV1.TT_VARNAME)) {
+            String paramType = (String) lastToken.getValue();
+            String paramName = (String) currentToken.getValue();
+            param.put(paramName, paramType);
+            advance();
+          } else { // Wrong types
+            return new InvalidParameterError(pos,
+                "Naooo uwu fwnctwion pawamweters mwst hab wariable nwame awnd twype ._.");
+          }
+        } else if (lastToken.getType().equals(TokenV1.TT_VARTYPE)
+            && currentToken.getType().equals(TokenV1.TT_VARNAME)) {
+          String paramType = (String) lastToken.getValue();
+          String paramName = (String) currentToken.getValue();
+          param.put(paramName, paramType);
+          advance();
+        } else { // Wrong types
+          return new InvalidParameterError(pos,
+              "Naooo uwu fwnctwion pawamweters mwst hab wariable nwame awnd twype ._.");
+        }
+      }
+    }
+    // System.out.println(param);
+    // All checks passed
+    functionDepth++;
+    String funcNameStr = (String) tokens[2].getValue();
+    if (param == null) {
+      currentFunc = new Function(this, funcNameStr, canGibU);
+    } else {
+      currentFunc = new Function(this, funcNameStr, param, canGibU);
+    }
+    if (!overload) {
+      Variable funcVar = new Variable(new TokenV1(TokenV1.TT_VARNAME, "Fwnctwion"), currentFunc, scopeDepth);
+      heap.put(tokens[2], funcVar);
+    } else {
+      Map.Entry<String, String> e;
+      if (param == null) {
+        e = new AbstractMap.SimpleEntry<>(funcNameStr, null);
+        overloadedFunctions.put(e, currentFunc);
+      } else {
+        StringBuilder sb = new StringBuilder();
+        for (String s : param.values()) {
+          sb.append(s).append('_');
+        }
+        e = new AbstractMap.SimpleEntry<>(funcNameStr, sb.toString());
+        overloadedFunctions.put(e, currentFunc);
+      }
+    }
+    overload = false;
+    return null;
+    // end function declaration
+  }
+
   private Object evalLogic(Token[] exprA, Token oper, Token[] exprB) {
     Object resultA = new Runner(fn, this).interpret(exprA);
     Object resultB = new Runner(fn, this).interpret(exprB);
@@ -1409,7 +1473,6 @@ public final class KawaiiLangRuntime {
       }
     }
 
-    
     return new BadOprandTypeError(pos,
         new StringBuilder("Naooo uwu u hab bwad owpwand twypes fwr bwinwawy owpewawor \"").append(oper)
             .append("\": first owpwand: ").append(resultA.toString()).append(", second owpwand: ")
@@ -1418,12 +1481,12 @@ public final class KawaiiLangRuntime {
 
   // Gets the proper overloaded function given the name of the function and the
   // parameter types
-  private Function getOverloadedFunction(String fName, Collection<?> c) {
+  private AbstractFunction getOverloadedFunction(String fName, Collection<?> c) {
     Map.Entry<String, String> e = new AbstractMap.SimpleEntry<>(fName, Function.toParameterTypeList(c));
     return overloadedFunctions.get(e);
   }
 
-  public void addFunction(Function f) {
+  public void addFunction(AbstractFunction f) {
     heap.put(new TokenV1(TokenV1.TT_VARNAME, f.getName()),
         new Variable(new TokenV1(TokenV1.TT_VARNAME, "Fwnctwion"), f, scopeDepth));
   }

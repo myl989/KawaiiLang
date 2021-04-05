@@ -3,28 +3,20 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import static org.kawaiilang.KawaiiLangRuntime.verifyFunction;
 
-public class Function {
+public final class Function extends AbstractFunction {
 
-  private String name;
   private ArrayList<Token[]> actions = new ArrayList<>();
   private ArrayList<Token[]> orig = new ArrayList<>();
-  private LinkedHashMap<String, String> parameters; // Variable name, variable type
-  private KawaiiLangRuntime runtime;
-  private Token canGibU;
+  private int functionDepth = 0;  //Number of functions nested inside, used to calculate which return values to ignore.
 
   public Function(KawaiiLangRuntime runtime, String name, Token canGibU) {
-    this.runtime = runtime;
-    this.name = name;
-    this.parameters = null;
-    this.canGibU = canGibU;
+    super(runtime, name, canGibU);
   }
 
   public Function(KawaiiLangRuntime runtime, String name, LinkedHashMap<String, String> parameters, Token canGibU) {
-    this.runtime = runtime;
-    this.name = name;
-    this.parameters = parameters;	//Parameter linked hash map with data Varname, Vartype
-    this.canGibU = canGibU;
+    super(runtime, name, parameters, canGibU);
   }
 
   public void addAction(Token[] action) {
@@ -32,15 +24,8 @@ public class Function {
     orig.add(TokenV1.cloneTokenArray(action));
   }
 
-  public int parameterAmount() {
-    if (parameters == null) {
-      return 0;
-    } else {
-      return parameters.size();
-    }
-  }
-
   //Can only be used with functions with parameters
+  @Override
   public Object call(ArrayList<Object> inputs) {
     if (inputs.size() != parameters.size()) { // Checks if number of arguments is the same as declared
       Position start = runtime.getPosition().clone();
@@ -52,7 +37,7 @@ public class Function {
     String[] valueSet = parameters.values().toArray(new String[0]);
     for (int i = 0; i < inputs.size(); i++) {
       String inputType = "";
-      //The below code probably is unnecessary as tokens would probably not be in the inputs
+      //The below code probably is unnecessary as action would probably not be in the inputs
       /*if (inputs.get(i) instanceof Token) {
         Token t = (Token) inputs.get(i);
         inputType = t.type;
@@ -110,8 +95,21 @@ public class Function {
       } // end loop through variables
 
       // It is now okay to run the statement
-      if (actions.get(anum).length > 1 && Arrays.asList(actions.get(anum)).get(0).equals(TokenV1.C_RETURNK)) {	//Return values
-          Token[] action = actions.get(anum);
+      Token[] action = actions.get(anum);
+      if (action.length > 6 && action[0].equals(TokenV1.C_OWOK) && action[1].equals(TokenV1.C_FUNCK)
+          && action[2].getType().equals(TokenV1.TT_VARNAME) && action[3].equals(TokenV1.C_PARAM)
+          && action[action.length - 3].equals(TokenV1.C_PARAM)
+          && action[action.length - 2].equals(new TokenV1(TokenV1.TT_KEYWORD, "canGibU"))
+          && (action[action.length - 1].getType().equals(TokenV1.TT_VARTYPE)
+              || action[action.length - 1].getType().equals(TokenV1.TT_NOTHING))) {
+        if (verifyFunction(action)) {
+          functionDepth++;
+        }
+      } else if (action.length == 1 && action[0].equals(TokenV1.C_ENDFUNCK)) {
+        functionDepth = functionDepth == 0 ? 0 : functionDepth - 1;
+      }
+
+      if (actions.get(anum).length > 1 && Arrays.asList(actions.get(anum)).get(0).equals(TokenV1.C_RETURNK) && (functionDepth == 0)) {	//Return values
           Object o = new Runner(runtime.getFileLocation(), runtime).interpret(Arrays.copyOfRange(action, 1, action.length));
         if (o == null && canGibU.equals(TokenV1.C_NOTHING)) {
           return null;
@@ -163,7 +161,7 @@ public class Function {
               new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
                   .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
         }
-      } else if (actions.get(anum).length > 1 && Arrays.asList(actions.get(anum)).get(0).equals(TokenV1.C_RETURNCONSTRUCTEDK)) {
+      } else if (actions.get(anum).length > 1 && Arrays.asList(actions.get(anum)).get(0).equals(TokenV1.C_RETURNCONSTRUCTEDK) && (functionDepth == 0)) {
     	 if (canGibU.equals(TokenV1.C_RETURNCONSTRUCTEDK)) {
     	   return null;
     	 } else {
@@ -184,6 +182,7 @@ public class Function {
   }
 
   //Can only be used with functions without parameters
+  @Override
   public Object call() {
     if (parameters != null) {
       Position start = runtime.getPosition().clone();
@@ -191,7 +190,20 @@ public class Function {
           "Naooo uwu awgwmwents r giwen wen de fwnctwion does nawt hwas awgwments ._.");
     }
     for (Token[] action : actions) {
-      if (action.length > 1 && Arrays.asList(action).get(0).equals(TokenV1.C_RETURNK)) {	//Return values
+      if (action.length > 6 && action[0].equals(TokenV1.C_OWOK) && action[1].equals(TokenV1.C_FUNCK)
+          && action[2].getType().equals(TokenV1.TT_VARNAME) && action[3].equals(TokenV1.C_PARAM)
+          && action[action.length - 3].equals(TokenV1.C_PARAM)
+          && action[action.length - 2].equals(new TokenV1(TokenV1.TT_KEYWORD, "canGibU"))
+          && (action[action.length - 1].getType().equals(TokenV1.TT_VARTYPE)
+              || action[action.length - 1].getType().equals(TokenV1.TT_NOTHING))) {
+        if (verifyFunction(action)) {
+          functionDepth++;
+        }
+      } else if (action.length == 1 && action[0].equals(TokenV1.C_ENDFUNCK)) {
+        functionDepth = functionDepth == 0 ? 0 : functionDepth - 1;
+      }
+
+      if (action.length > 1 && Arrays.asList(action).get(0).equals(TokenV1.C_RETURNK) && (functionDepth == 0)) {	//Return values
         Object o = new Runner(runtime.getFileLocation(), runtime).interpret(Arrays.copyOfRange(action, 1, action.length));
         if (o == null && canGibU.equals(TokenV1.C_NOTHING)) {
           return null;
@@ -241,7 +253,7 @@ public class Function {
               new StringBuilder("Naooo uwu giben wetwrn walue, \"").append(o)
                   .append("\", is nawt swame aws expwectwed twype, \"").append(canGibU).append("\" ._.").toString());
         }
-      } else if (action.length > 1 && Arrays.asList(action).get(0).equals(TokenV1.C_RETURNCONSTRUCTEDK)) {
+      } else if (action.length > 1 && Arrays.asList(action).get(0).equals(TokenV1.C_RETURNCONSTRUCTEDK) && (functionDepth == 0)) {
     	if (canGibU.equals(TokenV1.C_RETURNCONSTRUCTEDK)) {
    	 		return null;
     	} else {
@@ -315,56 +327,6 @@ public class Function {
     } else {
       return "";	//Parameter not found
     }
-  }
-
-  @Override
-  public String toString() {
-    return new StringBuilder("<Function ").append(name).append(" from ").append(runtime.getFileLocation()).append('>').toString();
-  }
-
-  public String getName() {
-    return name;
-  }
-  
-  protected KawaiiLangRuntime getInterpreter() {
-	return runtime;
-  }
-  
-  public Collection<String> getParameterTypes() {
-	if (parameters == null) {
-	  return null;
-	} else {
-	  return parameters.values();
-	}
-  }
-  
-  //Check whether the input types match the parameter types
-  //Returns null if no errors, or an error if there is a type mismatch
-  public Object checkInputs(ArrayList<Object> inputs) {
-	String[] valueSet = parameters.values().toArray(new String[0]);
-	//System.out.println(Arrays.toString(valueSet));
-    for (int i = 0; i < inputs.size(); i++) {
-      String inputType = "";
-      if (inputs.get(i) instanceof Double || inputs.get(i) instanceof Integer) {
-        inputType = "Numwer";
-      } else if (inputs.get(i) instanceof String) {
-        inputType = "Stwing";
-      } else if (inputs.get(i) instanceof Function) {
-        inputType = "Fwnctwion";
-      } else if (inputs.get(i) instanceof OwOList) {
-    	inputType = "Lwist";
-      } else if (inputs.get(i) == null) {
-    	inputType = "nwthin";
-      }
-      //More datatypes here
-      if (!inputType.equals(valueSet[i]) && !valueSet[i].equals("Anwy")) {	//Parameter type of Anwy accepts any input
-    	Position start = runtime.getPosition().clone();
-    	return new InvalidParameterError(runtime.getPosition(),
-        new StringBuilder("Naooo uwu giben awgwmwent twype, \"").append(inputType)
-                .append("\", is nawt swame aws expwectwed twype, \"").append(valueSet[i]).append("\" ._.").toString());
-      }
-    }
-    return null;
   }
 
 }
