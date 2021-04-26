@@ -105,7 +105,7 @@ There is no simple `ewlse!` statement (yet) so `ewlse! OwO *notices :>*?` should
 
 Switch statements: `OwO *notices [expression that results in integer]*~` can be used to start a switch statement. Cases are created with `~ eqwals [case number]!`, and then the expressions, followed by `^_^nwextCase!` to continue to the next case (to break the case, use `stawp!` before the `^_^nwextCase!`).
 
-For loops: telling your waifu/husbando to do things over and over again is very easy! Simply use `do [x] times!`, followed by the code you want to run, followed by `^_^wepeatDat` to end the loop declaration! Note that `[x]` must evaluate to `<T extends Numwer>`. `stawp` can be used to ask your waifu/husbando to... stop the loop. `do [x] to [y] times!` can also be used to start at index `[x]` and loop until `[y]` is reached, for both `[x], [y]` evaluates to `<T extends Numwer>`. The index can be modified by using `inwex` as a variable within the loop.
+For loops: telling your waifu/husbando to do things over and over again is very easy! Simply use `do [x] twimes!`, followed by the code you want to run, followed by `^_^wepeatDat` to end the loop declaration! Note that `[x]` must evaluate to `<T extends Numwer>`. `stawp` can be used to ask your waifu/husbando to... stop the loop. `do [x] to [y] times!` can also be used to start at index `[x]` and loop until `[y]` is reached, for both `[x], [y]` evaluates to `<T extends Numwer>`. The index can be modified by using `inwex` as a variable within the loop.
 
 While loops: more loops, more fun! Use `doWen OwO *notices [expression]*?` to loop when the expression evaluates to true. Similar to above `^_^wepeatDat` ends the loop declaration and `stawp` can be used to break the loop.
 
