@@ -1,16 +1,4 @@
-<h1>Have you gotten sick and tired of normal programming language syntax?</h1> 
-
-Come on, looking at programming syntax for long periods of time is really dehumanizing. But programming is nice! Can there not be a way to release your inner anime protag while big-braining game development, website making, or maybe some neural networks? Well, no, because this sucks, but it's at least one way of not dying of too much `if`s and `else`s, `while`s and `for`s.
-
-**DISCLAIMER: This whole thing is meant as a joke.** But... you can use it for regular coding too if you really want to.
-
-**Another disclaimer:** this thing is known to have bugs. You can see the issues I have on the "todo" or "bugs" list in my projects tab. So program at your own risk. As this is not a serious project don't expect me to maintain this like the Mona Lisa!
-
-<h2>In case you want a feel of what it looks like, check out the demo folder! (MD code snippets is being weird so I'm not putting it here)</h2>
-
-Currently status: Interpreter works for calculations with the following operations
-
-Current features: Integers, floating-points, add, subtract, multiply, divide, parenthesis, and modular arithmatic operations. Variable assignment and use, as well as variable deletion. Powerful tools for functions, and a plethera (well, what soon will be a plethra) of built-in functions.
+Toy language interpreter based on none other than `OwO` and `UwU`.
 
 **Breif documentation**
 
