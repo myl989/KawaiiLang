@@ -1,9 +1,6 @@
 <h1>Have you gotten sick and tired of normal programming language syntax?</h1> 
 
-Come on, looking at programming syntax for long periods of time is really dehumanizing. But programming is nice! Can there not be a way to release your inner anime protag while big-braining game development, website making, or maybe some neural networks? Well, no, because this sucks, but it's at least one way of not dying of too much `if`s and `else`s, `while`s and `for`s, and who knows? Maybe it will increase the number of weebs doing programming? 
-
-So, this is my attempt at making a "Kawaii" esoteric programming language featuring... UwU and OwO faces. 
-I know this is kind of silly, and it has been done (to varying degrees) before, and this project probably won't even be the very practical, but... I've got too much time to spare anyways. (I might look at this in the future with dissappointment)
+Come on, looking at programming syntax for long periods of time is really dehumanizing. But programming is nice! Can there not be a way to release your inner anime protag while big-braining game development, website making, or maybe some neural networks? Well, no, because this sucks, but it's at least one way of not dying of too much `if`s and `else`s, `while`s and `for`s.
 
 **DISCLAIMER: This whole thing is meant as a joke.** But... you can use it for regular coding too if you really want to.
 
