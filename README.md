@@ -1,3 +1,5 @@
+**Notice:** This project is currently on hold. There are several issues with this project however I am not going to fix them without further notice. This dosen't mean I'll abandon it, however. I may give an update to the future of this project... well, in the future. Au revoir for now!
+
 Toy language interpreter based on none other than `OwO` and `UwU`.
 
 **Breif documentation**
